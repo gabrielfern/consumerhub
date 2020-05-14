@@ -1,0 +1,9 @@
+{
+  "name": "consumerhub",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "scripts/start",
+    "build": "scripts/build"
+  }
+}

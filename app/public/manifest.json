@@ -1,0 +1,6 @@
+{
+  "short_name": "ConsumerHub",
+  "name": "ConsumerHub",
+  "start_url": ".",
+  "display": "standalone"
+}
