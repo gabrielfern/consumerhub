@@ -2,15 +2,20 @@
   "name": "consumerhub-app",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "lint": "standard",
+    "lint-fix": "standard --fix"
+  },
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "standard": "^14.3.4"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -25,6 +30,11 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "standard": {
+    "ignore": [
+      "src/serviceWorker.js"
     ]
   }
 }
