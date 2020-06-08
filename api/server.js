@@ -1,12 +1,8 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 8000
-const Sequelize = require('sequelize')
+const { sequelize } = require('./models')
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-  host: 'localhost',
-  dialect: 'postgres'
-})
 sequelize
   .authenticate()
   .then(() => {

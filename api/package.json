@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
+    "create-db": "sequelize-cli db:create",
+    "drop-db": "sequelize-cli db:drop",
     "lint": "standard",
     "lint-fix": "standard --fix"
   },
@@ -13,9 +15,15 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.2.1",
     "pg-hstore": "2.3.3",
-    "sequelize": "^5.21.11"
+    "sequelize": "^5.21.11",
+    "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
     "standard": "^14.3.4"
+  },
+  "standard": {
+    "ignore": [
+      "models/index.js"
+    ]
   }
 }
