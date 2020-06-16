@@ -1,18 +1,12 @@
 const express = require('express')
+const usersRouter = require('./routes/users')
 const app = express()
 const port = process.env.PORT || 8000
-const { sequelize } = require('./models')
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.')
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err)
-  })
-
+app.use(express.json())
 app.use(express.static('../app/build'))
+
+app.use('/users', usersRouter)
 
 app.listen(port, () => {
   console.log(`Running on http://localhost:${port}`)
