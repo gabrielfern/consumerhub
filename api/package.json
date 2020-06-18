@@ -6,6 +6,9 @@
     "start": "node server.js",
     "create-db": "sequelize-cli db:create",
     "drop-db": "sequelize-cli db:drop",
+    "migrate-db": "sequelize-cli db:migrate",
+    "undo-migrate-db": "sequelize-cli db:migrate:undo",
+    "undoall-migrate-db": "sequelize-cli db:migrate:undo:all",
     "lint": "standard",
     "lint-fix": "standard --fix"
   },

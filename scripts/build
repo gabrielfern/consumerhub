@@ -5,3 +5,4 @@ npm install
 npm run build
 cd ../api
 npm install
+npm run migrate-db
