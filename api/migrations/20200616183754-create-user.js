@@ -17,6 +17,9 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      image: {
+        type: Sequelize.BLOB
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
