@@ -1,38 +1,62 @@
+/* global fetch */
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 export default () => {
-  let [name, setName] = useState('')
-  let [email, setEmail] = useState('')
-  let [password, setPassword] = useState('')
+  const history = useHistory()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [image, setImage] = useState({})
 
-  function submit() {
-    fetch('/api/users', {
+  async function submit () {
+    const res = await fetch('/api/users', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json'
       },
       body: JSON.stringify({ name, email, password })
-    }).then(res => {
-      if (res.status === 200) {
-        setName('')
-        setEmail('')
-        setPassword('')
-        res.json().then(console.log)
-      }
     })
+    if (res.status === 200) {
+      const user = await res.json()
+      if (image && image.size > 0) {
+        const buffer = await image.arrayBuffer()
+        await fetch(`/api/users/${user.id}/image`, {
+          method: 'POST',
+          headers: {
+            'Content-Length': image.size
+          },
+          body: buffer
+        })
+      }
+      history.push(`/${user.id}`)
+    }
   }
 
   return (
     <>
-      <h1>Se inscreva</h1>
-      <span> Nome </span>
-      <input type='text' value={name} onChange={e => setName(e.target.value)} />
-      <span> Email </span>
-      <input type='text' value={email} onChange={e => setEmail(e.target.value)} />
-      <span> Senha </span>
-      <input type='password' value={password} onChange={e => setPassword(e.target.value)} />
-      <span> </span>
-      <button onClick={submit}>Confirmar</button>
+      <div>
+        <h1>Inscreva-se</h1>
+        <p>
+          <span><b>Nome </b></span>
+          <input type='text' value={name} onChange={e => setName(e.target.value)} />
+        </p>
+        <p>
+          <span><b>Email </b></span>
+          <input type='text' value={email} onChange={e => setEmail(e.target.value)} />
+        </p>
+        <p>
+          <span><b>Senha </b></span>
+          <input type='password' value={password} onChange={e => setPassword(e.target.value)} />
+        </p>
+        <p>
+          <span><b>Imagem </b></span>
+          <input type='file' accept='image/*' onChange={e => setImage(e.target.files[0])} />
+        </p>
+        <p>
+          <button onClick={submit}>Confirmar</button>
+        </p>
+      </div>
     </>
   )
 }
