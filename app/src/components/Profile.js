@@ -1,3 +1,4 @@
+/* global fetch */
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -26,7 +27,10 @@ export default () => {
       </div>
       <div>
         <br />
-        <img src={`/api/users/${id}/image`} alt='imagem de usuário' />
+        <img
+          src={`/api/users/${id}/image`} alt='imagem de usuário'
+          style={{ display: 'block', maxWidth: '100%' }}
+        />
       </div>
     </>
   )
