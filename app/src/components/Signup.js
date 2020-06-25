@@ -1,5 +1,5 @@
-/* global fetch */
-import React, { useState } from 'react'
+/* global fetch, gapi */
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 
 export default () => {
@@ -23,15 +23,50 @@ export default () => {
         const buffer = await image.arrayBuffer()
         await fetch(`/api/users/${user.id}/image`, {
           method: 'POST',
-          headers: {
-            'Content-Length': image.size
-          },
           body: buffer
         })
       }
       history.push(`/${user.id}`)
     }
   }
+
+  useEffect(() => {
+    async function gSignUp (gUser) {
+      const prof = gUser.getBasicProfile()
+      const name = prof.getName()
+      const email = prof.getEmail()
+      const imageUrl = prof.getImageUrl()
+
+      const resp = await fetch(imageUrl)
+      const buff = await resp.arrayBuffer()
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ name, email })
+      })
+      if (res.status === 200) {
+        const user = await res.json()
+        await fetch(`/api/users/${user.id}/image`, {
+          method: 'POST',
+          body: buff
+        })
+        history.push(`/${user.id}`)
+      }
+    }
+
+    gapi.load('auth2', () => {
+      const auth2 = gapi.auth2.init()
+      auth2.isSignedIn.listen(async signed => {
+        if (signed) {
+          const gUser = auth2.currentUser.get()
+          await gSignUp(gUser)
+          auth2.signOut()
+        }
+      })
+    })
+  }, [history])
 
   return (
     <>
@@ -56,6 +91,7 @@ export default () => {
         <p>
           <button onClick={submit}>Confirmar</button>
         </p>
+        <div className='g-signin2' />
       </div>
     </>
   )
