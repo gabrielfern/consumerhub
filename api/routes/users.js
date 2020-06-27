@@ -2,13 +2,14 @@ const router = require('express').Router()
 const { User } = require('../models')
 const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client()
-const clientIds = process.env.GOOGLE_CLIENT_ID || require('../local.json')
+const clientId = process.env.GOOGLE_CLIENT_ID ||
+  require('../env.json').googleClientId
 
 router.post('/', async (req, res) => {
   try {
     if (req.body.idToken) {
       const ticket = await client.verifyIdToken({
-        idToken: req.body.idToken, audience: clientIds
+        idToken: req.body.idToken, audience: clientId
       })
       const payload = ticket.getPayload()
       req.body.name = payload.name

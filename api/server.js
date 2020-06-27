@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express')
 const usersRouter = require('./routes/users')
+const emailRouter = require('./routes/email')
 const rootPath = path.dirname(__dirname)
 const buildPath = path.join(rootPath, 'app', 'build')
 const app = express()
@@ -9,6 +10,7 @@ const port = process.env.PORT || 8000
 app.use(express.json())
 app.use(express.static(buildPath))
 app.use('/api/users', usersRouter)
+app.use('/api/email', emailRouter)
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'))
