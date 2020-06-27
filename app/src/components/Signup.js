@@ -57,8 +57,8 @@ export default () => {
 
     gapi.load('auth2', () => {
       const auth2 = gapi.auth2.init()
-      auth2.isSignedIn.listen(async signed => {
-        if (signed) {
+      gapi.signin2.render('g-signin2', {
+        onsuccess: async () => {
           const gUser = auth2.currentUser.get()
           await gSignUp(gUser)
           auth2.signOut()
@@ -90,7 +90,7 @@ export default () => {
         <p>
           <button onClick={submit}>Confirmar</button>
         </p>
-        <div className='g-signin2' />
+        <div id='g-signin2' />
       </div>
     </>
   )
