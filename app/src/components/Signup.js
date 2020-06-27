@@ -32,9 +32,8 @@ export default () => {
 
   useEffect(() => {
     async function gSignUp (gUser) {
+      const idToken = gUser.getAuthResponse().id_token
       const prof = gUser.getBasicProfile()
-      const name = prof.getName()
-      const email = prof.getEmail()
       const imageUrl = prof.getImageUrl()
 
       const resp = await fetch(imageUrl)
@@ -44,7 +43,7 @@ export default () => {
         headers: {
           'Content-type': 'application/json'
         },
-        body: JSON.stringify({ name, email })
+        body: JSON.stringify({ idToken })
       })
       if (res.status === 200) {
         const user = await res.json()
