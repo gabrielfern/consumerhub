@@ -23,6 +23,9 @@ export default () => {
         const buffer = await image.arrayBuffer()
         await fetch(`/api/users/${user.id}/image`, {
           method: 'POST',
+          headers: {
+            'Content-type': 'application/octet-stream'
+          },
           body: buffer
         })
       }
@@ -49,6 +52,9 @@ export default () => {
         const user = await res.json()
         await fetch(`/api/users/${user.id}/image`, {
           method: 'POST',
+          headers: {
+            'Content-type': 'application/octet-stream'
+          },
           body: buff
         })
         history.push(`/${user.id}`)
