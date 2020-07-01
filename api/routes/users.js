@@ -1,9 +1,12 @@
-const router = require('express').Router()
+const express = require('express')
+const router = express.Router()
 const { User } = require('../models')
 const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client()
 const clientId = process.env.GOOGLE_CLIENT_ID ||
   require('../env.json').googleClientId
+
+router.use('/:id/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.post('/', async (req, res) => {
   try {
@@ -48,31 +51,13 @@ router.get('/:id/image', async (req, res) => {
   }
 })
 
-router.post('/:id/image', (req, res) => {
-  const sizeLimit = 5e6
-  let exceededLimit = false
-  let image = Buffer.from([])
-
-  req.on('data', data => {
-    if (image.length + data.length <= sizeLimit) {
-      image = Buffer.concat([image, data])
-    } else if (!exceededLimit) {
-      exceededLimit = true
-    }
-  })
-
-  req.on('end', async () => {
-    try {
-      if (!exceededLimit) {
-        await User.update({ image }, { where: { id: req.params.id } })
-        res.end()
-      } else {
-        res.status(413).end()
-      }
-    } catch {
-      res.status(500).end()
-    }
-  })
+router.post('/:id/image', async (req, res) => {
+  try {
+    await User.update({ image: req.body }, { where: { id: req.params.id } })
+    res.end()
+  } catch {
+    res.status(500).end()
+  }
 })
 
 module.exports = router
