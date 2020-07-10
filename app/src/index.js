@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import * as serviceWorker from './serviceWorker'
 import Signup from './components/Signup'
 import Profile from './components/Profile'
+import Signin from './components/Signin'
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,9 +15,12 @@ ReactDOM.render(
     <Router>
       <Switch>
         <Route exact path='/'>
+          <Signin />
+        </Route>
+        <Route path='/signup'>
           <Signup />
         </Route>
-        <Route path='/:id'>
+        <Route path='/profile'>
           <Profile />
         </Route>
       </Switch>
