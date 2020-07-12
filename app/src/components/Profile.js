@@ -1,10 +1,10 @@
 /* global fetch, localStorage */
 import React, { useState, useEffect } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 export default () => {
-  const { id } = useParams()
   const history = useHistory()
+  const [id, setId] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
 
@@ -17,11 +17,12 @@ export default () => {
           }
         })
         const user = await res.json()
+        setId(user.id)
         setName(user.name)
         setEmail(user.email)
       } catch {}
     })()
-  }, [id])
+  }, [])
 
   function logout () {
     delete localStorage.token
@@ -33,21 +34,15 @@ export default () => {
       <div>
         <h1>Perfil de usuário</h1>
         <p><button onClick={logout}>Deslogar</button></p>
+        <p><b>Id:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
         <p><b>Email:</b> {email}</p>
       </div>
       <div>
         <br />
         <img
-          src={`/api/users/${id}/image`} alt='imagem de usuário'
+          src={`/api/users/image/${id}`} alt='imagem de usuário'
           style={{ display: 'block', maxWidth: '100%' }}
-          onError={() => {
-            fetch('/api/users/image', {
-              headers: { token: localStorage.token }
-            }).then(r => r.blob()).then(d => {
-              document.getElementsByTagName('img')[0].src = window.URL.createObjectURL(d)
-            })
-          }}
         />
       </div>
     </>

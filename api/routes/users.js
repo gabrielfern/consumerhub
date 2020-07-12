@@ -4,15 +4,28 @@ const { User } = require('../models')
 const { OAuth2Client } = require('google-auth-library')
 const auth = require('./auth')
 const jwt = require('jsonwebtoken')
+const RandExp = require('randexp')
 const client = new OAuth2Client()
 const clientId = process.env.GOOGLE_CLIENT_ID ||
   require('../env.json').googleClientId
 const secret = process.env.SECRET ||
   require('../env.json').secret
+const idGen = new RandExp(/[a-zA-Z0-9]{8}/)
 
 router.get('/', auth.auth)
-router.use('/image', auth.auth)
-router.use('/image', express.raw({ limit: 5e6, type: '*/*' }))
+router.post('/image', auth.auth)
+router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
+
+router.get('/', async (req, res) => {
+  try {
+    const user = await User.findOne({
+      attributes: ['id', 'name', 'email'], where: { email: req.auth.email }
+    })
+    res.send(user)
+  } catch {
+    res.status(500).end()
+  }
+})
 
 router.post('/', async (req, res) => {
   try {
@@ -24,8 +37,9 @@ router.post('/', async (req, res) => {
       req.body.name = payload.name
       req.body.email = payload.email
     }
+    req.body.id = idGen.gen()
     const user = await User.create(req.body, {
-      fields: ['name', 'email', 'password']
+      fields: ['id', 'name', 'email', 'password']
     })
     res.send({ token: jwt.sign({ email: user.email }, secret) })
   } catch {
@@ -33,21 +47,10 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.get('/', async (req, res) => {
+router.get('/image/:userId', async (req, res) => {
   try {
     const user = await User.findOne({
-      attributes: ['name', 'email'], where: { email: req.auth.email }
-    })
-    res.send(user)
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.get('/image', async (req, res) => {
-  try {
-    const user = await User.findOne({
-      attributes: ['image'], where: { email: req.auth.email }
+      attributes: ['image'], where: { id: req.params.userId }
     })
     res.set('Content-Type', 'image')
     res.send(user.image)
