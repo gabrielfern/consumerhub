@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { User } = require('../models')
 const { OAuth2Client } = require('google-auth-library')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const client = new OAuth2Client()
 const clientId = process.env.GOOGLE_CLIENT_ID ||
   require('../env.json').googleClientId
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
       })
       const payload = ticket.getPayload()
       const user = await User.findOne({
-        attributes: ['email', 'password'], where: { email: payload.email }
+        attributes: ['email'], where: { email: payload.email }
       })
       if (user) {
         res.send({ token: jwt.sign({ email: user.email }, secret) })
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
       const user = await User.findOne({
         attributes: ['email', 'password'], where: { email: req.body.email }
       })
-      if (req.body.password === user.password) {
+      if (await bcrypt.compare(req.body.password, user.password)) {
         res.send({ token: jwt.sign({ email: user.email }, secret) })
       } else {
         res.status(401).end()
