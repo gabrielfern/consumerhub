@@ -1,13 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const { User } = require('../models')
-const { OAuth2Client } = require('google-auth-library')
 const auth = require('./auth')
 const jwt = require('jsonwebtoken')
 const RandExp = require('randexp')
-const client = new OAuth2Client()
-const clientId = process.env.GOOGLE_CLIENT_ID ||
-  require('../env.json').googleClientId
 const secret = process.env.SECRET ||
   require('../env.json').secret
 const idGen = new RandExp(/[a-zA-Z0-9]{8}/)
@@ -29,14 +25,6 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    if (req.body.idToken) {
-      const ticket = await client.verifyIdToken({
-        idToken: req.body.idToken, audience: clientId
-      })
-      const payload = ticket.getPayload()
-      req.body.name = payload.name
-      req.body.email = payload.email
-    }
     req.body.id = idGen.gen()
     const user = await User.create(req.body, {
       fields: ['id', 'name', 'email', 'password']

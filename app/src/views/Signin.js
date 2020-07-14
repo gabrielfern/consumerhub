@@ -25,16 +25,35 @@ export default () => {
   useEffect(() => {
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
-      const res = await fetch('/api/auth', {
+
+      const res = await fetch('/api/auth/google', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
         },
         body: JSON.stringify({ idToken })
       })
+
       if (res.status === 200) {
         const { token } = await res.json()
         localStorage.token = token
+        history.push('/profile')
+      } else if (res.status === 201) {
+        const { token } = await res.json()
+        localStorage.token = token
+
+        const imageUrl = gUser.getBasicProfile().getImageUrl()
+        const resp = await fetch(imageUrl)
+        const buff = await resp.arrayBuffer()
+        await fetch('/api/users/image', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/octet-stream',
+            token: token
+          },
+          body: buff
+        })
+
         history.push('/profile')
       }
     }
