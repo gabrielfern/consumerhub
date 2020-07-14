@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import * as serviceWorker from './serviceWorker'
-import Signup from './components/Signup'
-import Profile from './components/Profile'
-import Signin from './components/Signin'
+import Signup from './views/Signup'
+import Profile from './views/Profile'
+import Signin from './views/Signin'
 import {
   BrowserRouter as Router,
   Switch,
