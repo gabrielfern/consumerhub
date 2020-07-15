@@ -1,6 +1,7 @@
 /* global fetch, gapi, localStorage */
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { authUser, gauthUser, uploadUserImage } from '../services/api'
 
 export default () => {
   const history = useHistory()
@@ -8,15 +9,8 @@ export default () => {
   const [password, setPassword] = useState('')
 
   async function submit () {
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    })
-    if (res.status === 200) {
-      const { token } = await res.json()
+    const token = await authUser(email, password)
+    if (token) {
       localStorage.token = token
       history.push('/profile')
     }
@@ -25,35 +19,14 @@ export default () => {
   useEffect(() => {
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
-
-      const res = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ idToken })
-      })
-
-      if (res.status === 200) {
-        const { token } = await res.json()
+      const { token, isNewUser } = await gauthUser(idToken)
+      if (token) {
         localStorage.token = token
-        history.push('/profile')
-      } else if (res.status === 201) {
-        const { token } = await res.json()
-        localStorage.token = token
-
-        const imageUrl = gUser.getBasicProfile().getImageUrl()
-        const resp = await fetch(imageUrl)
-        const buff = await resp.arrayBuffer()
-        await fetch('/api/users/image', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/octet-stream',
-            token: token
-          },
-          body: buff
-        })
-
+        if (isNewUser) {
+          const imageUrl = gUser.getBasicProfile().getImageUrl()
+          const resp = await fetch(imageUrl)
+          await uploadUserImage(await resp.arrayBuffer())
+        }
         history.push('/profile')
       }
     }

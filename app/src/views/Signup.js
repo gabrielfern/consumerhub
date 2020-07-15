@@ -1,6 +1,7 @@
-/* global fetch, localStorage */
+/* global localStorage */
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { createUser, uploadUserImage } from '../services/api'
 
 export default () => {
   const history = useHistory()
@@ -10,27 +11,12 @@ export default () => {
   const [image, setImage] = useState({})
 
   async function submit () {
-    const res = await fetch('/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({ name, email, password })
-    })
-    if (res.status === 200) {
-      const { token } = await res.json()
-      if (image && image.size > 0) {
-        const buffer = await image.arrayBuffer()
-        await fetch('/api/users/image', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/octet-stream',
-            token: token
-          },
-          body: buffer
-        })
-      }
+    const token = await createUser({ name, email, password })
+    if (token) {
       localStorage.token = token
+      if (image) {
+        await uploadUserImage(await image.arrayBuffer())
+      }
       history.push('/profile')
     }
   }

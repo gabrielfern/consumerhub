@@ -1,6 +1,7 @@
-/* global fetch, localStorage */
+/* global localStorage */
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { getUser } from '../services/api'
 
 export default () => {
   const history = useHistory()
@@ -11,12 +12,7 @@ export default () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/users', {
-          headers: {
-            token: localStorage.token
-          }
-        })
-        const user = await res.json()
+        const user = await getUser()
         setId(user.id)
         setName(user.name)
         setEmail(user.email)
