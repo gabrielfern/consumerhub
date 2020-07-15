@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
+const RandExp = require('randexp')
 const saltRounds = 10
+const idGen = new RandExp(/[a-zA-Z0-9]{8}/)
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -10,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {})
 
   User.beforeCreate(async user => {
+    user.id = idGen.gen()
     if (user.password !== undefined) {
       const hash = await bcrypt.hash(user.password, saltRounds)
       user.password = hash

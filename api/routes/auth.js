@@ -3,18 +3,17 @@ const { User } = require('../models')
 const { OAuth2Client } = require('google-auth-library')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const RandExp = require('randexp')
 const client = new OAuth2Client()
 const clientId = process.env.GOOGLE_CLIENT_ID ||
   require('../env.json').googleClientId
 const secret = process.env.SECRET ||
   require('../env.json').secret
-const idGen = new RandExp(/[a-zA-Z0-9]{8}/)
 
 router.post('/', async (req, res) => {
   try {
     const user = await User.findOne({
-      attributes: ['email', 'password'], where: { email: req.body.email }
+      attributes: ['email', 'password'],
+      where: { email: req.body.email }
     })
     if (await bcrypt.compare(req.body.password, user.password)) {
       res.send({ token: jwt.sign({ email: user.email }, secret) })
@@ -33,17 +32,17 @@ router.post('/google', async (req, res) => {
     })
     const payload = ticket.getPayload()
     const user = await User.findOne({
-      attributes: ['email', 'password'], where: { email: payload.email }
+      attributes: ['email', 'password'],
+      where: { email: payload.email }
     })
     if (user) {
       res.send({ token: jwt.sign({ email: user.email }, secret) })
     } else {
-      const newUser = {
-        id: idGen.gen(), name: payload.name, email: payload.email
-      }
-      await User.create(newUser)
+      await User.create({
+        name: payload.name, email: payload.email
+      })
       res.status(201).send({
-        token: jwt.sign({ email: newUser.email }, secret)
+        token: jwt.sign({ email: payload.email }, secret)
       })
     }
   } catch {
