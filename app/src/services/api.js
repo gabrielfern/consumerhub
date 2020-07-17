@@ -60,3 +60,8 @@ export async function gauthUser (idToken) {
     return { token, isNewUser }
   }
 }
+
+export async function getProduct (productId) {
+  const res = await fetch(`/api/products/${productId}`)
+  return res.json()
+}

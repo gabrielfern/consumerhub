@@ -4,6 +4,7 @@ import * as serviceWorker from './serviceWorker'
 import Signup from './views/Signup'
 import Profile from './views/Profile'
 import Signin from './views/Signin'
+import Product from './views/Product'
 import {
   BrowserRouter as Router,
   Switch,
@@ -22,6 +23,9 @@ ReactDOM.render(
         </Route>
         <Route path='/profile'>
           <Profile />
+        </Route>
+        <Route path='/product/:productId'>
+          <Product />
         </Route>
       </Switch>
     </Router>
