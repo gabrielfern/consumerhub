@@ -47,7 +47,10 @@ export default () => {
     <>
       <div>
         <h1>Logue</h1>
-        <p><button onClick={() => history.push('/signup')}>Cadastrar</button></p>
+        <p>
+          <button onClick={() => history.push('/signup')}>Cadastrar</button>
+          <button onClick={() => history.push('/products')}>Produtos</button>
+        </p>
         <p>
           <span><b>Email </b></span>
           <input type='text' value={email} onChange={e => setEmail(e.target.value)} />

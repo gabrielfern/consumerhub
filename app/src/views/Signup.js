@@ -25,7 +25,10 @@ export default () => {
     <>
       <div>
         <h1>Inscreva-se</h1>
-        <p><button onClick={() => history.push('/')}>Logar</button></p>
+        <p>
+          <button onClick={() => history.push('/')}>Logar</button>
+          <button onClick={() => history.push('/products')}>Produtos</button>
+        </p>
         <p>
           <span><b>Nome </b></span>
           <input type='text' value={name} onChange={e => setName(e.target.value)} />

@@ -25,7 +25,7 @@ export default () => {
         <h1>Produto</h1>
         <p><b>ID:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
-        <p><b>Description:</b> {description}</p>
+        <p><b>Descrição:</b> {description}</p>
       </div>
       <div>
         <br />

@@ -29,7 +29,10 @@ export default () => {
     <>
       <div>
         <h1>Perfil de usuário</h1>
-        <p><button onClick={logout}>Deslogar</button></p>
+        <p>
+          <button onClick={logout}>Deslogar</button>
+          <button onClick={() => history.push('/products')}>Produtos</button>
+        </p>
         <p><b>ID:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
         <p><b>Email:</b> {email}</p>

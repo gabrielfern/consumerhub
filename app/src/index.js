@@ -5,6 +5,7 @@ import Signup from './views/Signup'
 import Profile from './views/Profile'
 import Signin from './views/Signin'
 import Product from './views/Product'
+import ProductList from './views/ProductList'
 import {
   BrowserRouter as Router,
   Switch,
@@ -26,6 +27,9 @@ ReactDOM.render(
         </Route>
         <Route path='/product/:productId'>
           <Product />
+        </Route>
+        <Route path='/products'>
+          <ProductList />
         </Route>
       </Switch>
     </Router>
