@@ -10,11 +10,15 @@ export default () => {
   const [password, setPassword] = useState('')
   const [image, setImage] = useState({})
 
+  if (localStorage.token) {
+    history.push('/profile')
+  }
+
   async function submit () {
     const token = await createUser({ name, email, password })
     if (token) {
       localStorage.token = token
-      if (image) {
+      if (image && image.size > 0) {
         await uploadUserImage(await image.arrayBuffer())
       }
       history.push('/profile')

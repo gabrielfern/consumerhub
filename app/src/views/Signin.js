@@ -8,6 +8,10 @@ export default () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  if (localStorage.token) {
+    history.push('/profile')
+  }
+
   async function submit () {
     const token = await authUser(email, password)
     if (token) {

@@ -6,6 +6,7 @@ import Profile from './views/Profile'
 import Signin from './views/Signin'
 import Product from './views/Product'
 import ProductList from './views/ProductList'
+import CreateProduct from './views/CreateProduct'
 import {
   BrowserRouter as Router,
   Switch,
@@ -19,17 +20,20 @@ ReactDOM.render(
         <Route exact path='/'>
           <Signin />
         </Route>
-        <Route path='/signup'>
+        <Route exact path='/signup'>
           <Signup />
         </Route>
-        <Route path='/profile'>
+        <Route exact path='/profile'>
           <Profile />
         </Route>
-        <Route path='/product/:productId'>
+        <Route exact path='/product/:productId'>
           <Product />
         </Route>
-        <Route path='/products'>
+        <Route exact path='/products'>
           <ProductList />
+        </Route>
+        <Route exact path='/products/new'>
+          <CreateProduct />
         </Route>
       </Switch>
     </Router>

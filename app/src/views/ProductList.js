@@ -23,7 +23,7 @@ export default () => {
           (localStorage.token &&
             <p>
               <button onClick={() => history.push('/profile')}>Perfil de usuário</button>
-              <button onClick={() => history.push('/products')}>Criar produto</button>
+              <button onClick={() => history.push('/products/new')}>Criar produto</button>
             </p>) ||
               <p>
                 <button onClick={() => history.push('/signup')}>Cadastrar</button>

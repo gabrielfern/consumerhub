@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { getProduct } from '../services/api'
 
 export default () => {
+  const history = useHistory()
   const { productId } = useParams()
   const [id, setId] = useState('')
   const [name, setName] = useState('')
@@ -23,6 +24,9 @@ export default () => {
     <>
       <div>
         <h1>Produto</h1>
+        <p>
+          <button onClick={() => history.push('/products')}>Produtos</button>
+        </p>
         <p><b>ID:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
         <p><b>Descrição:</b> {description}</p>

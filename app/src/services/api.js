@@ -70,3 +70,26 @@ export async function getProducts () {
   const res = await fetch('/api/products')
   return res.json()
 }
+
+export async function createProduct (product) {
+  const res = await fetch('/api/products', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(product)
+  })
+  if (res.status === 200) {
+    return await res.json()
+  }
+}
+
+export async function uploadProductImage (productId, imageNumber, buffer) {
+  await fetch(`/api/products/image/${productId}/${imageNumber}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/octet-stream'
+    },
+    body: buffer
+  })
+}
