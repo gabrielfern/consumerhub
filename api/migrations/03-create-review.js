@@ -1,39 +1,64 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Reviews', {
-      text: {
-        type: Sequelize.STRING
-      },
-      rating: {
-        type: Sequelize.ENUM('1', '2', '3', '4', '5')
-      },
-      user: {
-        type: Sequelize.STRING,
-        primaryKey: true,
-        references: {
-          model: 'Users',
-          key: 'id'
+  async up (queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction()
+    try {
+      await queryInterface.createTable('Reviews', {
+        id: {
+          type: Sequelize.STRING,
+          primaryKey: true
+        },
+        text: {
+          type: Sequelize.STRING
+        },
+        rating: {
+          type: Sequelize.ENUM('1', '2', '3', '4', '5'),
+          allowNull: false
+        },
+        user: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          references: {
+            model: 'Users',
+            key: 'id'
+          }
+        },
+        product: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          references: {
+            model: 'Products',
+            key: 'id'
+          }
+        },
+        createdAt: {
+          allowNull: false,
+          type: Sequelize.DATE
+        },
+        updatedAt: {
+          allowNull: false,
+          type: Sequelize.DATE
         }
-      },
-      product: {
-        type: Sequelize.STRING,
-        primaryKey: true,
-        references: {
-          model: 'Products',
-          key: 'id'
+      }, { transaction })
+      await queryInterface.addIndex(
+        'Reviews',
+        ['user', 'product'],
+        {
+          unique: true,
+          transaction
         }
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+      )
+      await transaction.commit()
+    } catch {
+      await transaction.rollback()
+    }
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Reviews')
+  async down (queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction()
+    try {
+      await queryInterface.dropTable('Reviews', { transaction })
+      await transaction.commit()
+    } catch {
+      await transaction.rollback()
+    }
   }
 }

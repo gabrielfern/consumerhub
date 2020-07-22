@@ -18,4 +18,36 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    res.send(await Review.findOne({
+      where: { id: req.params.id }
+    }))
+  } catch {
+    res.status(500).end()
+  }
+})
+
+router.put('/:id', async (req, res) => {
+  try {
+    await Review.update(req.body, {
+      where: { id: req.params.id }
+    })
+    res.end()
+  } catch {
+    res.status(500).end()
+  }
+})
+
+router.delete('/:id', async (req, res) => {
+  try {
+    await Review.destroy({
+      where: { id: req.params.id }
+    })
+    res.end()
+  } catch {
+    res.status(500).end()
+  }
+})
+
 module.exports = router
