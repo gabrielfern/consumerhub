@@ -35,6 +35,17 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id, {
+      attributes: ['id', 'name']
+    })
+    res.send(user)
+  } catch {
+    res.status(500).end()
+  }
+})
+
 router.get('/:id/image', async (req, res) => {
   try {
     const user = await User.findOne({

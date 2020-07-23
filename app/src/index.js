@@ -9,6 +9,7 @@ import ProductList from './views/ProductList'
 import CreateProduct from './views/CreateProduct'
 import Review from './views/Review'
 import CreateReview from './views/CreateReview'
+import User from './views/User'
 import {
   BrowserRouter as Router,
   Switch,
@@ -42,6 +43,9 @@ ReactDOM.render(
         </Route>
         <Route exact path='/product/:productId/newReview'>
           <CreateReview />
+        </Route>
+        <Route exact path='/user/:userId'>
+          <User />
         </Route>
       </Switch>
     </Router>

@@ -9,6 +9,11 @@ export async function getUser () {
   return res.json()
 }
 
+export async function getUserById (id) {
+  const res = await fetch(`/api/users/${id}`)
+  return res.json()
+}
+
 export async function createUser (user) {
   const res = await fetch('/api/users', {
     method: 'POST',

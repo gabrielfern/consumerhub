@@ -34,7 +34,7 @@ export default () => {
         <p><b>ID:</b> {id}</p>
         <p><b>Texto:</b> {text}</p>
         <p><b>Nota:</b> {rating}</p>
-        <p><b>ID do usuário:</b> {userId}</p>
+        <p><b>ID do usuário:</b> <Link to={`/user/${userId}`}>{userId}</Link></p>
         <p><b>ID do produto:</b> <Link to={`/product/${productId}`}>{productId}</Link></p>
       </div>
     </>
