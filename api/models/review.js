@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('1', '2', '3', '4', '5'),
       allowNull: false
     },
-    user: {
+    userId: {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    product: {
+    productId: {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
@@ -42,10 +42,19 @@ module.exports = (sequelize, DataTypes) => {
     indexes: [
       {
         unique: true,
-        fields: ['user', 'product']
+        fields: ['userId', 'productId']
       }
     ]
   })
+
+  Review.associate = function (models) {
+    Review.belongsTo(models.User, {
+      foreignKey: 'userId'
+    })
+    Review.belongsTo(models.Product, {
+      foreignKey: 'productId'
+    })
+  }
 
   Review.beforeCreate(async review => {
     review.id = idGen.gen()

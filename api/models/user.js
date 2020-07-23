@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.BLOB
   }, {})
 
+  User.associate = function (models) {
+    User.hasMany(models.Review, {
+      foreignKey: 'userId'
+    })
+  }
+
   User.beforeCreate(async user => {
     user.id = idGen.gen()
     if (user.password !== undefined) {

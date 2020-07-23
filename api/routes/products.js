@@ -83,4 +83,13 @@ router.post('/image/:productId/:imageNumber', async (req, res) => {
   }
 })
 
+router.get('/:id/reviews', async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id)
+    res.send(await product.getReviews())
+  } catch {
+    res.status(500).end()
+  }
+})
+
 module.exports = router

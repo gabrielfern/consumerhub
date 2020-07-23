@@ -14,7 +14,7 @@ module.exports = {
           type: Sequelize.ENUM('1', '2', '3', '4', '5'),
           allowNull: false
         },
-        user: {
+        userId: {
           type: Sequelize.STRING,
           allowNull: false,
           references: {
@@ -22,7 +22,7 @@ module.exports = {
             key: 'id'
           }
         },
-        product: {
+        productId: {
           type: Sequelize.STRING,
           allowNull: false,
           references: {
@@ -41,15 +41,16 @@ module.exports = {
       }, { transaction })
       await queryInterface.addIndex(
         'Reviews',
-        ['user', 'product'],
+        ['userId', 'productId'],
         {
           unique: true,
           transaction
         }
       )
       await transaction.commit()
-    } catch {
+    } catch (err) {
       await transaction.rollback()
+      throw err
     }
   },
   async down (queryInterface, Sequelize) {

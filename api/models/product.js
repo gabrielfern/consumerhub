@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     image5: DataTypes.BLOB
   }, {})
 
+  Product.associate = function (models) {
+    Product.hasMany(models.Review, {
+      foreignKey: 'productId'
+    })
+  }
+
   Product.beforeCreate(async product => {
     product.id = idGen.gen()
   })
