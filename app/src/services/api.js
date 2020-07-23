@@ -93,3 +93,26 @@ export async function uploadProductImage (productId, imageNumber, buffer) {
     body: buffer
   })
 }
+
+export async function getReview (reviewId) {
+  const res = await fetch(`/api/reviews/${reviewId}`)
+  return res.json()
+}
+
+export async function getProductReviews (productId) {
+  const res = await fetch(`/api/products/${productId}/reviews`)
+  return res.json()
+}
+
+export async function createReview (review) {
+  const res = await fetch('/api/reviews', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(review)
+  })
+  if (res.status === 200) {
+    return await res.json()
+  }
+}

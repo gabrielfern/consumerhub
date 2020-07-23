@@ -7,6 +7,8 @@ import Signin from './views/Signin'
 import Product from './views/Product'
 import ProductList from './views/ProductList'
 import CreateProduct from './views/CreateProduct'
+import Review from './views/Review'
+import CreateReview from './views/CreateReview'
 import {
   BrowserRouter as Router,
   Switch,
@@ -34,6 +36,12 @@ ReactDOM.render(
         </Route>
         <Route exact path='/products/new'>
           <CreateProduct />
+        </Route>
+        <Route exact path='/review/:reviewId'>
+          <Review />
+        </Route>
+        <Route exact path='/product/:productId/newReview'>
+          <CreateReview />
         </Route>
       </Switch>
     </Router>
