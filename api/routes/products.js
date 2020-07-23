@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { Product } = require('../models')
 
-router.post('/image/:productId/:imageNumber', express.raw({
+router.post('/:id/image/:imageNumber', express.raw({
   limit: 5e6, type: '*/*'
 }))
 
@@ -57,12 +57,12 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-router.get('/image/:productId/:imageNumber', async (req, res) => {
+router.get('/:id/image/:imageNumber', async (req, res) => {
   try {
     const imageNumber = `image${req.params.imageNumber}`
     const product = await Product.findOne({
       attributes: [imageNumber],
-      where: { id: req.params.productId }
+      where: { id: req.params.id }
     })
     res.set('Content-Type', 'image')
     res.send(product[imageNumber])
@@ -71,11 +71,11 @@ router.get('/image/:productId/:imageNumber', async (req, res) => {
   }
 })
 
-router.post('/image/:productId/:imageNumber', async (req, res) => {
+router.post('/:id/image/:imageNumber', async (req, res) => {
   try {
     const imageNumber = `image${req.params.imageNumber}`
     await Product.update({ [imageNumber]: req.body }, {
-      where: { id: req.params.productId }
+      where: { id: req.params.id }
     })
     res.end()
   } catch {

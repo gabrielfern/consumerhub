@@ -35,10 +35,10 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.get('/image/:userId', async (req, res) => {
+router.get('/:id/image', async (req, res) => {
   try {
     const user = await User.findOne({
-      attributes: ['image'], where: { id: req.params.userId }
+      attributes: ['image'], where: { id: req.params.id }
     })
     res.set('Content-Type', 'image')
     res.send(user.image)

@@ -40,7 +40,7 @@ export default () => {
       <div>
         <br />
         <img
-          src={`/api/users/image/${id}`} alt='imagem de usuário'
+          src={`/api/users/${id}/image`} alt='imagem de usuário'
           style={{ display: 'block', maxWidth: '100%' }}
         />
       </div>

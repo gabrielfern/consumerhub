@@ -34,27 +34,27 @@ export default () => {
       <div>
         <br />
         <img
-          src={`/api/products/image/${id}/1`} alt='imagem de produto 1'
+          src={`/api/products/${id}/image/1`} alt='imagem de produto 1'
           style={{ display: 'block', maxWidth: '100%' }}
         />
         <br />
         <img
-          src={`/api/products/image/${id}/2`} alt='imagem de produto 2'
+          src={`/api/products/${id}/image/2`} alt='imagem de produto 2'
           style={{ display: 'block', maxWidth: '100%' }}
         />
         <br />
         <img
-          src={`/api/products/image/${id}/3`} alt='imagem de produto 3'
+          src={`/api/products/${id}/image/3`} alt='imagem de produto 3'
           style={{ display: 'block', maxWidth: '100%' }}
         />
         <br />
         <img
-          src={`/api/products/image/${id}/4`} alt='imagem de produto 4'
+          src={`/api/products/${id}/image/4`} alt='imagem de produto 4'
           style={{ display: 'block', maxWidth: '100%' }}
         />
         <br />
         <img
-          src={`/api/products/image/${id}/5`} alt='imagem de produto 5'
+          src={`/api/products/${id}/image/5`} alt='imagem de produto 5'
           style={{ display: 'block', maxWidth: '100%' }}
         />
       </div>

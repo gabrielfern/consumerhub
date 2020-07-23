@@ -85,7 +85,7 @@ export async function createProduct (product) {
 }
 
 export async function uploadProductImage (productId, imageNumber, buffer) {
-  await fetch(`/api/products/image/${productId}/${imageNumber}`, {
+  await fetch(`/api/products/${productId}/image/${imageNumber}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/octet-stream'
