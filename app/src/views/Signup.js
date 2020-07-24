@@ -26,33 +26,42 @@ export default () => {
   }
 
   return (
-    <>
-      <div>
-        <h1>Inscreva-se</h1>
-        <p>
-          <button onClick={() => history.push('/')}>Logar</button>
-          <button onClick={() => history.push('/products')}>Produtos</button>
-        </p>
-        <p>
-          <span><b>Nome </b></span>
-          <input type='text' value={name} onChange={e => setName(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Email </b></span>
-          <input type='text' value={email} onChange={e => setEmail(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Senha </b></span>
-          <input type='password' value={password} onChange={e => setPassword(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Imagem </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage(e.target.files[0])} />
-        </p>
-        <p>
-          <button onClick={submit}>Confirmar</button>
-        </p>
+    <div className='container my-3'>
+      <h1>Inscreva-se</h1>
+      <p>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/')}>Logar</button>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
+      </p>
+      <p>
+        <span><b>Nome </b></span>
+        <input className='form-control' type='text' value={name} onChange={e => setName(e.target.value)} />
+      </p>
+      <p>
+        <span><b>Email </b></span>
+        <input className='form-control' type='text' value={email} onChange={e => setEmail(e.target.value)} />
+      </p>
+      <p>
+        <span><b>Senha </b></span>
+        <input className='form-control' type='password' value={password} onChange={e => setPassword(e.target.value)} />
+      </p>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel = document.getElementById('fileLabel')
+            if (e.target.files[0]) {
+              fileLabel.innerText = e.target.files[0].name
+            } else {
+              fileLabel.innerText = 'Escolha a imagem'
+            }
+            setImage(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel' className='custom-file-label'>Escolha a imagem</label>
       </div>
-    </>
+      <p>
+        <button className='btn btn-primary m-2' onClick={submit}>Confirmar</button>
+      </p>
+    </div>
   )
 }

@@ -18,19 +18,19 @@ export default () => {
   }, [userId])
 
   return (
-    <>
+    <div className='container my-3'>
       <div>
         <h1>Perfil de usuário</h1>
         <p><b>ID:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
       </div>
       <div>
-        <br />
-        <img
-          src={`/api/users/${id}/image`} alt='imagem de usuário'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
+        {id &&
+          <img
+            src={`/api/users/${id}/image`} alt='imagem de usuário'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
       </div>
-    </>
+    </div>
   )
 }

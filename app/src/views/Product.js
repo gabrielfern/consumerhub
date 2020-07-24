@@ -23,44 +23,47 @@ export default () => {
   }, [productId])
 
   return (
-    <>
+    <div className='container my-3'>
       <div>
         <h1>Produto</h1>
         <p>
-          <button onClick={() => history.push('/products')}>Produtos</button>
-          <button onClick={() => history.push(`/product/${id}/newReview`)}>Avaliar</button>
+          <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
+          <button className='btn btn-secondary m-2' onClick={() => history.push(`/product/${id}/newReview`)}>Avaliar</button>
         </p>
         <p><b>ID:</b> {id}</p>
         <p><b>Nome:</b> {name}</p>
         <p><b>Descrição:</b> {description}</p>
       </div>
-      <div>
+      <div className='my-3'>
+        {id &&
+          <img
+            src={`/api/products/${id}/image/1`} alt='imagem de produto 1'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
         <br />
-        <img
-          src={`/api/products/${id}/image/1`} alt='imagem de produto 1'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
+        {id &&
+          <img
+            src={`/api/products/${id}/image/2`} alt='imagem de produto 2'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
         <br />
-        <img
-          src={`/api/products/${id}/image/2`} alt='imagem de produto 2'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
+        {id &&
+          <img
+            src={`/api/products/${id}/image/3`} alt='imagem de produto 3'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
         <br />
-        <img
-          src={`/api/products/${id}/image/3`} alt='imagem de produto 3'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
+        {id &&
+          <img
+            src={`/api/products/${id}/image/4`} alt='imagem de produto 4'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
         <br />
-        <img
-          src={`/api/products/${id}/image/4`} alt='imagem de produto 4'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
-        <br />
-        <img
-          src={`/api/products/${id}/image/5`} alt='imagem de produto 5'
-          style={{ display: 'block', maxWidth: '100%' }}
-        />
-        <br />
+        {id &&
+          <img
+            src={`/api/products/${id}/image/5`} alt='imagem de produto 5'
+            style={{ display: 'block', maxWidth: '100%' }}
+          />}
       </div>
       <div>
         <h2>Avaliações</h2>
@@ -75,6 +78,6 @@ export default () => {
           )
         }
       </div>
-    </>
+    </div>
   )
 }

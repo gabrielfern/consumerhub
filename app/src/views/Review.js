@@ -25,18 +25,16 @@ export default () => {
   }, [reviewId])
 
   return (
-    <>
-      <div>
-        <h1>Avaliação</h1>
-        <p>
-          <button onClick={() => history.push('/products')}>Produtos</button>
-        </p>
-        <p><b>ID:</b> {id}</p>
-        <p><b>Texto:</b> {text}</p>
-        <p><b>Nota:</b> {rating}</p>
-        <p><b>ID do usuário:</b> <Link to={`/user/${userId}`}>{userId}</Link></p>
-        <p><b>ID do produto:</b> <Link to={`/product/${productId}`}>{productId}</Link></p>
-      </div>
-    </>
+    <div className='container my-3'>
+      <h1>Avaliação</h1>
+      <p>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
+      </p>
+      <p><b>ID:</b> {id}</p>
+      <p><b>Texto:</b> {text}</p>
+      <p><b>Nota:</b> {rating}</p>
+      <p><b>ID do usuário:</b> <Link to={`/user/${userId}`}>{userId}</Link></p>
+      <p><b>ID do produto:</b> <Link to={`/product/${productId}`}>{productId}</Link></p>
+    </div>
   )
 }

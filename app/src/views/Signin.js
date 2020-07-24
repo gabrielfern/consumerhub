@@ -48,26 +48,24 @@ export default () => {
   }, [history])
 
   return (
-    <>
-      <div>
-        <h1>Logue</h1>
-        <p>
-          <button onClick={() => history.push('/signup')}>Cadastrar</button>
-          <button onClick={() => history.push('/products')}>Produtos</button>
-        </p>
-        <p>
-          <span><b>Email </b></span>
-          <input type='text' value={email} onChange={e => setEmail(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Senha </b></span>
-          <input type='password' value={password} onChange={e => setPassword(e.target.value)} />
-        </p>
-        <p>
-          <button onClick={submit}>Entrar</button>
-        </p>
-        <div id='g-signin2' />
-      </div>
-    </>
+    <div className='container my-3'>
+      <h1>Logue</h1>
+      <p>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/signup')}>Cadastrar</button>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
+      </p>
+      <p>
+        <span><b>Email </b></span>
+        <input className='form-control' type='text' value={email} onChange={e => setEmail(e.target.value)} />
+      </p>
+      <p>
+        <span><b>Senha </b></span>
+        <input className='form-control' type='password' value={password} onChange={e => setPassword(e.target.value)} />
+      </p>
+      <p>
+        <button className='btn btn-primary m-2' onClick={submit}>Entrar</button>
+      </p>
+      <div id='g-signin2' />
+    </div>
   )
 }

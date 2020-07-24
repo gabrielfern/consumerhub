@@ -16,26 +16,24 @@ export default () => {
   }, [])
 
   return (
-    <>
-      <div>
-        <h1>Lista de Produtos</h1>
-        {
-          (localStorage.token &&
-            <p>
-              <button onClick={() => history.push('/profile')}>Perfil de usuário</button>
-              <button onClick={() => history.push('/products/new')}>Criar produto</button>
-            </p>) ||
-              <p>
-                <button onClick={() => history.push('/signup')}>Cadastrar</button>
-                <button onClick={() => history.push('/')}>Logar</button>
-              </p>
-        }
-        {products.map(product =>
-          <p key={product.id}>
-            <Link to={`/product/${product.id}`}>{product.name}</Link>
-          </p>
-        )}
-      </div>
-    </>
+    <div className='container my-3'>
+      <h1>Lista de Produtos</h1>
+      {
+        (localStorage.token &&
+          <div className='my-3'>
+            <button className='btn btn-secondary m-2' onClick={() => history.push('/profile')}>Perfil de usuário</button>
+            <button className='btn btn-secondary m-2' onClick={() => history.push('/products/new')}>Criar produto</button>
+          </div>) ||
+            <div className='my-3'>
+              <button className='btn btn-secondary m-2' onClick={() => history.push('/signup')}>Cadastrar</button>
+              <button className='btn btn-secondary m-2' onClick={() => history.push('/')}>Logar</button>
+            </div>
+      }
+      {products.map(product =>
+        <p key={product.id}>
+          <Link to={`/product/${product.id}`}>{product.name}</Link>
+        </p>
+      )}
+    </div>
   )
 }

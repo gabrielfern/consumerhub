@@ -35,44 +35,97 @@ export default () => {
   }
 
   return (
-    <>
-      <div>
-        <h1>Criar novo produto</h1>
-        <p>
-          <button onClick={() => history.push('/products')}>Produtos</button>
-        </p>
-        <p>
-          <span><b>Nome </b></span>
-          <input type='text' value={name} onChange={e => setName(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Descrição </b></span>
-          <input type='text' value={description} onChange={e => setDescription(e.target.value)} />
-        </p>
-        <p>
-          <span><b>Imagem 1 </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage1(e.target.files[0])} />
-        </p>
-        <p>
-          <span><b>Imagem 2 </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage2(e.target.files[0])} />
-        </p>
-        <p>
-          <span><b>Imagem 3 </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage3(e.target.files[0])} />
-        </p>
-        <p>
-          <span><b>Imagem 4 </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage4(e.target.files[0])} />
-        </p>
-        <p>
-          <span><b>Imagem 5 </b></span>
-          <input type='file' accept='image/*' onChange={e => setImage5(e.target.files[0])} />
-        </p>
-        <p>
-          <button onClick={submit}>Confirmar</button>
-        </p>
+    <div className='container my-3'>
+      <h1>Criar novo produto</h1>
+      <div className='my-3'>
+        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
       </div>
-    </>
+      <div className='my-3'>
+        <span><b>Nome </b></span>
+        <input className='form-control' type='text' value={name} onChange={e => setName(e.target.value)} />
+      </div>
+      <div className='my-3'>
+        <span><b>Descrição </b></span>
+        <input className='form-control' type='text' value={description} onChange={e => setDescription(e.target.value)} />
+      </div>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel1 = document.getElementById('fileLabel1')
+            if (e.target.files[0]) {
+              fileLabel1.innerText = e.target.files[0].name
+            } else {
+              fileLabel1.innerText = 'Escolha a imagem 1'
+            }
+            setImage1(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel1' className='custom-file-label'>Escolha a imagem 1</label>
+      </div>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel2 = document.getElementById('fileLabel2')
+            if (e.target.files[0]) {
+              fileLabel2.innerText = e.target.files[0].name
+            } else {
+              fileLabel2.innerText = 'Escolha a imagem 2'
+            }
+            setImage2(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel2' className='custom-file-label'>Escolha a imagem 2</label>
+      </div>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel3 = document.getElementById('fileLabel3')
+            if (e.target.files[0]) {
+              fileLabel3.innerText = e.target.files[0].name
+            } else {
+              fileLabel3.innerText = 'Escolha a imagem 3'
+            }
+            setImage3(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel3' className='custom-file-label'>Escolha a imagem 3</label>
+      </div>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel4 = document.getElementById('fileLabel4')
+            if (e.target.files[0]) {
+              fileLabel4.innerText = e.target.files[0].name
+            } else {
+              fileLabel4.innerText = 'Escolha a imagem 4'
+            }
+            setImage4(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel4' className='custom-file-label'>Escolha a imagem 4</label>
+      </div>
+      <div className='custom-file my-3'>
+        <input
+          type='file' className='custom-file-input'
+          onChange={e => {
+            const fileLabel5 = document.getElementById('fileLabel5')
+            if (e.target.files[0]) {
+              fileLabel5.innerText = e.target.files[0].name
+            } else {
+              fileLabel5.innerText = 'Escolha a imagem 5'
+            }
+            setImage5(e.target.files[0])
+          }}
+        />
+        <label id='fileLabel5' className='custom-file-label'>Escolha a imagem 5</label>
+      </div>
+      <div>
+        <button className='btn btn-primary m-2' onClick={submit}>Confirmar</button>
+      </div>
+    </div>
   )
 }
