@@ -113,7 +113,8 @@ export async function createReview (review) {
   const res = await fetch('/api/reviews', {
     method: 'POST',
     headers: {
-      'Content-type': 'application/json'
+      'Content-type': 'application/json',
+      token: localStorage.token
     },
     body: JSON.stringify(review)
   })
