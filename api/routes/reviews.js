@@ -1,6 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { Review } = require('../models')
+const { auth } = require('./auth')
+
+router.post('/', auth)
+router.put('/:id', auth)
+router.delete('/:id', auth)
 
 router.get('/', async (req, res) => {
   try {
@@ -12,7 +17,13 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    res.send(await Review.create(req.body))
+    const review = await Review.create({
+      text: req.body.text,
+      rating: req.body.rating,
+      userId: req.auth.id,
+      productId: req.body.productId
+    })
+    res.send(review)
   } catch {
     res.status(500).end()
   }
@@ -20,9 +31,12 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    res.send(await Review.findOne({
-      where: { id: req.params.id }
-    }))
+    const review = await Review.findByPk(req.params.id)
+    if (review) {
+      res.send(review)
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -30,10 +44,17 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    await Review.update(req.body, {
-      where: { id: req.params.id }
+    const result = await Review.update(req.body, {
+      fields: ['text', 'rating'],
+      where: {
+        id: req.params.id, userId: req.auth.id
+      }
     })
-    res.end()
+    if (result[0]) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -41,10 +62,14 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    await Review.destroy({
-      where: { id: req.params.id }
+    const result = await Review.destroy({
+      where: { id: req.params.id, userId: req.auth.id }
     })
-    res.end()
+    if (result) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }

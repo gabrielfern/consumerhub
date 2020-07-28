@@ -9,14 +9,19 @@ const clientId = process.env.GOOGLE_CLIENT_ID ||
 const secret = process.env.SECRET ||
   require('../env.json').secret
 
+function createUserToken (userId) {
+  const token = jwt.sign({ id: userId }, secret)
+  return token
+}
+
 router.post('/', async (req, res) => {
   try {
     const user = await User.findOne({
-      attributes: ['email', 'password'],
+      attributes: ['id', 'email', 'password'],
       where: { email: req.body.email }
     })
     if (await bcrypt.compare(req.body.password, user.password)) {
-      res.send({ token: jwt.sign({ email: user.email }, secret) })
+      res.send({ token: createUserToken(user.id) })
     } else {
       res.status(401).end()
     }
@@ -31,18 +36,23 @@ router.post('/google', async (req, res) => {
       idToken: req.body.idToken, audience: clientId
     })
     const payload = ticket.getPayload()
-    const user = await User.findOne({
-      attributes: ['email', 'password'],
+    let user = await User.findOne({
+      attributes: ['id', 'email', 'password'],
       where: { email: payload.email }
     })
     if (user) {
-      res.send({ token: jwt.sign({ email: user.email }, secret) })
+      res.send({ token: createUserToken(user.id) })
     } else {
-      await User.create({
+      user = await User.create({
         name: payload.name, email: payload.email
       })
       res.status(201).send({
-        token: jwt.sign({ email: payload.email }, secret)
+        token: createUserToken(user.id),
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        }
       })
     }
   } catch {
@@ -61,4 +71,4 @@ function auth (req, res, next) {
   })
 }
 
-module.exports = { router, auth }
+module.exports = { router, auth, createUserToken }

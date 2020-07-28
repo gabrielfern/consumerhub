@@ -1,20 +1,16 @@
 const express = require('express')
 const router = express.Router()
 const { User } = require('../models')
-const auth = require('./auth')
-const jwt = require('jsonwebtoken')
-const secret = process.env.SECRET ||
-  require('../env.json').secret
+const { auth, createUserToken } = require('./auth')
 
-router.get('/', auth.auth)
-router.post('/image', auth.auth)
+router.get('/', auth)
+router.post('/image', auth)
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.get('/', async (req, res) => {
   try {
-    const user = await User.findOne({
-      attributes: ['id', 'name', 'email'],
-      where: { email: req.auth.email }
+    const user = await User.findByPk(req.auth.id, {
+      attributes: { exclude: ['password', 'image'] }
     })
     res.send(user)
   } catch {
@@ -29,7 +25,14 @@ router.post('/', async (req, res) => {
       email: req.body.email,
       password: req.body.password
     })
-    res.send({ token: jwt.sign({ email: user.email }, secret) })
+    res.send({
+      token: createUserToken(user.id),
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    })
   } catch {
     res.status(500).end()
   }
@@ -48,8 +51,8 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/image', async (req, res) => {
   try {
-    const user = await User.findOne({
-      attributes: ['image'], where: { id: req.params.id }
+    const user = await User.findByPk(req.params.id, {
+      attributes: ['image']
     })
     res.set('Content-Type', 'image')
     res.send(user.image)
@@ -61,7 +64,7 @@ router.get('/:id/image', async (req, res) => {
 router.post('/image', async (req, res) => {
   try {
     await User.update({ image: req.body }, {
-      where: { email: req.auth.email }
+      where: { id: req.auth.id }
     })
     res.end()
   } catch {
