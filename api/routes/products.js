@@ -8,9 +8,12 @@ router.post('/:id/image/:imageNumber', express.raw({
 
 router.get('/', async (req, res) => {
   try {
-    res.send(await Product.findAll({
-      attributes: ['id', 'name', 'description']
-    }))
+    const products = await Product.findAll({
+      attributes: [
+        'id', 'name', 'description', 'createdAt', 'updatedAt'
+      ]
+    })
+    res.send(products)
   } catch {
     res.status(500).end()
   }
@@ -18,7 +21,15 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    res.send(await Product.create(req.body))
+    const product = await Product.create({
+      name: req.body.name,
+      description: req.body.description
+    })
+    res.send({
+      id: product.id,
+      name: product.name,
+      description: product.description
+    })
   } catch {
     res.status(500).end()
   }
@@ -26,10 +37,16 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    res.send(await Product.findOne({
-      attributes: ['id', 'name', 'description'],
-      where: { id: req.params.id }
-    }))
+    const product = await Product.findByPk(req.params.id, {
+      attributes: [
+        'id', 'name', 'description', 'createdAt', 'updatedAt'
+      ]
+    })
+    if (product) {
+      res.send(product)
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -37,10 +54,15 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    await Product.update(req.body, {
+    const result = await Product.update(req.body, {
+      fields: ['name', 'description'],
       where: { id: req.params.id }
     })
-    res.end()
+    if (result[0]) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -48,10 +70,14 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    await Product.destroy({
+    const result = await Product.destroy({
       where: { id: req.params.id }
     })
-    res.end()
+    if (result) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -60,12 +86,15 @@ router.delete('/:id', async (req, res) => {
 router.get('/:id/image/:imageNumber', async (req, res) => {
   try {
     const imageNumber = `image${req.params.imageNumber}`
-    const product = await Product.findOne({
-      attributes: [imageNumber],
-      where: { id: req.params.id }
+    const product = await Product.findByPk(req.params.id, {
+      attributes: [imageNumber]
     })
-    res.set('Content-Type', 'image')
-    res.send(product[imageNumber])
+    if (product && product[imageNumber]) {
+      res.set('Content-Type', 'image')
+      res.send(product[imageNumber])
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -74,10 +103,16 @@ router.get('/:id/image/:imageNumber', async (req, res) => {
 router.post('/:id/image/:imageNumber', async (req, res) => {
   try {
     const imageNumber = `image${req.params.imageNumber}`
-    await Product.update({ [imageNumber]: req.body }, {
+    const result = await Product.update({
+      [imageNumber]: req.body.length ? req.body : null
+    }, {
       where: { id: req.params.id }
     })
-    res.end()
+    if (result[0]) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -86,7 +121,11 @@ router.post('/:id/image/:imageNumber', async (req, res) => {
 router.get('/:id/reviews', async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id)
-    res.send(await product.getReviews())
+    if (product) {
+      res.send(await product.getReviews())
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
