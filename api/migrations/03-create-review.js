@@ -17,6 +17,8 @@ module.exports = {
         userId: {
           type: Sequelize.STRING,
           allowNull: false,
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           references: {
             model: 'Users',
             key: 'id'
@@ -25,6 +27,8 @@ module.exports = {
         productId: {
           type: Sequelize.STRING,
           allowNull: false,
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           references: {
             model: 'Products',
             key: 'id'
@@ -39,27 +43,20 @@ module.exports = {
           type: Sequelize.DATE
         }
       }, { transaction })
-      await queryInterface.addIndex(
-        'Reviews',
+
+      await queryInterface.addIndex('Reviews',
         ['userId', 'productId'],
-        {
-          unique: true,
-          transaction
-        }
+        { unique: true, transaction }
       )
+
       await transaction.commit()
     } catch (err) {
       await transaction.rollback()
       throw err
     }
   },
-  async down (queryInterface, Sequelize) {
-    const transaction = await queryInterface.sequelize.transaction()
-    try {
-      await queryInterface.dropTable('Reviews', { transaction })
-      await transaction.commit()
-    } catch {
-      await transaction.rollback()
-    }
+
+  down (queryInterface, Sequelize) {
+    return queryInterface.dropTable('Reviews')
   }
 }

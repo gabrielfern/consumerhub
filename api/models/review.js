@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type: DataTypes.STRING,
       allowNull: false,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       references: {
         model: 'Users',
         key: 'id'
@@ -25,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     productId: {
       type: DataTypes.STRING,
       allowNull: false,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       references: {
         model: 'Products',
         key: 'id'
@@ -39,12 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE
     }
   }, {
-    indexes: [
-      {
-        unique: true,
-        fields: ['userId', 'productId']
-      }
-    ]
+    indexes: [{
+      unique: true,
+      fields: ['userId', 'productId']
+    }]
   })
 
   Review.associate = function (models) {

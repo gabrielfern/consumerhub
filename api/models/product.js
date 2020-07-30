@@ -3,14 +3,40 @@ const idGen = new RandExp(/[a-zA-Z0-9]{6}/)
 
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    image1: DataTypes.BLOB,
-    image2: DataTypes.BLOB,
-    image3: DataTypes.BLOB,
-    image4: DataTypes.BLOB,
-    image5: DataTypes.BLOB
-  }, {})
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING
+    },
+    description: {
+      type: DataTypes.STRING
+    },
+    image1: {
+      type: DataTypes.BLOB
+    },
+    image2: {
+      type: DataTypes.BLOB
+    },
+    image3: {
+      type: DataTypes.BLOB
+    },
+    image4: {
+      type: DataTypes.BLOB
+    },
+    image5: {
+      type: DataTypes.BLOB
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    }
+  })
 
   Product.associate = function (models) {
     Product.hasMany(models.Review, {
