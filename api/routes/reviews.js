@@ -63,7 +63,9 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const result = await Review.destroy({
-      where: { id: req.params.id, userId: req.auth.id }
+      where: {
+        id: req.params.id, userId: req.auth.id
+      }
     })
     if (result) {
       res.end()
