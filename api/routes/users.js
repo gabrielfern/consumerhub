@@ -14,7 +14,11 @@ router.get('/', async (req, res) => {
     const user = await User.findByPk(req.auth.id, {
       attributes: { exclude: ['password', 'image'] }
     })
-    res.send(user)
+    if (user) {
+      res.send(user)
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -76,7 +80,11 @@ router.get('/:id', async (req, res) => {
     const user = await User.findByPk(req.params.id, {
       attributes: ['id', 'name']
     })
-    res.send(user)
+    if (user) {
+      res.send(user)
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -87,8 +95,12 @@ router.get('/:id/image', async (req, res) => {
     const user = await User.findByPk(req.params.id, {
       attributes: ['image']
     })
-    res.set('Content-Type', 'image')
-    res.send(user.image)
+    if (user && user.image) {
+      res.set('Content-Type', 'image')
+      res.send(user.image)
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
@@ -96,10 +108,16 @@ router.get('/:id/image', async (req, res) => {
 
 router.post('/image', async (req, res) => {
   try {
-    await User.update({ image: req.body }, {
+    const result = await User.update({
+      image: req.body.length ? req.body : null
+    }, {
       where: { id: req.auth.id }
     })
-    res.end()
+    if (result[0]) {
+      res.end()
+    } else {
+      res.status(404).end()
+    }
   } catch {
     res.status(500).end()
   }
