@@ -66,5 +66,23 @@ module.exports = (sequelize, DataTypes) => {
     review.id = idGen.gen()
   })
 
+  Review.prototype.getVoteCounts = async function () {
+    const votes = await this.getVotes({
+      attributes: ['type'], raw: true
+    })
+
+    let upvotes = 0
+    let downvotes = 0
+    for (const vote of votes) {
+      if (vote.type === 'upvote') {
+        upvotes++
+      } else {
+        downvotes++
+      }
+    }
+
+    return { upvotes, downvotes }
+  }
+
   return Review
 }

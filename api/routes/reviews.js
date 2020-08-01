@@ -82,21 +82,7 @@ router.get('/:id/votes', async (req, res) => {
   try {
     const review = await Review.findByPk(req.params.id)
     if (review) {
-      const votes = await review.getVotes({
-        attributes: ['type'], raw: true
-      })
-      let upvotes = 0
-      let downvotes = 0
-      for (const vote of votes) {
-        if (vote.type === 'upvote') {
-          upvotes++
-        } else {
-          downvotes++
-        }
-      }
-      res.send({
-        upvotes, downvotes
-      })
+      res.send(await review.getVoteCounts())
     } else {
       res.status(404).end()
     }
