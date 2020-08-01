@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const { Review } = require('../models')
+const { Review, ReviewVote } = require('../models')
 const { auth } = require('./auth')
 
 router.post('/', auth)
 router.put('/:id', auth)
 router.delete('/:id', auth)
+router.post('/:id/votes', auth)
 
 router.get('/', async (req, res) => {
   try {
@@ -71,6 +72,50 @@ router.delete('/:id', async (req, res) => {
       res.end()
     } else {
       res.status(404).end()
+    }
+  } catch {
+    res.status(500).end()
+  }
+})
+
+router.get('/:id/votes', async (req, res) => {
+  try {
+    const review = await Review.findByPk(req.params.id)
+    if (review) {
+      const votes = await review.getVotes({
+        attributes: ['type'], raw: true
+      })
+      let upvotes = 0
+      let downvotes = 0
+      for (const vote of votes) {
+        if (vote.type === 'upvote') {
+          upvotes++
+        } else {
+          downvotes++
+        }
+      }
+      res.send({
+        upvotes, downvotes
+      })
+    } else {
+      res.status(404).end()
+    }
+  } catch {
+    res.status(500).end()
+  }
+})
+
+router.post('/:id/votes', async (req, res) => {
+  try {
+    const result = await ReviewVote.upsert({
+      type: req.body.type,
+      userId: req.auth.id,
+      reviewId: req.params.id
+    })
+    if (result) {
+      res.status(201).end()
+    } else {
+      res.end()
     }
   } catch {
     res.status(500).end()

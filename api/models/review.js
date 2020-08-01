@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
     Review.belongsTo(models.Product, {
       foreignKey: 'productId'
     })
+    Review.hasMany(models.ReviewVote, {
+      foreignKey: 'reviewId',
+      as: 'votes'
+    })
   }
 
   Review.beforeCreate(async review => {

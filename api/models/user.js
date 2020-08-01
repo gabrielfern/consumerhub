@@ -37,6 +37,9 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Review, {
       foreignKey: 'userId'
     })
+    User.hasMany(models.ReviewVote, {
+      foreignKey: 'userId'
+    })
   }
 
   User.beforeCreate(async user => {
