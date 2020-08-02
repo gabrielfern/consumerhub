@@ -61,11 +61,14 @@ router.post('/google', async (req, res) => {
 })
 
 function auth (userType) {
-  const userTypes = ['user', 'moderator', 'administrator']
+  const map = { user: 0, moderator: 1, administrator: 2 }
+
   return (req, res, next) => {
     jwt.verify(req.headers.token, secret, (err, payload) => {
-      if (err && userTypes.includes(userType)) {
+      if (userType && err) {
         res.status(401).end()
+      } else if (userType && map[userType] > map[payload.type]) {
+        res.status(403).end()
       } else {
         req.auth = payload
         next()
