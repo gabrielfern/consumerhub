@@ -3,10 +3,10 @@ const router = express.Router()
 const { User } = require('../models')
 const { auth, createUserToken } = require('./auth')
 
-router.get('/', auth)
-router.put('/', auth)
-router.delete('/', auth)
-router.post('/image', auth)
+router.get('/', auth('user'))
+router.put('/', auth('user'))
+router.delete('/', auth('user'))
+router.post('/image', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.get('/', async (req, res) => {
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
       password: req.body.password
     })
     res.send({
-      token: createUserToken(user.id),
+      token: createUserToken(user.id, user.type),
       user: {
         id: user.id,
         name: user.name,

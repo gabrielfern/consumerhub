@@ -3,10 +3,10 @@ const router = express.Router()
 const { Review, ReviewVote } = require('../models')
 const { auth } = require('./auth')
 
-router.post('/', auth)
-router.put('/:id', auth)
-router.delete('/:id', auth)
-router.post('/:id/votes', auth)
+router.post('/', auth('user'))
+router.put('/:id', auth('user'))
+router.delete('/:id', auth('user'))
+router.post('/:id/votes', auth('user'))
 
 router.get('/', async (req, res) => {
   try {

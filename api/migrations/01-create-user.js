@@ -5,6 +5,11 @@ module.exports = {
         type: Sequelize.STRING,
         primaryKey: true
       },
+      type: {
+        type: Sequelize.ENUM('user', 'moderator', 'administrator'),
+        allowNull: false,
+        defaultValue: 'user'
+      },
       name: {
         type: Sequelize.STRING
       },
