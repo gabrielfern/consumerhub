@@ -7,6 +7,7 @@ router.get('/', auth('user'))
 router.put('/', auth('user'))
 router.delete('/', auth('user'))
 router.post('/image', auth('user'))
+router.post('/incTokenVersion', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.get('/', async (req, res) => {
@@ -121,6 +122,13 @@ router.post('/image', async (req, res) => {
   } catch {
     res.status(500).end()
   }
+})
+
+router.post('/incTokenVersion', async (req, res) => {
+  await User.increment('tokenVersion', {
+    where: { id: req.auth.id }
+  })
+  res.end()
 })
 
 module.exports = router

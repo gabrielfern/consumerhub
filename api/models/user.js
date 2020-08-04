@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     type: {
-      type: DataTypes.ENUM('user', 'moderator', 'administrator'),
+      type: DataTypes.ENUM('user', 'mod', 'admin'),
       allowNull: false,
       defaultValue: 'user'
     },
@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     image: {
       type: DataTypes.BLOB
+    },
+    tokenVersion: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
     createdAt: {
       type: DataTypes.DATE,

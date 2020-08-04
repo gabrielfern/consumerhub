@@ -6,7 +6,7 @@ module.exports = {
         primaryKey: true
       },
       type: {
-        type: Sequelize.ENUM('user', 'moderator', 'administrator'),
+        type: Sequelize.ENUM('user', 'mod', 'admin'),
         allowNull: false,
         defaultValue: 'user'
       },
@@ -23,6 +23,10 @@ module.exports = {
       },
       image: {
         type: Sequelize.BLOB
+      },
+      tokenVersion: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       createdAt: {
         type: Sequelize.DATE,

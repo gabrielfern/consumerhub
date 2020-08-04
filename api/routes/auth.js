@@ -9,19 +9,19 @@ const clientId = process.env.GOOGLE_CLIENT_ID ||
 const secret = process.env.SECRET ||
   require('../env.json').secret
 
-function createUserToken (id, type) {
-  const token = jwt.sign({ id, type }, secret)
+function createUserToken (id, tokenVersion) {
+  const token = jwt.sign({ id, tokenVersion }, secret)
   return token
 }
 
 router.post('/', async (req, res) => {
   try {
     const user = await User.findOne({
-      attributes: ['id', 'type', 'email', 'password'],
+      attributes: ['id', 'tokenVersion', 'email', 'password'],
       where: { email: req.body.email }
     })
     if (await bcrypt.compare(req.body.password, user.password)) {
-      res.send({ token: createUserToken(user.id, user.type) })
+      res.send({ token: createUserToken(user.id, user.tokenVersion) })
     } else {
       res.status(401).end()
     }
@@ -37,17 +37,17 @@ router.post('/google', async (req, res) => {
     })
     const payload = ticket.getPayload()
     let user = await User.findOne({
-      attributes: ['id', 'type', 'email', 'password'],
+      attributes: ['id', 'tokenVersion', 'email', 'password'],
       where: { email: payload.email }
     })
     if (user) {
-      res.send({ token: createUserToken(user.id, user.type) })
+      res.send({ token: createUserToken(user.id, user.tokenVersion) })
     } else {
       user = await User.create({
         name: payload.name, email: payload.email
       })
       res.status(201).send({
-        token: createUserToken(user.id, user.type),
+        token: createUserToken(user.id, user.tokenVersion),
         user: {
           id: user.id,
           name: user.name,
@@ -61,17 +61,27 @@ router.post('/google', async (req, res) => {
 })
 
 function auth (userType) {
-  const map = { user: 0, moderator: 1, administrator: 2 }
+  const map = { user: 0, mod: 1, admin: 2 }
 
   return (req, res, next) => {
-    jwt.verify(req.headers.token, secret, (err, payload) => {
+    jwt.verify(req.headers.token, secret, async (err, payload) => {
       if (userType && err) {
         res.status(401).end()
-      } else if (userType && map[userType] > map[payload.type]) {
-        res.status(403).end()
-      } else {
-        req.auth = payload
+      } else if (!userType && err) {
         next()
+      } else {
+        const user = await User.findByPk(payload.id, {
+          attributes: ['type', 'tokenVersion']
+        })
+
+        if (user.tokenVersion > payload.tokenVersion) {
+          res.status(403).end()
+        } else if (userType && map[userType] > map[user.type]) {
+          res.status(403).end()
+        } else {
+          req.auth = payload
+          next()
+        }
       }
     })
   }
