@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     const review = await Review.create({
       text: req.body.text,
       rating: req.body.rating,
-      userId: req.auth.id,
+      userId: req.user.id,
       productId: req.body.productId
     })
     res.send(review)
@@ -48,7 +48,7 @@ router.put('/:id', async (req, res) => {
     const result = await Review.update(req.body, {
       fields: ['text', 'rating'],
       where: {
-        id: req.params.id, userId: req.auth.id
+        id: req.params.id, userId: req.user.id
       }
     })
     if (result[0]) {
@@ -65,7 +65,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const result = await Review.destroy({
       where: {
-        id: req.params.id, userId: req.auth.id
+        id: req.params.id, userId: req.user.id
       }
     })
     if (result) {
@@ -95,7 +95,7 @@ router.post('/:id/votes', async (req, res) => {
   try {
     const result = await ReviewVote.upsert({
       type: req.body.type,
-      userId: req.auth.id,
+      userId: req.user.id,
       reviewId: req.params.id
     })
     if (result) {

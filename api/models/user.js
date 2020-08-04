@@ -67,5 +67,31 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
+  User.map = { user: 0, mod: 1, admin: 2 }
+
+  User.getById = function (id) {
+    return User.findByPk(id, {
+      attributes: { exclude: ['password', 'image'] }
+    })
+  }
+
+  User.getByEmail = function (email) {
+    return User.findOne({
+      attributes: { exclude: ['image'] },
+      where: { email }
+    })
+  }
+
+  User.createFromObj = async function (obj) {
+    const user = await User.create({
+      name: obj.name,
+      email: obj.email,
+      password: obj.password
+    }, { raw: true })
+    delete user.dataValues.password
+    delete user.dataValues.image
+    return user.dataValues
+  }
+
   return User
 }

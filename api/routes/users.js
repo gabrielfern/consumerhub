@@ -11,18 +11,7 @@ router.post('/incTokenVersion', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.get('/', async (req, res) => {
-  try {
-    const user = await User.findByPk(req.auth.id, {
-      attributes: { exclude: ['password', 'image'] }
-    })
-    if (user) {
-      res.send(user)
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
+  res.send(req.user)
 })
 
 router.post('/', async (req, res) => {
@@ -33,7 +22,7 @@ router.post('/', async (req, res) => {
       password: req.body.password
     })
     res.send({
-      token: createUserToken(user.id, user.type),
+      token: createUserToken(user),
       user: {
         id: user.id,
         name: user.name,
@@ -49,7 +38,7 @@ router.put('/', async (req, res) => {
   try {
     const result = await User.update(req.body, {
       fields: ['name', 'email', 'password'],
-      where: { id: req.auth.id }
+      where: { id: req.user.id }
     })
     if (result[0]) {
       res.end()
@@ -64,7 +53,7 @@ router.put('/', async (req, res) => {
 router.delete('/', async (req, res) => {
   try {
     const result = await User.destroy({
-      where: { id: req.auth.id }
+      where: { id: req.user.id }
     })
     if (result) {
       res.end()
@@ -112,7 +101,7 @@ router.post('/image', async (req, res) => {
     const result = await User.update({
       image: req.body.length ? req.body : null
     }, {
-      where: { id: req.auth.id }
+      where: { id: req.user.id }
     })
     if (result[0]) {
       res.end()
@@ -126,7 +115,7 @@ router.post('/image', async (req, res) => {
 
 router.post('/incTokenVersion', async (req, res) => {
   await User.increment('tokenVersion', {
-    where: { id: req.auth.id }
+    where: { id: req.user.id }
   })
   res.end()
 })
