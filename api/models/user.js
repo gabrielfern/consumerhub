@@ -59,11 +59,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
-  User.beforeBulkUpdate(async options => {
-    const password = options.attributes.password
-    if (password !== undefined) {
-      const hash = await bcrypt.hash(password, saltRounds)
-      options.attributes.password = hash
+  User.beforeUpdate(async user => {
+    if (user.password !== undefined) {
+      const hash = await bcrypt.hash(user.password, saltRounds)
+      user.password = hash
     }
   })
 

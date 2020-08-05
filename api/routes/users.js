@@ -2,122 +2,63 @@ const express = require('express')
 const router = express.Router()
 const { User } = require('../models')
 const { auth, createUserToken } = require('./auth')
+const { wrap } = require('../utils/errorHandlers')
 
 router.get('/', auth('user'))
 router.put('/', auth('user'))
 router.delete('/', auth('user'))
 router.post('/image', auth('user'))
-router.post('/incTokenVersion', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   res.send(req.user)
 })
 
-router.post('/', async (req, res) => {
-  try {
-    const user = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password
-    })
-    res.send({
-      token: createUserToken(user),
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
-      }
-    })
-  } catch {
-    res.status(500).end()
-  }
-})
+router.post('/', wrap(async (req, res) => {
+  const user = await User.createFromObj(req.body)
+  res.send({ token: createUserToken(user), user })
+}))
 
-router.put('/', async (req, res) => {
-  try {
-    const result = await User.update(req.body, {
-      fields: ['name', 'email', 'password'],
-      where: { id: req.user.id }
-    })
-    if (result[0]) {
-      res.end()
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.delete('/', async (req, res) => {
-  try {
-    const result = await User.destroy({
-      where: { id: req.user.id }
-    })
-    if (result) {
-      res.end()
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'name']
-    })
-    if (user) {
-      res.send(user)
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.get('/:id/image', async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id, {
-      attributes: ['image']
-    })
-    if (user && user.image) {
-      res.set('Content-Type', 'image')
-      res.send(user.image)
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.post('/image', async (req, res) => {
-  try {
-    const result = await User.update({
-      image: req.body.length ? req.body : null
-    }, {
-      where: { id: req.user.id }
-    })
-    if (result[0]) {
-      res.end()
-    } else {
-      res.status(404).end()
-    }
-  } catch {
-    res.status(500).end()
-  }
-})
-
-router.post('/incTokenVersion', async (req, res) => {
-  await User.increment('tokenVersion', {
-    where: { id: req.user.id }
+router.put('/', wrap(async (req, res) => {
+  await req.user.update(req.body, {
+    fields: ['name', 'password']
   })
   res.end()
-})
+}))
+
+router.delete('/', wrap(async (req, res) => {
+  await req.user.destroy()
+  res.end()
+}))
+
+router.get('/:id', wrap(async (req, res) => {
+  const user = await User.findByPk(req.params.id, {
+    attributes: ['id', 'name']
+  })
+  if (user) {
+    res.send(user)
+  } else {
+    res.status(404).end()
+  }
+}))
+
+router.get('/:id/image', wrap(async (req, res) => {
+  const user = await User.findByPk(req.params.id, {
+    attributes: ['image']
+  })
+  if (user && user.image) {
+    res.set('Content-Type', 'image')
+    res.send(user.image)
+  } else {
+    res.status(404).end()
+  }
+}))
+
+router.post('/image', wrap(async (req, res) => {
+  await req.user.update({
+    image: req.body.length ? req.body : null
+  })
+  res.end()
+}))
 
 module.exports = router
