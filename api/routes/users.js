@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { User } = require('../models')
-const { auth, createUserToken } = require('./auth')
+const { auth, createUserToken, checkPassword } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
 router.get('/', auth('user'))
@@ -11,7 +11,9 @@ router.post('/image', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
 router.get('/', (req, res) => {
-  res.send(req.user)
+  const json = req.user.toJSON()
+  delete json.password
+  res.send(json)
 })
 
 router.post('/', wrap(async (req, res) => {
@@ -20,10 +22,18 @@ router.post('/', wrap(async (req, res) => {
 }))
 
 router.put('/', wrap(async (req, res) => {
-  await req.user.update(req.body, {
-    fields: ['name', 'password']
-  })
-  res.end()
+  const { password, values } = req.body
+  if (password !== undefined) {
+    if (await checkPassword(password, req.user)) {
+      await req.user.updateAndInc(values)
+      res.send({ token: createUserToken(req.user) })
+    } else {
+      res.status(401).end()
+    }
+  } else {
+    await req.user.update({ name: values.name })
+    res.end()
+  }
 }))
 
 router.delete('/', wrap(async (req, res) => {

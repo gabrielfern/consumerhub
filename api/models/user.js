@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   User.beforeUpdate(async user => {
-    if (user.password !== undefined) {
+    if (user.changed('password')) {
       const hash = await bcrypt.hash(user.password, saltRounds)
       user.password = hash
     }
@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.getById = function (id) {
     return User.findByPk(id, {
-      attributes: { exclude: ['password', 'image'] }
+      attributes: { exclude: ['image'] }
     })
   }
 
@@ -86,10 +86,23 @@ module.exports = (sequelize, DataTypes) => {
       name: obj.name,
       email: obj.email,
       password: obj.password
-    }, { raw: true })
-    delete user.dataValues.password
-    delete user.dataValues.image
-    return user.dataValues
+    })
+    const json = user.toJSON()
+    delete json.password
+    delete json.image
+    return json
+  }
+
+  User.prototype.updateAndInc = async function (values) {
+    values.tokenVersion = sequelize.literal(
+      '"tokenVersion" + 1'
+    )
+    await this.update(values, {
+      fields: ['name', 'email', 'password', 'tokenVersion']
+    })
+    await this.reload({
+      attributes: ['tokenVersion']
+    })
   }
 
   return User

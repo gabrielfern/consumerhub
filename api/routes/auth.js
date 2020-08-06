@@ -18,11 +18,15 @@ function createUserToken (user) {
   return token
 }
 
+function checkPassword (password, user) {
+  return bcrypt.compare(password, user.password)
+}
+
 router.post('/', wrap(async (req, res) => {
   const user = await User.getByEmail(req.body.email)
   if (!user) {
     res.status(404).end()
-  } else if (await bcrypt.compare(req.body.password, user.password)) {
+  } else if (await checkPassword(req.body.password, user)) {
     res.send({ token: createUserToken(user) })
   } else {
     res.status(401).end()
@@ -59,7 +63,8 @@ function auth (userType) {
         res.status(404).end()
       } else if (user.tokenVersion > payload.tokenVersion) {
         res.status(401).end()
-      } else if (userType && User.map[userType] > User.map[user.type]) {
+      } else if (userType &&
+        User.map[userType] > User.map[user.type]) {
         res.status(403).end()
       } else {
         req.user = user
@@ -69,4 +74,4 @@ function auth (userType) {
   })
 }
 
-module.exports = { router, auth, createUserToken }
+module.exports = { router, auth, createUserToken, checkPassword }
