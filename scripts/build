@@ -6,3 +6,4 @@ npm run build
 cd ../api
 npm install
 npm run migrate-db
+npm run seed-db

@@ -9,6 +9,8 @@
     "migrate-db": "sequelize-cli db:migrate",
     "undo-migrate-db": "sequelize-cli db:migrate:undo",
     "undoall-migrate-db": "sequelize-cli db:migrate:undo:all",
+    "seed-db": "sequelize-cli db:seed:all",
+    "unseed-db": "sequelize-cli db:seed:undo:all",
     "lint": "standard",
     "lint-fix": "standard --fix"
   },

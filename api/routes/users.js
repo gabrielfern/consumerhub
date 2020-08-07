@@ -7,6 +7,8 @@ const { wrap } = require('../utils/errorHandlers')
 router.get('/', auth('user'))
 router.put('/', auth('user'))
 router.delete('/', auth('user'))
+router.get('/:id', auth())
+router.put('/:id', auth('admin'))
 router.post('/image', auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
 
@@ -42,11 +44,27 @@ router.delete('/', wrap(async (req, res) => {
 }))
 
 router.get('/:id', wrap(async (req, res) => {
+  const attributes = ['id', 'name']
+  if (req.user && User.map[req.user.type] > User.map.user) {
+    attributes.push('type', 'email')
+  }
   const user = await User.findByPk(req.params.id, {
-    attributes: ['id', 'name']
+    attributes
   })
   if (user) {
     res.send(user)
+  } else {
+    res.status(404).end()
+  }
+}))
+
+router.put('/:id', wrap(async (req, res) => {
+  const result = await User.update(req.body, {
+    fields: ['type'],
+    where: { id: req.params.id }
+  })
+  if (result[0]) {
+    res.send()
   } else {
     res.status(404).end()
   }
