@@ -10,6 +10,7 @@ router.put('/:id', auth('user'))
 router.delete('/:id', auth('user'))
 router.get('/:id/votes', auth())
 router.post('/:id/votes', auth('user'))
+router.delete('/:id/votes', auth('user'))
 
 router.get('/', wrap(async (req, res) => {
   res.send(await Review.findAll())
@@ -83,6 +84,19 @@ router.post('/:id/votes', wrap(async (req, res) => {
     res.status(201).end()
   } else {
     res.end()
+  }
+}))
+
+router.delete('/:id/votes', wrap(async (req, res) => {
+  const result = await ReviewVote.destroy({
+    where: {
+      userId: req.user.id, reviewId: req.params.id
+    }
+  })
+  if (result) {
+    res.end()
+  } else {
+    res.status(404).end()
   }
 }))
 
