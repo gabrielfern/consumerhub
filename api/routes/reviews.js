@@ -5,8 +5,10 @@ const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
 router.post('/', auth('user'))
+router.get('/:id', auth())
 router.put('/:id', auth('user'))
 router.delete('/:id', auth('user'))
+router.get('/:id/votes', auth())
 router.post('/:id/votes', auth('user'))
 
 router.get('/', wrap(async (req, res) => {
@@ -26,6 +28,8 @@ router.post('/', wrap(async (req, res) => {
 router.get('/:id', wrap(async (req, res) => {
   const review = await Review.findByPk(req.params.id)
   if (review) {
+    const userId = req.user && req.user.id
+    review.setDataValue('votes', await review.getVoteCounts(userId))
     res.send(review)
   } else {
     res.status(404).end()
@@ -62,7 +66,8 @@ router.delete('/:id', wrap(async (req, res) => {
 router.get('/:id/votes', wrap(async (req, res) => {
   const review = await Review.findByPk(req.params.id)
   if (review) {
-    res.send(await review.getVoteCounts())
+    const userId = req.user && req.user.id
+    res.send(await review.getVoteCounts(userId))
   } else {
     res.status(404).end()
   }

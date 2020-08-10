@@ -48,5 +48,13 @@ module.exports = (sequelize, DataTypes) => {
     product.id = idGen.gen()
   })
 
+  Product.prototype.getReviewsWithVotes = async function (userId) {
+    const reviews = await this.getReviews()
+    await Promise.all(reviews.map(async review => {
+      review.setDataValue('votes', await review.getVoteCounts(userId))
+    }))
+    return reviews
+  }
+
   return Product
 }
