@@ -60,6 +60,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'reviewId',
       as: 'votes'
     })
+    Review.hasMany(models.ReviewReport, {
+      foreignKey: 'reviewId',
+      as: 'reports'
+    })
   }
 
   Review.beforeCreate(async review => {

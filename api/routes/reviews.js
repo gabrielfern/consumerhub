@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Review, ReviewVote } = require('../models')
+const { Review, ReviewVote, ReviewReport, User } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
@@ -11,6 +11,9 @@ router.delete('/:id', auth('user'))
 router.get('/:id/votes', auth())
 router.post('/:id/votes', auth('user'))
 router.delete('/:id/votes', auth('user'))
+router.get('/:id/reports', auth('mod'))
+router.post('/:id/reports', auth('user'))
+router.delete('/:id/reports', auth('user'))
 
 router.get('/', wrap(async (req, res) => {
   res.send(await Review.findAll())
@@ -91,6 +94,45 @@ router.delete('/:id/votes', wrap(async (req, res) => {
   const result = await ReviewVote.destroy({
     where: {
       userId: req.user.id, reviewId: req.params.id
+    }
+  })
+  if (result) {
+    res.end()
+  } else {
+    res.status(404).end()
+  }
+}))
+
+router.get('/:id/reports', wrap(async (req, res) => {
+  const review = await Review.findByPk(req.params.id)
+  if (review) {
+    res.send(await review.getReports())
+  } else {
+    res.status(404).end()
+  }
+}))
+
+router.post('/:id/reports', wrap(async (req, res) => {
+  const result = await ReviewReport.upsert({
+    text: req.body.text,
+    userId: req.user.id,
+    reviewId: req.params.id
+  })
+  if (result) {
+    res.status(201).end()
+  } else {
+    res.end()
+  }
+}))
+
+router.delete('/:id/reports', wrap(async (req, res) => {
+  let userId = req.user.id
+  if (User.map[req.user.type] > User.map.user && req.body.userId) {
+    userId = req.body.userId
+  }
+  const result = await ReviewReport.destroy({
+    where: {
+      userId, reviewId: req.params.id
     }
   })
   if (result) {
