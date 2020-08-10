@@ -55,11 +55,11 @@ router.put('/:id', wrap(async (req, res) => {
 }))
 
 router.delete('/:id', wrap(async (req, res) => {
-  const result = await Review.destroy({
-    where: {
-      id: req.params.id, userId: req.user.id
-    }
-  })
+  const where = { id: req.params.id }
+  if (User.map[req.user.type] < User.map.mod) {
+    where.userId = req.user.id
+  }
+  const result = await Review.destroy({ where })
   if (result) {
     res.end()
   } else {
