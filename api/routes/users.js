@@ -45,7 +45,7 @@ router.delete('/', wrap(async (req, res) => {
 
 router.get('/:id', wrap(async (req, res) => {
   const attributes = ['id', 'name']
-  if (req.user && User.map[req.user.type] > User.map.user) {
+  if (req.user && User[req.user.type] > User.user) {
     attributes.push('type', 'email')
   }
   const user = await User.findByPk(req.params.id, {

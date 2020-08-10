@@ -69,7 +69,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
-  User.map = { user: 0, mod: 1, admin: 2 }
+  User.user = 0
+  User.mod = 1
+  User.admin = 2
 
   User.getById = function (id) {
     return User.findByPk(id, {

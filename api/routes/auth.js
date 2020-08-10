@@ -64,7 +64,7 @@ function auth (userType) {
       } else if (user.tokenVersion > payload.tokenVersion) {
         res.status(401).end()
       } else if (userType &&
-        User.map[userType] > User.map[user.type]) {
+        User[userType] > User[user.type]) {
         res.status(403).end()
       } else {
         req.user = user

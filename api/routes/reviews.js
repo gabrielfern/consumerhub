@@ -56,7 +56,7 @@ router.put('/:id', wrap(async (req, res) => {
 
 router.delete('/:id', wrap(async (req, res) => {
   const where = { id: req.params.id }
-  if (User.map[req.user.type] < User.map.mod) {
+  if (User[req.user.type] < User.mod) {
     where.userId = req.user.id
   }
   const result = await Review.destroy({ where })
@@ -127,7 +127,7 @@ router.post('/:id/reports', wrap(async (req, res) => {
 
 router.delete('/:id/reports', wrap(async (req, res) => {
   let userId = req.user.id
-  if (User.map[req.user.type] > User.map.user && req.body.userId) {
+  if (User[req.user.type] > User.user && req.body.userId) {
     userId = req.body.userId
   }
   const result = await ReviewReport.destroy({
