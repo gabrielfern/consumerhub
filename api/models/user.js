@@ -52,6 +52,14 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.ReviewReport, {
       foreignKey: 'userId'
     })
+    User.hasMany(models.Friendship, {
+      foreignKey: 'userId1',
+      as: 'friendships1'
+    })
+    User.hasMany(models.Friendship, {
+      foreignKey: 'userId2',
+      as: 'friendships2'
+    })
   }
 
   User.beforeCreate(async user => {
@@ -108,6 +116,12 @@ module.exports = (sequelize, DataTypes) => {
     await this.reload({
       attributes: ['tokenVersion']
     })
+  }
+
+  User.prototype.getFriendships = async function () {
+    return [
+      ...await this.getFriendships1(), ...await this.getFriendships2()
+    ]
   }
 
   return User
