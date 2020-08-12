@@ -124,5 +124,35 @@ module.exports = (sequelize, DataTypes) => {
     ]
   }
 
+  User.prototype.getFriends = async function () {
+    const friends = []
+    const friendships = await this.getFriendships()
+
+    for (const friendship of friendships) {
+      if (this.id !== friendship.userId1 && friendship.accepted) {
+        friends.push(await friendship.getUser1({
+          attributes: ['id', 'name', 'email'],
+          raw: true
+        }))
+      } else if (friendship.accepted) {
+        friends.push(await friendship.getUser2({
+          attributes: ['id', 'name', 'email'],
+          raw: true
+        }))
+      }
+    }
+
+    return friends
+  }
+
+  User.prototype.getFriendshipWith = async function (userId) {
+    const friendships = await this.getFriendships()
+    for (const friendship of friendships) {
+      if (friendship.userId1 === userId || friendship.userId2 === userId) {
+        return friendship
+      }
+    }
+  }
+
   return User
 }
