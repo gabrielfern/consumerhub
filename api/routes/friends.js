@@ -30,13 +30,8 @@ router.put('/', wrap(async (req, res) => {
     accepted: true
   }, {
     where: {
-      [Sequelize.Op.or]: [{
-        userId1: req.user.id,
-        userId2: req.body.user
-      }, {
-        userId1: req.body.user,
-        userId2: req.user.id
-      }]
+      userId1: req.body.user,
+      userId2: req.user.id
     }
   })
   if (result[0]) {
