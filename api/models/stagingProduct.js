@@ -1,14 +1,11 @@
+const RandExp = require('randexp')
+const idGen = new RandExp(/[a-zA-Z0-9]{6}/)
+
 module.exports = (sequelize, DataTypes) => {
   const StagingProduct = sequelize.define('StagingProduct', {
-    productId: {
+    id: {
       type: DataTypes.STRING,
-      primaryKey: true,
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      references: {
-        model: 'Products',
-        key: 'id'
-      }
+      primaryKey: true
     },
     userId: {
       type: DataTypes.STRING,
@@ -19,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Users',
         key: 'id'
       }
+    },
+    isNewProduct: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
     },
     name: {
       type: DataTypes.STRING
@@ -52,13 +53,14 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   StagingProduct.associate = function (models) {
-    StagingProduct.belongsTo(models.Product, {
-      foreignKey: 'productId'
-    })
     StagingProduct.belongsTo(models.User, {
       foreignKey: 'userId'
     })
   }
+
+  StagingProduct.beforeCreate(async stagingProduct => {
+    stagingProduct.id = idGen.gen()
+  })
 
   return StagingProduct
 }

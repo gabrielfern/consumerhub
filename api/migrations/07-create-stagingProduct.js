@@ -1,15 +1,9 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('StagingProducts', {
-      productId: {
+      id: {
         type: Sequelize.STRING,
-        primaryKey: true,
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Products',
-          key: 'id'
-        }
+        primaryKey: true
       },
       userId: {
         type: Sequelize.STRING,
@@ -20,6 +14,10 @@ module.exports = {
           model: 'Users',
           key: 'id'
         }
+      },
+      isNewProduct: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
       },
       name: {
         type: Sequelize.STRING
