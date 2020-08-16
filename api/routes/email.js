@@ -1,11 +1,11 @@
 const router = require('express').Router()
 const nodemailer = require('nodemailer')
+const { auth } = require('./auth')
+const { wrap } = require('../utils/errorHandlers')
 const email = process.env.GMAIL_EMAIL ||
   require('../env.json').gmailAuth.email
 const pass = process.env.GMAIL_PASS ||
   require('../env.json').gmailAuth.pass
-const auth = process.env.AUTH ||
-  require('../env.json').auth
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -14,22 +14,16 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-router.post('/', async (req, res) => {
-  if (auth === req.body.auth) {
-    try {
-      await transporter.sendMail({
-        from: `"Consumerhub" <${email}>`,
-        to: req.body.to,
-        subject: req.body.subject,
-        html: req.body.html
-      })
-      res.end()
-    } catch {
-      res.status(500).end()
-    }
-  } else {
-    res.status(401).end()
-  }
-})
+router.post('/', auth('admin'))
+
+router.post('/', wrap(async (req, res) => {
+  await transporter.sendMail({
+    from: `"Consumerhub" <${email}>`,
+    to: req.body.to,
+    subject: req.body.subject,
+    text: req.body.text
+  })
+  res.end()
+}))
 
 module.exports = router
