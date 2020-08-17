@@ -1,6 +1,3 @@
-const RandExp = require('randexp')
-const idGen = new RandExp(/[a-zA-Z0-9]{6}/)
-
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
     id: {
@@ -36,6 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false
     }
+  }, {
+    defaultScope: {
+      attributes: {
+        exclude: ['image1', 'image2', 'image3', 'image4', 'image5']
+      }
+    }
   })
 
   Product.associate = function (models) {
@@ -43,10 +46,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'productId'
     })
   }
-
-  Product.beforeCreate(async product => {
-    product.id = idGen.gen()
-  })
 
   Product.prototype.getReviewsWithVotes = async function (userId) {
     const reviews = await this.getReviews()

@@ -50,6 +50,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false
     }
+  }, {
+    defaultScope: {
+      attributes: {
+        exclude: ['image1', 'image2', 'image3', 'image4', 'image5']
+      }
+    }
   })
 
   StagingProduct.associate = function (models) {

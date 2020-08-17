@@ -1,42 +1,33 @@
 const express = require('express')
 const router = express.Router()
-const { Product } = require('../models')
+const { Product, StagingProduct } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
+router.post('/', auth('mod'))
+router.put('/:id', auth('mod'))
+router.delete('/:id', auth('mod'))
 router.get('/:id/reviews', auth())
 
-router.post('/:id/image/:imageNumber', express.raw({
-  limit: 5e6, type: '*/*'
-}))
-
 router.get('/', wrap(async (req, res) => {
-  const products = await Product.findAll({
-    attributes: [
-      'id', 'name', 'description', 'createdAt', 'updatedAt'
-    ]
-  })
-  res.send(products)
+  res.send(await Product.findAll())
 }))
 
 router.post('/', wrap(async (req, res) => {
-  const product = await Product.create({
-    name: req.body.name,
-    description: req.body.description
+  const stagingProduct = await StagingProduct.unscoped().findOne({
+    where: { id: req.query.id, userId: req.query.userId }
   })
-  res.send({
-    id: product.id,
-    name: product.name,
-    description: product.description
-  })
+  if (stagingProduct) {
+    const product = await Product.create(stagingProduct.dataValues)
+    await stagingProduct.destroy()
+    res.send({ id: product.id })
+  } else {
+    res.status(404).end()
+  }
 }))
 
 router.get('/:id', wrap(async (req, res) => {
-  const product = await Product.findByPk(req.params.id, {
-    attributes: [
-      'id', 'name', 'description', 'createdAt', 'updatedAt'
-    ]
-  })
+  const product = await Product.findByPk(req.params.id)
   if (product) {
     res.send(product)
   } else {
@@ -45,11 +36,19 @@ router.get('/:id', wrap(async (req, res) => {
 }))
 
 router.put('/:id', wrap(async (req, res) => {
-  const result = await Product.update(req.body, {
-    fields: ['name', 'description'],
-    where: { id: req.params.id }
+  const stagingProduct = await StagingProduct.unscoped().findOne({
+    where: { id: req.params.id, userId: req.query.userId }
   })
-  if (result[0]) {
+  const product = await Product.findByPk(req.params.id)
+  if (stagingProduct && product) {
+    const values = {}
+    for (const attr in product.rawAttributes) {
+      if (stagingProduct[attr] !== null) {
+        values[attr] = stagingProduct[attr]
+      }
+    }
+    await product.update(values)
+    await stagingProduct.destroy()
     res.end()
   } else {
     res.status(404).end()
@@ -75,20 +74,6 @@ router.get('/:id/image/:imageNumber', wrap(async (req, res) => {
   if (product && product[imageNumber]) {
     res.set('Content-Type', 'image')
     res.send(product[imageNumber])
-  } else {
-    res.status(404).end()
-  }
-}))
-
-router.post('/:id/image/:imageNumber', wrap(async (req, res) => {
-  const imageNumber = `image${req.params.imageNumber}`
-  const result = await Product.update({
-    [imageNumber]: req.body.length ? req.body : null
-  }, {
-    where: { id: req.params.id }
-  })
-  if (result[0]) {
-    res.end()
   } else {
     res.status(404).end()
   }
