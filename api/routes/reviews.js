@@ -16,7 +16,11 @@ router.post('/:id/reports', auth('user'))
 router.delete('/:id/reports', auth('user'))
 
 router.get('/', wrap(async (req, res) => {
-  res.send(await Review.findAll())
+  const where = {}
+  if (req.query.userId) {
+    where.userId = req.query.userId
+  }
+  res.send(await Review.findAll({ where }))
 }))
 
 router.post('/', wrap(async (req, res) => {
