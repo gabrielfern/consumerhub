@@ -71,7 +71,8 @@ router.get('/:id/image/:imageNumber', wrap(async (req, res) => {
   const product = await Product.findByPk(req.params.id, {
     attributes: [imageNumber]
   })
-  if (product && product[imageNumber]) {
+  if (product && product[imageNumber] &&
+    product[imageNumber].length) {
     res.set('Content-Type', 'image')
     res.send(product[imageNumber])
   } else {

@@ -82,7 +82,8 @@ router.get('/image/:imageNumber', wrap(async (req, res) => {
     attributes: [imageNumber],
     where
   })
-  if (stagingProduct && stagingProduct[imageNumber]) {
+  if (stagingProduct && stagingProduct[imageNumber] &&
+    stagingProduct[imageNumber].length) {
     res.set('Content-Type', 'image')
     res.send(stagingProduct[imageNumber])
   } else {
@@ -93,7 +94,7 @@ router.get('/image/:imageNumber', wrap(async (req, res) => {
 router.post('/image/:imageNumber', wrap(async (req, res) => {
   const imageNumber = `image${req.params.imageNumber}`
   const result = await StagingProduct.update({
-    [imageNumber]: req.body.length ? req.body : null
+    [imageNumber]: req.body
   }, {
     where: { id: req.query.id, userId: req.user.id }
   })

@@ -35,7 +35,7 @@ router.delete('/', wrap(async (req, res) => {
 
 router.get('/image', wrap(async (req, res) => {
   await req.user.reload({ attributes: ['image'] })
-  if (req.user.image) {
+  if (req.user.image && req.user.image.length) {
     res.set('Content-Type', 'image')
     res.send(req.user.image)
   } else {
@@ -45,7 +45,7 @@ router.get('/image', wrap(async (req, res) => {
 
 router.post('/image', wrap(async (req, res) => {
   await req.user.update({
-    image: req.body.length ? req.body : null
+    image: req.body
   })
   res.end()
 }))

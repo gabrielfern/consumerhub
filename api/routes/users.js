@@ -70,7 +70,7 @@ router.get('/:id/image', wrap(async (req, res) => {
   const user = await User.findByPk(req.params.id, {
     attributes: ['image']
   })
-  if (user && user.image) {
+  if (user && user.image && user.image.length) {
     res.set('Content-Type', 'image')
     res.send(user.image)
   } else {
