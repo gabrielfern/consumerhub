@@ -49,7 +49,7 @@ router.post('/', wrap(async (req, res) => {
 
 router.put('/', wrap(async (req, res) => {
   const result = await StagingProduct.update(req.body, {
-    fields: ['name', 'description'],
+    fields: ['name', 'description', 'link1', 'link2', 'link3'],
     where: { id: req.query.id, userId: req.user.id }
   })
   if (result[0]) {

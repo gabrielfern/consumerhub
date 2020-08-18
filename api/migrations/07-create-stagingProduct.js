@@ -40,6 +40,15 @@ module.exports = {
       image5: {
         type: Sequelize.BLOB
       },
+      link1: {
+        type: Sequelize.STRING
+      },
+      link2: {
+        type: Sequelize.STRING
+      },
+      link3: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false
