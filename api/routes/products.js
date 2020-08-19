@@ -59,6 +59,9 @@ router.delete('/:id', wrap(async (req, res) => {
   const result = await Product.destroy({
     where: { id: req.params.id }
   })
+  await StagingProduct.destroy({
+    where: { id: req.params.id }
+  })
   if (result) {
     res.end()
   } else {
