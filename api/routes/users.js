@@ -24,8 +24,12 @@ router.post('/', wrap(async (req, res) => {
 
 router.get('/:id', wrap(async (req, res) => {
   const attributes = ['id', 'name']
-  if (req.user && User[req.user.type] > User.user) {
+  if (req.user && (req.user.type !== 'user' ||
+    req.user.id === req.params.id)) {
     attributes.push('type', 'email')
+  } else if (req.user &&
+    (await req.user.getFriendshipWith(req.params.id)).accepted) {
+    attributes.push('email')
   }
   const user = await User.findByPk(req.params.id, {
     attributes
