@@ -54,6 +54,9 @@ module.exports = (sequelize, DataTypes) => {
     Product.hasMany(models.Review, {
       foreignKey: 'productId'
     })
+    Product.hasMany(models.ProductReport, {
+      foreignKey: 'productId'
+    })
   }
 
   Product.prototype.getReviewsWithVotes = async function (userId) {

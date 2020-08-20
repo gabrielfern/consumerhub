@@ -60,6 +60,17 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId2',
       as: 'friendships2'
     })
+    User.hasMany(models.ProductReport, {
+      foreignKey: 'userId'
+    })
+    User.hasMany(models.UserReport, {
+      foreignKey: 'userId',
+      as: 'reporter'
+    })
+    User.hasMany(models.UserReport, {
+      foreignKey: 'reportedId',
+      as: 'reportee'
+    })
   }
 
   User.beforeCreate(async user => {
