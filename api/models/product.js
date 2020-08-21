@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
     Product.hasMany(models.ProductReport, {
       foreignKey: 'productId'
     })
+    Product.belongsToMany(models.Category, {
+      through: 'ProductCategory',
+      foreignKey: 'productId'
+    })
   }
 
   Product.prototype.getReviewsWithVotes = async function (userId) {

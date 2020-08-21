@@ -8,6 +8,8 @@ router.post('/', auth('mod'))
 router.put('/:id', auth('mod'))
 router.delete('/:id', auth('mod'))
 router.get('/:id/reviews', auth())
+router.post('/:id/categories', auth('mod'))
+router.delete('/:id/categories', auth('mod'))
 
 router.get('/', wrap(async (req, res) => {
   res.send(await Product.findAll())
@@ -91,6 +93,23 @@ router.get('/:id/reviews', wrap(async (req, res) => {
   } else {
     res.status(404).end()
   }
+}))
+
+router.get('/:id/categories', wrap(async (req, res) => {
+  const product = await Product.findByPk(req.params.id)
+  res.send(await product.getCategories())
+}))
+
+router.post('/:id/categories', wrap(async (req, res) => {
+  const product = await Product.findByPk(req.params.id)
+  await product.addCategory(req.body.name)
+  res.end()
+}))
+
+router.delete('/:id/categories', wrap(async (req, res) => {
+  const product = await Product.findByPk(req.params.id)
+  await product.removeCategory(req.body.name)
+  res.end()
 }))
 
 module.exports = router
