@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { getUser, logout } from '../redux/actions'
 import { connect } from 'react-redux'
+import { getUser, logout } from '../redux/actions'
 
 function Profile (props) {
   const history = useHistory()
@@ -16,7 +16,7 @@ function Profile (props) {
       </>
     )
   } else {
-    userInfo = <>Loading...</>
+    userInfo = <>Carregando...</>
   }
 
   useEffect(() => {
@@ -32,7 +32,9 @@ function Profile (props) {
       <div>
         <h1>Perfil de usuário</h1>
         <p>
-          <button className='btn btn-secondary m-2' onClick={() => props.dispatch(logout())}>Deslogar</button>
+          <button className='btn btn-secondary m-2' onClick={() => props.dispatch(logout())}>
+            Deslogar
+          </button>
         </p>
         {userInfo}
       </div>

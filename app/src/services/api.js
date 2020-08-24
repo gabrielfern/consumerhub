@@ -28,7 +28,7 @@ export async function createUser (user) {
 }
 
 export async function uploadUserImage (buffer) {
-  await fetch('/api/users/image', {
+  await fetch('/api/user/image', {
     method: 'POST',
     headers: {
       'Content-type': 'application/octet-stream',
