@@ -1,26 +1,24 @@
-/* global fetch, gapi, localStorage */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { authUser, gauthUser, uploadUserImage } from '../services/api'
+import { checkLoggedUser, login } from '../redux/actions'
+import { connect } from 'react-redux'
 
-export default () => {
+function Signin (props) {
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  if (localStorage.token) {
+  if (props.logged) {
     history.push('/profile')
+  } else {
+    props.dispatch(checkLoggedUser())
   }
 
   async function submit () {
-    const token = await authUser(email, password)
-    if (token) {
-      localStorage.token = token
-      history.push('/profile')
-    }
+    props.dispatch(login(email, password))
   }
 
-  useEffect(() => {
+  /*   useEffect(() => {
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
       const { token, isNewUser } = await gauthUser(idToken)
@@ -45,14 +43,13 @@ export default () => {
         }
       })
     })
-  }, [history])
+  }, [history]) */
 
   return (
     <div className='container my-3'>
       <h1>Logue</h1>
       <p>
         <button className='btn btn-secondary m-2' onClick={() => history.push('/signup')}>Cadastrar</button>
-        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
       </p>
       <p>
         <span><b>Email </b></span>
@@ -69,3 +66,5 @@ export default () => {
     </div>
   )
 }
+
+export default connect(state => state)(Signin)

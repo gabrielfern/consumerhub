@@ -1,28 +1,24 @@
-/* global localStorage */
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { getUser } from '../services/api'
+import { getUser, logout } from '../redux/actions'
+import { connect } from 'react-redux'
 
-export default () => {
+function Profile (props) {
   const history = useHistory()
-  const [id, setId] = useState('')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const user = await getUser()
-        setId(user.id)
-        setName(user.name)
-        setEmail(user.email)
-      } catch {}
-    })()
-  }, [])
-
-  function logout () {
-    delete localStorage.token
+  let userInfo
+  if (!props.logged) {
     history.push('/')
+  } else if (props.user) {
+    userInfo = (
+      <>
+        <p><b>ID:</b> {props.user.id}</p>
+        <p><b>Nome:</b> {props.user.name}</p>
+        <p><b>Email:</b> {props.user.email}</p>
+      </>
+    )
+  } else {
+    userInfo = <>Loading...</>
+    props.dispatch(getUser())
   }
 
   return (
@@ -30,20 +26,19 @@ export default () => {
       <div>
         <h1>Perfil de usuário</h1>
         <p>
-          <button className='btn btn-secondary m-2' onClick={logout}>Deslogar</button>
-          <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
+          <button className='btn btn-secondary m-2' onClick={() => props.dispatch(logout())}>Deslogar</button>
         </p>
-        <p><b>ID:</b> {id}</p>
-        <p><b>Nome:</b> {name}</p>
-        <p><b>Email:</b> {email}</p>
+        {userInfo}
       </div>
       <div>
-        {id &&
+        {props.user &&
           <img
-            src={`/api/users/${id}/image`} alt='imagem de usuário'
+            src={`/api/users/${props.user.id}/image`} alt='imagem de usuário'
             style={{ display: 'block', maxWidth: '100%' }}
           />}
       </div>
     </div>
   )
 }
+
+export default connect(state => state)(Profile)

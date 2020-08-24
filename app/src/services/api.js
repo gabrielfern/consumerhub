@@ -1,7 +1,7 @@
 /* global fetch, localStorage */
 
 export async function getUser () {
-  const res = await fetch('/api/users', {
+  const res = await fetch('/api/user', {
     headers: {
       token: localStorage.token
     }

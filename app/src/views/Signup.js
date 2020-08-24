@@ -30,7 +30,6 @@ export default () => {
       <h1>Inscreva-se</h1>
       <p>
         <button className='btn btn-secondary m-2' onClick={() => history.push('/')}>Logar</button>
-        <button className='btn btn-secondary m-2' onClick={() => history.push('/products')}>Produtos</button>
       </p>
       <p>
         <span><b>Nome </b></span>
