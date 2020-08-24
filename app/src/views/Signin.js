@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { checkLoggedUser, login } from '../redux/actions'
 import { connect } from 'react-redux'
@@ -8,11 +8,13 @@ function Signin (props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  if (props.logged) {
-    history.push('/profile')
-  } else {
-    props.dispatch(checkLoggedUser())
-  }
+  useEffect(() => {
+    if (props.logged) {
+      history.push('/profile')
+    } else {
+      props.dispatch(checkLoggedUser())
+    }
+  }, [props, history])
 
   async function submit () {
     props.dispatch(login(email, password))

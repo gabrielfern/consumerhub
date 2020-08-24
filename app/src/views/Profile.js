@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getUser, logout } from '../redux/actions'
 import { connect } from 'react-redux'
 
 function Profile (props) {
   const history = useHistory()
+
   let userInfo
-  if (!props.logged) {
-    history.push('/')
-  } else if (props.user) {
+  if (props.logged && props.user) {
     userInfo = (
       <>
         <p><b>ID:</b> {props.user.id}</p>
@@ -18,8 +17,15 @@ function Profile (props) {
     )
   } else {
     userInfo = <>Loading...</>
-    props.dispatch(getUser())
   }
+
+  useEffect(() => {
+    if (!props.logged) {
+      history.push('/')
+    } else if (!props.user) {
+      props.dispatch(getUser())
+    }
+  }, [props, history])
 
   return (
     <div className='container my-3'>
