@@ -10,9 +10,9 @@ function Profile (props) {
   const history = useHistory()
 
   useEffect(() => {
-    if (!props.logged) {
+    if (!props.isLogged) {
       history.push('/')
-    } else if (!props.user) {
+    } else if (!props.data) {
       props.dispatch(getUser())
     }
   }, [props, history])
@@ -24,22 +24,22 @@ function Profile (props) {
         Deslogar
       </Button>
 
-      {(props.user &&
+      {(props.data &&
         <Media>
           <img
             width={128}
             className='mr-3'
-            src={`/api/users/${props.user.id}/image`}
+            src={`/api/users/${props.data.id}/image`}
             alt='imagem de usuário'
           />
           <Media.Body>
-            <p><b>ID:</b> {props.user.id}</p>
-            <p><b>Nome:</b> {props.user.name}</p>
-            <p><b>Email:</b> {props.user.email}</p>
+            <p><b>ID:</b> {props.data.id}</p>
+            <p><b>Nome:</b> {props.data.name}</p>
+            <p><b>Email:</b> {props.data.email}</p>
           </Media.Body>
         </Media>) || <p>Carregando...</p>}
     </Container>
   )
 }
 
-export default connect(state => state)(Profile)
+export default connect(state => state.user)(Profile)

@@ -1,17 +1,24 @@
+import { combineReducers } from 'redux'
 import {
-  USER_LOGGED_CHANGE,
-  USER_DATA
+  CHANGE_LOGGED_STATUS,
+  CHANGE_USER_DATA
 } from './actions'
 
-function rootReducer (state = { logged: false }, action) {
+const initialState = {
+  isLogged: false
+}
+
+function user (state = initialState, action) {
   switch (action.type) {
-    case USER_LOGGED_CHANGE:
-      return Object.assign({}, state, { logged: action.logged })
-    case USER_DATA:
-      return Object.assign({}, state, { user: action.user })
+    case CHANGE_LOGGED_STATUS:
+      return Object.assign({}, state, { isLogged: action.isLogged })
+    case CHANGE_USER_DATA:
+      return Object.assign({}, state, { data: action.data })
     default:
       return state
   }
 }
 
-export default rootReducer
+export default combineReducers({
+  user
+})

@@ -15,7 +15,7 @@ function Signup (props) {
   const [imageLabel, setImageLabel] = useState('')
 
   useEffect(() => {
-    if (props.logged) {
+    if (props.isLogged) {
       history.push('/profile')
     } else {
       props.dispatch(checkLoggedUser())
@@ -77,4 +77,4 @@ function Signup (props) {
   )
 }
 
-export default connect(state => state)(Signup)
+export default connect(state => state.user)(Signup)

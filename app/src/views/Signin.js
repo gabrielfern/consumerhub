@@ -13,7 +13,7 @@ function Signin (props) {
   const [password, setPassword] = useState('')
 
   useEffect(() => {
-    if (props.logged) {
+    if (props.isLogged) {
       history.push('/profile')
     } else {
       props.dispatch(checkLoggedUser())
@@ -67,4 +67,4 @@ function Signin (props) {
   )
 }
 
-export default connect(state => state)(Signin)
+export default connect(state => state.user)(Signin)

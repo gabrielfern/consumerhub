@@ -1,20 +1,15 @@
 /* global localStorage, fetch */
-import {
-  authUser,
-  getUser as apiGetUser,
-  gauthUser,
-  uploadUserImage,
-  createUser
-} from '../services/api'
-export const USER_LOGGED_CHANGE = 'USER_LOGGED_CHANGE'
-export const USER_DATA = 'USER_DATA'
+import * as api from '../services/api'
+
+export const CHANGE_LOGGED_STATUS = 'CHANGE_LOGGED_STATUS'
+export const CHANGE_USER_DATA = 'CHANGE_USER_DATA'
 
 export function checkLoggedUser () {
   return dispatch => {
     if (localStorage.token) {
       dispatch({
-        type: USER_LOGGED_CHANGE,
-        logged: true
+        type: CHANGE_LOGGED_STATUS,
+        isLogged: true
       })
     }
   }
@@ -22,11 +17,11 @@ export function checkLoggedUser () {
 
 export function login (email, password) {
   return async dispatch => {
-    const token = await authUser(email, password)
+    const token = await api.authUser(email, password)
     localStorage.token = token
     dispatch({
-      type: USER_LOGGED_CHANGE,
-      logged: true
+      type: CHANGE_LOGGED_STATUS,
+      isLogged: true
     })
   }
 }
@@ -34,17 +29,17 @@ export function login (email, password) {
 export function gLogin (gUser) {
   return async dispatch => {
     const idToken = gUser.getAuthResponse().id_token
-    const { token, isNewUser } = await gauthUser(idToken)
+    const { token, isNewUser } = await api.gauthUser(idToken)
     if (token) {
       localStorage.token = token
       if (isNewUser) {
         const imageUrl = gUser.getBasicProfile().getImageUrl()
         const resp = await fetch(imageUrl)
-        await uploadUserImage(await resp.arrayBuffer())
+        await api.uploadUserImage(await resp.arrayBuffer())
       }
       dispatch({
-        type: USER_LOGGED_CHANGE,
-        logged: true
+        type: CHANGE_LOGGED_STATUS,
+        isLogged: true
       })
     }
   }
@@ -52,15 +47,15 @@ export function gLogin (gUser) {
 
 export function signup (name, email, password, image) {
   return async dispatch => {
-    const token = await createUser({ name, email, password })
+    const token = await api.createUser({ name, email, password })
     if (token) {
       localStorage.token = token
       if (image && image.size > 0) {
-        await uploadUserImage(await image.arrayBuffer())
+        await api.uploadUserImage(await image.arrayBuffer())
       }
       dispatch({
-        type: USER_LOGGED_CHANGE,
-        logged: true
+        type: CHANGE_LOGGED_STATUS,
+        isLogged: true
       })
     }
   }
@@ -70,22 +65,22 @@ export function logout () {
   return async dispatch => {
     delete localStorage.token
     dispatch({
-      type: USER_LOGGED_CHANGE,
-      logged: false
+      type: CHANGE_LOGGED_STATUS,
+      isLogged: false
     })
     dispatch({
-      type: USER_DATA
+      type: CHANGE_USER_DATA
     })
   }
 }
 
 export function getUser () {
   return async (dispatch, getState) => {
-    if (!getState().user) {
-      const user = await apiGetUser()
+    if (!getState().user.data) {
+      const user = await api.getUser()
       dispatch({
-        type: USER_DATA,
-        user
+        type: CHANGE_USER_DATA,
+        data: user
       })
     }
   }
