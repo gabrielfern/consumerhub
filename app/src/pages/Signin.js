@@ -54,9 +54,6 @@ export default () => {
   return (
     <Container className='p-3 my-3 border rounded'>
       <h1>Logue</h1>
-      <Button variant='secondary' className='mb-4' onClick={() => history.push('/signup')}>
-          Cadastrar
-      </Button>
 
       <Form>
         <Form.Group>

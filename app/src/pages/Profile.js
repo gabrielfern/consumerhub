@@ -1,53 +1,44 @@
 /* global localStorage */
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getUser } from '../services/api'
 import Container from 'react-bootstrap/Container'
-import Button from 'react-bootstrap/Button'
 import Media from 'react-bootstrap/Media'
 
-export default () => {
+export default (props) => {
   const history = useHistory()
-  const [id, setId] = useState('')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const { setUser } = props
 
   useEffect(() => {
     (async () => {
       try {
         const user = await getUser()
-        setId(user.id)
-        setName(user.name)
-        setEmail(user.email)
-      } catch {}
+        setUser(user)
+      } catch {
+        delete localStorage.token
+        setUser()
+        history.push('/')
+      }
     })()
-  }, [])
-
-  function logout () {
-    delete localStorage.token
-    history.push('/')
-  }
+  }, [history, setUser])
 
   return (
     <Container className='p-3 my-3 border rounded'>
       <h1>Perfil de usuário</h1>
-      <Button variant='secondary' className='mb-4' onClick={logout}>
-        Deslogar
-      </Button>
 
-      {(id &&
+      {(props.user &&
         <Media>
           <img
             width={128}
             className='mr-3'
-            src={`/api/users/${id}/image`}
+            src={`/api/users/${props.user.id}/image`}
             alt='imagem de usuário'
           />
           <Media.Body>
-            <p><b>ID:</b> {id}</p>
-            <p><b>Nome:</b> {name}</p>
-            <p><b>Email:</b> {email}</p>
+            <p><b>ID:</b> {props.user.id}</p>
+            <p><b>Nome:</b> {props.user.name}</p>
+            <p><b>Email:</b> {props.user.email}</p>
           </Media.Body>
         </Media>) || <p>Carregando...</p>}
     </Container>
