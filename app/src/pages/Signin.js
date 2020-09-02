@@ -1,41 +1,55 @@
-/* global gapi */
+/* global fetch, localStorage, gapi */
+
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { checkLoggedUser, login, gLogin } from '../redux/actions'
+import { authUser, gauthUser, uploadUserImage } from '../services/api'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-function Signin (props) {
+export default () => {
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  useEffect(() => {
-    if (props.isLogged) {
-      history.push('/profile')
-    } else {
-      props.dispatch(checkLoggedUser())
-    }
-  }, [props, history])
+  if (localStorage.token) {
+    history.push('/profile')
+  }
 
   async function submit () {
-    props.dispatch(login(email, password))
+    const token = await authUser(email, password)
+    if (token) {
+      localStorage.token = token
+      history.push('/profile')
+    }
   }
 
   useEffect(() => {
+    async function gSignIn (gUser) {
+      const idToken = gUser.getAuthResponse().id_token
+      const { token, isNewUser } = await gauthUser(idToken)
+      if (token) {
+        localStorage.token = token
+        if (isNewUser) {
+          const imageUrl = gUser.getBasicProfile().getImageUrl()
+          const resp = await fetch(imageUrl)
+          await uploadUserImage(await resp.arrayBuffer())
+        }
+        history.push('/profile')
+      }
+    }
+
     gapi.load('auth2', () => {
       const auth2 = gapi.auth2.init()
       gapi.signin2.render('g-signin2', {
         onsuccess: async () => {
           const gUser = auth2.currentUser.get()
-          props.dispatch(gLogin(gUser))
+          await gSignIn(gUser)
           auth2.signOut()
         }
       })
     })
-  }, [props, history])
+  }, [history])
 
   return (
     <Container className='p-3 my-3 border rounded'>
@@ -66,5 +80,3 @@ function Signin (props) {
     </Container>
   )
 }
-
-export default connect(state => state.user)(Signin)

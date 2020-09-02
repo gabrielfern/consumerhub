@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react'
+/* global localStorage */
+
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { checkLoggedUser, signup } from '../redux/actions'
+import { createUser, uploadUserImage } from '../services/api'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-function Signup (props) {
+export default () => {
   const history = useHistory()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -14,16 +15,19 @@ function Signup (props) {
   const [image, setImage] = useState({})
   const [imageLabel, setImageLabel] = useState('')
 
-  useEffect(() => {
-    if (props.isLogged) {
-      history.push('/profile')
-    } else {
-      props.dispatch(checkLoggedUser())
-    }
-  }, [props, history])
+  if (localStorage.token) {
+    history.push('/profile')
+  }
 
   async function submit () {
-    props.dispatch(signup(name, email, password, image))
+    const token = await createUser({ name, email, password })
+    if (token) {
+      localStorage.token = token
+      if (image && image.size > 0) {
+        await uploadUserImage(await image.arrayBuffer())
+      }
+      history.push('/profile')
+    }
   }
 
   return (
@@ -76,5 +80,3 @@ function Signup (props) {
     </Container>
   )
 }
-
-export default connect(state => state.user)(Signup)
