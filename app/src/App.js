@@ -1,27 +1,14 @@
 import React from 'react'
-import Signup from './pages/Signup'
-import Profile from './pages/Profile'
-import Signin from './pages/Signin'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom'
+import Header from './components/Header'
+import Page from './components/Page'
+import Footer from './components/Footer'
 
 export default () => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path='/'>
-          <Signin />
-        </Route>
-        <Route exact path='/signup'>
-          <Signup />
-        </Route>
-        <Route exact path='/profile'>
-          <Profile />
-        </Route>
-      </Switch>
-    </Router>
+    <div className='d-flex flex-column min-vh-100'>
+      <Header />
+      <Page />
+      <Footer />
+    </div>
   )
 }
