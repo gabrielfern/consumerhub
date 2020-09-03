@@ -18,21 +18,21 @@ export default (props) => {
   let nav
   if (props.user) {
     nav = (
-      <Nav>
-        <Nav.Link onClick={logout}>Deslogar</Nav.Link>
+      <Nav activeKey=''>
+        <Nav.Link onClick={logout} eventKey>Deslogar</Nav.Link>
       </Nav>
     )
   } else {
     nav = (
-      <Nav>
-        <Nav.Link as={Link} to='/'>Logar</Nav.Link>
-        <Nav.Link as={Link} to='/signup'>Inscrever</Nav.Link>
+      <Nav activeKey=''>
+        <Nav.Link as={Link} to='/' eventKey>Logar</Nav.Link>
+        <Nav.Link as={Link} to='/signup' eventKey>Inscrever</Nav.Link>
       </Nav>
     )
   }
 
   return (
-    <Navbar bg='dark' variant='dark' expand='lg'>
+    <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
       <Container>
         <Navbar.Brand>ConsumerHub</Navbar.Brand>
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
