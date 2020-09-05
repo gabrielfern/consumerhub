@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getUser } from '../services/api'
-import Container from 'react-bootstrap/Container'
 import Media from 'react-bootstrap/Media'
 
 export default (props) => {
@@ -28,10 +27,10 @@ export default (props) => {
   }, [history, user, setUser])
 
   return (
-    <Container className='p-3 my-3 border rounded'>
+    <>
       <h1>Perfil de usuário</h1>
 
-      {(props.user && props.user.id &&
+      {(props.isLogged() &&
         <Media>
           <img
             width={128}
@@ -45,6 +44,6 @@ export default (props) => {
             <p><b>Email:</b> {props.user.email}</p>
           </Media.Body>
         </Media>) || <p>Carregando...</p>}
-    </Container>
+    </>
   )
 }

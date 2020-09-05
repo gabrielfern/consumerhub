@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { authUser, gauthUser, uploadUserImage } from '../services/api'
-import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
@@ -13,7 +12,7 @@ export default (props) => {
   const [password, setPassword] = useState('')
 
   useEffect(() => {
-    if (props.user && props.user.id) {
+    if (props.isLogged()) {
       history.push('/')
     }
   }, [history, props])
@@ -54,7 +53,7 @@ export default (props) => {
   }, [history])
 
   return (
-    <Container className='p-3 my-3 border rounded'>
+    <>
       <h1>Logue</h1>
 
       <Form>
@@ -76,6 +75,6 @@ export default (props) => {
         Entrar
       </Button>
       <div id='g-signin2' />
-    </Container>
+    </>
   )
 }

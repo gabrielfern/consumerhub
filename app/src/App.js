@@ -26,11 +26,14 @@ export default () => {
     })()
   }, [setUser])
 
+  const isLogged = () => user && user.id
+  const childProps = { user, setUser, isLogged }
+
   return (
     <div className='d-flex flex-column min-vh-100'>
       <BrowserRouter>
-        <Header user={user} setUser={setUser} />
-        <Page user={user} setUser={setUser} />
+        <Header {...childProps} />
+        <Page {...childProps} />
         <Footer />
       </BrowserRouter>
     </div>

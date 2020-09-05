@@ -17,7 +17,7 @@ export default (props) => {
   }
 
   let nav
-  if (props.user && props.user.id) {
+  if (props.isLogged()) {
     nav = (
       <Nav activeKey=''>
         <NavDropdown title={props.user.name}>

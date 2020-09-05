@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
+import Container from 'react-bootstrap/Container'
 import Signup from '../pages/Signup'
 import Profile from '../pages/Profile'
 import Signin from '../pages/Signin'
@@ -7,7 +8,7 @@ import Home from '../pages/Home'
 
 export default (props) => {
   return (
-    <div className='flex-fill'>
+    <Container className='flex-fill my-3'>
       <Switch>
         <Route exact path='/'>
           <Home />
@@ -22,6 +23,6 @@ export default (props) => {
           <Profile {...props} />
         </Route>
       </Switch>
-    </div>
+    </Container>
   )
 }
