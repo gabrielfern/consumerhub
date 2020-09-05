@@ -8,26 +8,30 @@ import Media from 'react-bootstrap/Media'
 
 export default (props) => {
   const history = useHistory()
-  const { setUser } = props
+  const { user, setUser } = props
 
   useEffect(() => {
     (async () => {
       try {
-        const user = await getUser()
-        setUser(user)
+        if (!user && localStorage.token) {
+          const user = await getUser()
+          setUser(user)
+        } else if (!user) {
+          history.push('/')
+        }
       } catch {
         delete localStorage.token
         setUser()
         history.push('/')
       }
     })()
-  }, [history, setUser])
+  }, [history, user, setUser])
 
   return (
     <Container className='p-3 my-3 border rounded'>
       <h1>Perfil de usuário</h1>
 
-      {(props.user &&
+      {(props.user && props.user.id &&
         <Media>
           <img
             width={128}

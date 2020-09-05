@@ -1,13 +1,13 @@
 /* global localStorage */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createUser, uploadUserImage } from '../services/api'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-export default () => {
+export default (props) => {
   const history = useHistory()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -15,9 +15,11 @@ export default () => {
   const [image, setImage] = useState({})
   const [imageLabel, setImageLabel] = useState('')
 
-  if (localStorage.token) {
-    history.push('/profile')
-  }
+  useEffect(() => {
+    if (props.user && props.user.id) {
+      history.push('/')
+    }
+  }, [history, props])
 
   async function submit () {
     const token = await createUser({ name, email, password })

@@ -7,14 +7,16 @@ import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-export default () => {
+export default (props) => {
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  if (localStorage.token) {
-    history.push('/profile')
-  }
+  useEffect(() => {
+    if (props.user && props.user.id) {
+      history.push('/')
+    }
+  }, [history, props])
 
   async function submit () {
     const token = await authUser(email, password)
