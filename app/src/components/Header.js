@@ -4,8 +4,9 @@ import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import Container from 'react-bootstrap/Container'
 import NavDropdown from 'react-bootstrap/NavDropdown'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 export default (props) => {
   const history = useHistory()
@@ -20,9 +21,11 @@ export default (props) => {
   if (props.isLogged()) {
     nav = (
       <Nav activeKey=''>
-        <NavDropdown title={props.user.name}>
+        <NavDropdown title={props.user.name} alignRight>
           <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
-          <NavDropdown.Item onClick={logout} eventKey>Deslogar</NavDropdown.Item>
+          <NavDropdown.Item eventKey>Editar</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={logout} eventKey>Sair</NavDropdown.Item>
         </NavDropdown>
       </Nav>
     )
@@ -37,13 +40,20 @@ export default (props) => {
 
   return (
     <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
-      <Container>
-        <Navbar.Brand as={Link} to='/'>ConsumerHub</Navbar.Brand>
-        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
-        <Navbar.Collapse className='justify-content-end' id='responsive-navbar-nav'>
-          {nav}
-        </Navbar.Collapse>
-      </Container>
+      <Navbar.Brand as={Link} to='/'>ConsumerHub</Navbar.Brand>
+      <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+      <Navbar.Collapse className='justify-content-end' id='responsive-navbar-nav'>
+        <Form className='flex-fill my-2 my-lg-0 justify-content-center' inline>
+          <Form.Control
+            className='flex-fill' style={{ maxWidth: '576px' }}
+            type='text' placeholder='Procurar Produto'
+          />
+          <Button className='mx-1 my-2 my-lg-0' variant='outline-info'>
+            Procurar
+          </Button>
+        </Form>
+        {nav}
+      </Navbar.Collapse>
     </Navbar>
   )
 }
