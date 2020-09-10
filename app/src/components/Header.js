@@ -23,7 +23,7 @@ export default (props) => {
       <Nav activeKey=''>
         <NavDropdown title={props.user.name} alignRight>
           <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
-          <NavDropdown.Item eventKey>Editar</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to='/profile/edit' eventKey>Editar</NavDropdown.Item>
           <NavDropdown.Divider />
           <NavDropdown.Item onClick={logout} eventKey>Sair</NavDropdown.Item>
         </NavDropdown>

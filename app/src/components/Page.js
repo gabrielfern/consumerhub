@@ -5,6 +5,7 @@ import Signup from '../pages/Signup'
 import Profile from '../pages/Profile'
 import Signin from '../pages/Signin'
 import Home from '../pages/Home'
+import ProfileEdit from '../pages/ProfileEdit'
 
 export default (props) => {
   return (
@@ -21,6 +22,9 @@ export default (props) => {
         </Route>
         <Route exact path='/profile'>
           <Profile {...props} />
+        </Route>
+        <Route exact path='/profile/edit'>
+          <ProfileEdit {...props} />
         </Route>
       </Switch>
     </Container>

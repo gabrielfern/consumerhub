@@ -60,3 +60,27 @@ export async function gauthUser (idToken) {
     return { token, isNewUser }
   }
 }
+
+export async function editUser (password, name, email, newPassword) {
+  const body = { values: {} }
+  if (password) {
+    body.password = password
+    name && Object.assign(body.values, { name })
+    email && Object.assign(body.values, { email })
+    newPassword && Object.assign(body.values, { password: newPassword })
+  } else {
+    name && Object.assign(body.values, { name })
+  }
+
+  const res = await fetch('/api/user', {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify(body)
+  })
+  if (password && res.status === 200) {
+    return (await res.json()).token
+  }
+}
