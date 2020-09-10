@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
+import FileChooser from '../components/FileChooser'
 
 export default (props) => {
   const history = useHistory()
@@ -17,7 +18,6 @@ export default (props) => {
   const [password, setPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [image, setImage] = useState({})
-  const [imageLabel, setImageLabel] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
@@ -71,19 +71,7 @@ export default (props) => {
           />
           <Form.Group>
             <Form.Label>Escolha a imagem</Form.Label>
-            <Form.File
-              custom
-              label={imageLabel}
-              data-browse='Selecionar'
-              onChange={e => {
-                if (e.target.files[0]) {
-                  setImageLabel(e.target.files[0].name)
-                } else {
-                  setImageLabel('')
-                }
-                setImage(e.target.files[0])
-              }}
-            />
+            <FileChooser setFile={setImage} />
           </Form.Group>
         </Col>
         <Col className='d-flex flex-column justify-content-between'>

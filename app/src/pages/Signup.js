@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { createUser, uploadUserImage } from '../services/api'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import FileChooser from '../components/FileChooser'
 
 export default (props) => {
   const history = useHistory()
@@ -12,7 +13,6 @@ export default (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [image, setImage] = useState({})
-  const [imageLabel, setImageLabel] = useState('')
 
   useEffect(() => {
     if (props.isLogged()) {
@@ -56,19 +56,7 @@ export default (props) => {
         </Form.Group>
         <Form.Group>
           <Form.Label>Escolha a imagem</Form.Label>
-          <Form.File
-            custom
-            label={imageLabel}
-            data-browse='Selecionar'
-            onChange={e => {
-              if (e.target.files[0]) {
-                setImageLabel(e.target.files[0].name)
-              } else {
-                setImageLabel('')
-              }
-              setImage(e.target.files[0])
-            }}
-          />
+          <FileChooser setFile={setImage} />
         </Form.Group>
       </Form>
 
