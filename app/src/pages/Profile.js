@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Media from 'react-bootstrap/Media'
 
 export default (props) => {
   const history = useHistory()
 
-  if (!props.isLogged) {
-    history.push('/')
-  }
+  useEffect(() => {
+    if (!props.isLogged) {
+      history.push('/')
+    }
+  }, [history, props.isLogged])
 
   return (
     <>

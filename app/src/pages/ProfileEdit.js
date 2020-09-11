@@ -19,9 +19,11 @@ export default (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  if (!props.isLogged) {
-    history.push('/')
-  }
+  useEffect(() => {
+    if (!props.isLogged) {
+      history.push('/')
+    }
+  }, [history, props.isLogged])
 
   useEffect(() => {
     if (props.user) {

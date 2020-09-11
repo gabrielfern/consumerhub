@@ -14,9 +14,9 @@ export default (props) => {
 
   useEffect(() => {
     if (props.isLogged) {
-      history.push('/')
+      history.push('/profile')
     }
-  }, [history, props])
+  }, [history, props.isLogged])
 
   async function submit () {
     await createUser({ name, email, password })

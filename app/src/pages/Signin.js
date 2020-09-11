@@ -18,7 +18,7 @@ export default (props) => {
 
   useEffect(() => {
     if (props.isLogged) {
-      history.push('/')
+      history.push('/profile')
     }
 
     async function gSignIn (gUser) {
