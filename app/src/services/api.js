@@ -18,7 +18,7 @@ export async function createUser (user) {
     body: JSON.stringify(user)
   })
   if (res.status === 200) {
-    return (await res.json()).token
+    localStorage.token = (await res.json()).token
   }
 }
 
@@ -42,7 +42,7 @@ export async function authUser (email, password) {
     body: JSON.stringify({ email, password })
   })
   if (res.status === 200) {
-    return (await res.json()).token
+    localStorage.token = (await res.json()).token
   }
 }
 
@@ -55,9 +55,9 @@ export async function gauthUser (idToken) {
     body: JSON.stringify({ idToken })
   })
   if (res.status < 202) {
-    const token = (await res.json()).token
+    localStorage.token = (await res.json()).token
     const isNewUser = res.status === 201
-    return { token, isNewUser }
+    return { isNewUser }
   }
 }
 
@@ -81,6 +81,6 @@ export async function editUser (password, name, email, newPassword) {
     body: JSON.stringify(body)
   })
   if (password && res.status === 200) {
-    return (await res.json()).token
+    localStorage.token = (await res.json()).token
   }
 }

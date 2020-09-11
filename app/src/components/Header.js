@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
@@ -12,22 +10,22 @@ export default (props) => {
   const history = useHistory()
 
   function logout () {
-    delete localStorage.token
-    props.setUser()
+    props.logout()
     history.push('/')
   }
 
   let nav
-  if (props.isLogged()) {
+  if (props.isLogged) {
     nav = (
-      <Nav activeKey=''>
-        <NavDropdown title={props.user.name} alignRight>
-          <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to='/profile/edit' eventKey>Editar</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item onClick={logout} eventKey>Sair</NavDropdown.Item>
-        </NavDropdown>
-      </Nav>
+      props.user &&
+        <Nav activeKey=''>
+          <NavDropdown title={props.user.name} alignRight>
+            <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/profile/edit' eventKey>Editar</NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item onClick={logout} eventKey>Sair</NavDropdown.Item>
+          </NavDropdown>
+        </Nav>
     )
   } else {
     nav = (

@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { editUser, uploadUserImage } from '../services/api'
@@ -21,16 +19,16 @@ export default (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  useEffect(() => {
-    if (!props.isLogged() && !props.user) {
-      history.push('/')
-    }
-  }, [history, props])
+  if (!props.isLogged) {
+    history.push('/')
+  }
 
   useEffect(() => {
-    setName(props.user.name)
-    setEmail(props.user.email)
-  }, [props.user])
+    if (props.user) {
+      setName(props.user.name)
+      setEmail(props.user.email)
+    }
+  }, [props])
 
   async function submit () {
     if (newPassword || email !== props.user.email) {
@@ -41,7 +39,9 @@ export default (props) => {
         await uploadUserImage(await image.arrayBuffer())
       }
       await editUser(password, name, email, newPassword)
-      window.location.href = '/profile'
+      setIsLoading(false)
+      props.loadUser()
+      history.push('/profile')
     }
   }
 
@@ -50,55 +50,56 @@ export default (props) => {
     if (image && image.size > 0) {
       await uploadUserImage(await image.arrayBuffer())
     }
-    const token = await editUser(password, name, email, newPassword)
-    if (token) {
-      localStorage.token = token
-    }
-    window.location.href = '/profile'
+    await editUser(password, name, email, newPassword)
+    setIsLoading(false)
+    props.loadUser()
+    history.push('/profile')
   }
 
   return (
     <>
       <h1>Edite seu perfil</h1>
 
-      <Row md={2} xs={1}>
-        <Col className='d-flex flex-column justify-content-between'>
-          <img
-            width={128}
-            className='mx-auto'
-            src={`/api/users/${props.user.id}/image`}
-            alt='imagem de usuário'
-          />
-          <Form.Group>
-            <Form.Label>Escolha a imagem</Form.Label>
-            <FileChooser setFile={setImage} />
-          </Form.Group>
-        </Col>
-        <Col className='d-flex flex-column justify-content-between'>
-          <Form.Group>
-            <Form.Label>Nome</Form.Label>
-            <Form.Control
-              type='text' value={name} onChange={e => setName(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type='text' value={email} onChange={e => setEmail(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Senha</Form.Label>
-            <Form.Control
-              type='password' value={newPassword} onChange={e => setNewPassword(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Button disabled={isLoading} className='mb-4' onClick={submit}>
-        {isLoading ? <>Enviando...</> : <>Confirmar</>}
-      </Button>
+      {(props.user &&
+        <>
+          <Row md={2} xs={1}>
+            <Col className='d-flex flex-column justify-content-between'>
+              <img
+                width={128}
+                className='mx-auto'
+                src={`/api/users/${props.user.id}/image?${Date.now()}`}
+                alt='imagem de usuário'
+              />
+              <Form.Group>
+                <Form.Label>Escolha a imagem</Form.Label>
+                <FileChooser setFile={setImage} />
+              </Form.Group>
+            </Col>
+            <Col className='d-flex flex-column justify-content-between'>
+              <Form.Group>
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type='text' value={name} onChange={e => setName(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type='text' value={email} onChange={e => setEmail(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Senha</Form.Label>
+                <Form.Control
+                  type='password' value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Button disabled={isLoading} className='mb-4' onClick={submit}>
+            {isLoading ? <>Enviando...</> : <>Confirmar</>}
+          </Button>
+        </>) || <p>Carregando...</p>}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

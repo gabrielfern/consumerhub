@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createUser, uploadUserImage } from '../services/api'
@@ -15,20 +13,17 @@ export default (props) => {
   const [image, setImage] = useState({})
 
   useEffect(() => {
-    if (props.isLogged()) {
+    if (props.isLogged) {
       history.push('/')
     }
   }, [history, props])
 
   async function submit () {
-    const token = await createUser({ name, email, password })
-    if (token) {
-      localStorage.token = token
-      if (image && image.size > 0) {
-        await uploadUserImage(await image.arrayBuffer())
-      }
-      history.push('/profile')
+    await createUser({ name, email, password })
+    if (image && image.size > 0) {
+      await uploadUserImage(await image.arrayBuffer())
     }
+    props.loadUser()
   }
 
   return (

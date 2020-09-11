@@ -1,4 +1,4 @@
-/* global fetch, localStorage, gapi */
+/* global fetch, gapi */
 
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -11,33 +11,25 @@ export default (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  useEffect(() => {
-    if (props.isLogged()) {
-      history.push('/')
-    }
-  }, [history, props])
-
   async function submit () {
-    const token = await authUser(email, password)
-    if (token) {
-      localStorage.token = token
-      history.push('/profile')
-    }
+    await authUser(email, password)
+    props.loadUser()
   }
 
   useEffect(() => {
+    if (props.isLogged) {
+      history.push('/')
+    }
+
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
-      const { token, isNewUser } = await gauthUser(idToken)
-      if (token) {
-        localStorage.token = token
-        if (isNewUser) {
-          const imageUrl = gUser.getBasicProfile().getImageUrl()
-          const resp = await fetch(imageUrl)
-          await uploadUserImage(await resp.arrayBuffer())
-        }
-        history.push('/profile')
+      const { isNewUser } = await gauthUser(idToken)
+      if (isNewUser) {
+        const imageUrl = gUser.getBasicProfile().getImageUrl()
+        const resp = await fetch(imageUrl)
+        await uploadUserImage(await resp.arrayBuffer())
       }
+      props.loadUser()
     }
 
     gapi.load('auth2', () => {
@@ -50,7 +42,7 @@ export default (props) => {
         }
       })
     })
-  }, [history])
+  }, [history, props])
 
   return (
     <>
