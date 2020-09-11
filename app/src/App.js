@@ -9,6 +9,7 @@ import Footer from './components/Footer'
 
 export default () => {
   const [user, setUser] = useState()
+  const [userImageVersion, setUserImageVersion] = useState(0)
   const [isLogged, setIsLogged] = useState(!!localStorage.token)
 
   const loadUser = useCallback(async () => {
@@ -35,7 +36,9 @@ export default () => {
     loadUser()
   }, [loadUser])
 
-  const childProps = { user, isLogged, loadUser, logout }
+  const childProps = {
+    user, isLogged, userImageVersion, setUserImageVersion, loadUser, logout
+  }
 
   return (
     <div className='d-flex flex-column min-vh-100'>

@@ -40,6 +40,7 @@ export default (props) => {
       setIsLoading(true)
       if (image && image.size > 0) {
         await uploadUserImage(await image.arrayBuffer())
+        props.setUserImageVersion(version => version + 1)
       }
       await editUser(password, name, email, newPassword)
       setIsLoading(false)
@@ -52,6 +53,7 @@ export default (props) => {
     setIsLoading(true)
     if (image && image.size > 0) {
       await uploadUserImage(await image.arrayBuffer())
+      props.setUserImageVersion(version => version + 1)
     }
     await editUser(password, name, email, newPassword)
     setIsLoading(false)
@@ -67,7 +69,10 @@ export default (props) => {
         <>
           <Row md={2} xs={1}>
             <Col className='d-flex flex-column justify-content-between'>
-              <UserImage className='align-self-center' userId={props.user.id} />
+              <UserImage
+                className='align-self-center' userId={props.user.id}
+                version={props.userImageVersion}
+              />
               <Form.Group>
                 <Form.Label>Escolha a imagem</Form.Label>
                 <FileChooser setFile={setImage} />

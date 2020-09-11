@@ -18,7 +18,10 @@ export default (props) => {
 
       {(props.user &&
         <Media>
-          <UserImage userId={props.user.id} />
+          <UserImage
+            userId={props.user.id}
+            version={props.userImageVersion}
+          />
           <Media.Body className='m-2'>
             <p><b>ID:</b> {props.user.id}</p>
             <p><b>Nome:</b> {props.user.name}</p>

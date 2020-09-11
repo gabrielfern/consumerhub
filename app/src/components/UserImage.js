@@ -8,7 +8,7 @@ export default (props) => {
       {(!hadError &&
         <img
           className='rounded'
-          src={`/api/users/${props.userId}/image?${Date.now()}`}
+          src={`/api/users/${props.userId}/image?${props.version}`}
           alt='imagem de usuário'
           onError={() => setHadError(true)}
         />) || <div className='user-image-replacement rounded' />}
