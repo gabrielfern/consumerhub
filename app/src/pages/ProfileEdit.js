@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 import FileChooser from '../components/FileChooser'
+import UserImage from '../components/UserImage'
 
 export default (props) => {
   const history = useHistory()
@@ -66,12 +67,7 @@ export default (props) => {
         <>
           <Row md={2} xs={1}>
             <Col className='d-flex flex-column justify-content-between'>
-              <img
-                width={128}
-                className='mx-auto'
-                src={`/api/users/${props.user.id}/image?${Date.now()}`}
-                alt='imagem de usuário'
-              />
+              <UserImage className='align-self-center' userId={props.user.id} />
               <Form.Group>
                 <Form.Label>Escolha a imagem</Form.Label>
                 <FileChooser setFile={setImage} />
