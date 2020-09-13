@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FileChooser from '../components/FileChooser'
 import { createProduct, uploadProductImage, editProduct } from '../services/api'
+import { ReactComponent as Plus } from '../assets/plus.svg'
+import { ReactComponent as Minus } from '../assets/minus.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -78,14 +80,14 @@ export default (props) => {
             <Button
               variant='outline-danger' onClick={() => setImages(images => images.slice(0, -1))}
             >
-              Remover imagem
+              <Minus className='wh-1-em' />
             </Button>}
           {images.length < 5 &&
             <Button
               variant='outline-primary' className='ml-2'
               onClick={() => setImages(images => [...images, ''])}
             >
-              Adicionar imagem
+              <Plus className='wh-1-em' />
             </Button>}
         </div>
 
@@ -117,14 +119,14 @@ export default (props) => {
             <Button
               variant='outline-danger' onClick={() => setLinks(links => links.slice(0, -1))}
             >
-              Remover link
+              <Minus className='wh-1-em' />
             </Button>}
           {links.length < 3 &&
             <Button
               variant='outline-primary' className='ml-2'
               onClick={() => setLinks(links => [...links, ''])}
             >
-              Adicionar link
+              <Plus className='wh-1-em' />
             </Button>}
         </div>
       </Form>
