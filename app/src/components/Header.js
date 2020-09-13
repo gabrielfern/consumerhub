@@ -46,7 +46,7 @@ export default (props) => {
             className='flex-fill' style={{ maxWidth: '576px' }}
             type='text' placeholder='Procurar Produto'
           />
-          <Button className='mx-1 my-2 my-lg-0' variant='outline-info'>
+          <Button as={Link} to='/products' className='mx-1 my-2 my-lg-0' variant='outline-info'>
             Procurar
           </Button>
         </Form>

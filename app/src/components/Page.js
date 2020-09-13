@@ -6,6 +6,9 @@ import Profile from '../pages/Profile'
 import Signin from '../pages/Signin'
 import Home from '../pages/Home'
 import ProfileEdit from '../pages/ProfileEdit'
+import ProductList from '../pages/ProductList'
+import ProductCreate from '../pages/ProductCreate'
+import Product from '../pages/Product'
 
 export default (props) => {
   return (
@@ -25,6 +28,15 @@ export default (props) => {
         </Route>
         <Route exact path='/profile/edit'>
           <ProfileEdit {...props} />
+        </Route>
+        <Route exact path='/products'>
+          <ProductList {...props} />
+        </Route>
+        <Route exact path='/products/new'>
+          <ProductCreate {...props} />
+        </Route>
+        <Route exact path='/product/:productId'>
+          <Product {...props} />
         </Route>
       </Switch>
     </Container>

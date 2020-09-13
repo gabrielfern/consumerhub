@@ -84,3 +84,64 @@ export async function editUser (password, name, email, newPassword) {
     localStorage.token = (await res.json()).token
   }
 }
+
+export async function createProduct () {
+  const res = await fetch('/api/staging', {
+    method: 'POST',
+    headers: {
+      token: localStorage.token
+    }
+  })
+  if (res.status === 200) {
+    return await res.json()
+  }
+}
+
+export async function uploadProductImage (productId, imageNumber, buffer) {
+  await fetch(`/api/staging/image/${imageNumber}?id=${productId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/octet-stream',
+      token: localStorage.token
+    },
+    body: buffer
+  })
+}
+
+export async function editProduct (product) {
+  await fetch(`/api/staging?id=${product.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify(product)
+  })
+}
+
+export async function getStagingProducts () {
+  const res = await fetch('/api/staging', {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
+export async function getStagingProduct (productId) {
+  const res = await fetch(`/api/staging?id=${productId}`, {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
+export async function getStagingProductImage (productId, imageNumber) {
+  const res = await fetch(`/api/staging/image/${imageNumber}?id=${productId}`, {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.blob()
+}
