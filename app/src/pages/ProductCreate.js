@@ -26,11 +26,11 @@ export default (props) => {
         }
       })
       await editProduct(product)
-      for (const [i, image] of images.entries()) {
+      await Promise.all(images.map(async (image, i) => {
         if (image && image.size > 0) {
-          await uploadProductImage(resp.id, i + 1, await image.arrayBuffer())
+          return uploadProductImage(resp.id, i + 1, await image.arrayBuffer())
         }
-      }
+      }))
       history.push('/product/' + resp.id)
     } else {
       setIsLoading(false)
