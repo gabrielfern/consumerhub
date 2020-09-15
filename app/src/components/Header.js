@@ -20,7 +20,7 @@ export default (props) => {
       props.user &&
         <Nav activeKey=''>
           {props.user.type !== 'user' &&
-            <Nav.Link as={Link} to='/control' eventKey>Painel de Controle</Nav.Link>}
+            <Nav.Link as={Link} to='/control-center' eventKey>Painel de Controle</Nav.Link>}
           <NavDropdown title={props.user.name} alignRight>
             <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
             <NavDropdown.Item as={Link} to='/profile/edit' eventKey>Editar</NavDropdown.Item>

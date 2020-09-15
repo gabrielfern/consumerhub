@@ -39,7 +39,7 @@ export default (props) => {
         <Route exact path='/product/:productId'>
           <Product {...props} />
         </Route>
-        <Route exact path='/control'>
+        <Route exact path='/control-center'>
           <ControlCenter {...props} />
         </Route>
       </Switch>
