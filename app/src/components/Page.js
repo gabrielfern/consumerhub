@@ -9,6 +9,7 @@ import ProfileEdit from '../pages/ProfileEdit'
 import ProductList from '../pages/ProductList'
 import ProductCreate from '../pages/ProductCreate'
 import Product from '../pages/Product'
+import ControlCenter from '../pages/ControlCenter'
 
 export default (props) => {
   return (
@@ -37,6 +38,9 @@ export default (props) => {
         </Route>
         <Route exact path='/product/:productId'>
           <Product {...props} />
+        </Route>
+        <Route exact path='/control'>
+          <ControlCenter {...props} />
         </Route>
       </Switch>
     </Container>
