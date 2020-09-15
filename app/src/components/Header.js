@@ -11,7 +11,7 @@ export default (props) => {
 
   function logout () {
     props.logout()
-    history.push('/')
+    history.push('/signin')
   }
 
   let nav
@@ -44,7 +44,7 @@ export default (props) => {
         <Form className='flex-fill my-2 my-lg-0 justify-content-center' inline>
           <Form.Control
             className='flex-fill' style={{ maxWidth: '576px' }}
-            type='text' placeholder='Procurar Produto'
+            type='text' placeholder='Nome do Produto'
           />
           <Button as={Link} to='/products' className='mx-1 my-2 my-lg-0' variant='outline-info'>
             Procurar

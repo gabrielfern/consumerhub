@@ -12,7 +12,7 @@ export default (props) => {
       getStagingProduct(productId).then(product => {
         setProduct(product[0])
         Array(5).fill().forEach((_, i) => {
-          getStagingProductImage(product[0].id, i + 1).then(async image => {
+          getStagingProductImage(product[0].id, i + 1).then(image => {
             if (image.size > 0) {
               setImageURLs(imageURLs => {
                 const newImageURLs = imageURLs.slice()
