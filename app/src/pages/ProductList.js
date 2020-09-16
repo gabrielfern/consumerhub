@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
-import { getStagingProducts } from '../services/api'
+import { getProducts } from '../services/api'
 
 export default (props) => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     if (props.user) {
-      getStagingProducts().then(products => {
+      getProducts().then(products => {
         setProducts(products)
       })
     }

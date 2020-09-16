@@ -3,7 +3,9 @@ import { useHistory } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FileChooser from '../components/FileChooser'
-import { createProduct, uploadProductImage, editProduct } from '../services/api'
+import {
+  createStagingProduct, uploadStagingProductImage, editStagingProduct
+} from '../services/api'
 import { ReactComponent as Plus } from '../assets/plus.svg'
 import { ReactComponent as Minus } from '../assets/minus.svg'
 
@@ -17,7 +19,7 @@ export default (props) => {
 
   async function submit () {
     setIsLoading(true)
-    const resp = await createProduct()
+    const resp = await createStagingProduct()
     if (resp) {
       const product = { id: resp.id, name, description }
       links.forEach((link, i) => {
@@ -25,13 +27,13 @@ export default (props) => {
           product[`link${i + 1}`] = link
         }
       })
-      await editProduct(product)
+      await editStagingProduct(product)
       await Promise.all(images.map(async (image, i) => {
         if (image && image.size > 0) {
-          return uploadProductImage(resp.id, i + 1, await image.arrayBuffer())
+          return uploadStagingProductImage(resp.id, i + 1, await image.arrayBuffer())
         }
       }))
-      history.push('/product/' + resp.id)
+      history.push(`/staging?id=${resp.id}&userId=${props.user.id}`)
     } else {
       setIsLoading(false)
     }

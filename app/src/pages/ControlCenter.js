@@ -32,13 +32,13 @@ export default (props) => {
 
       <Switch location={{ pathname: query.get('tab') || 'new-products' }}>
         <Route exact path='new-products'>
-          <NewProductsList />
+          <NewProductsList {...props} />
         </Route>
         <Route exact path='product-editions'>
-          <ProductEditionsList />
+          <ProductEditionsList {...props} />
         </Route>
         <Route exact path='reports'>
-          <ReportsList />
+          <ReportsList {...props} />
         </Route>
       </Switch>
     </>

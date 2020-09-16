@@ -10,6 +10,7 @@ import ProductList from '../pages/ProductList'
 import ProductCreate from '../pages/ProductCreate'
 import Product from '../pages/Product'
 import ControlCenter from '../pages/ControlCenter'
+import Staging from '../pages/Staging'
 
 export default (props) => {
   return (
@@ -41,6 +42,9 @@ export default (props) => {
         </Route>
         <Route exact path='/control-center'>
           <ControlCenter {...props} />
+        </Route>
+        <Route exact path='/staging'>
+          <Staging {...props} />
         </Route>
       </Switch>
     </Container>

@@ -1,36 +1,41 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
+import { getStagingProducts } from '../services/api'
 
 export default (props) => {
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    if (props.user) {
+      getStagingProducts().then(products => {
+        setProducts(products)
+      })
+    }
+  }, [props.user])
+
   return (
     <>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
+            <th>ID de usuário</th>
+            <th>ID de produto</th>
+            <th>Nome do produto</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td colSpan='2'>Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {products.map((product, i) => {
+            return (
+              <tr key={i}>
+                <td><Link to={`/staging?id=${product.id}&userId=${product.userId}`}>{i + 1}</Link></td>
+                <td>{product.userId}</td>
+                <td>{product.id}</td>
+                <td>{product.name}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </Table>
     </>

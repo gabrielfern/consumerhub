@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getStagingProduct, getStagingProductImage } from '../services/api'
+import { getProduct } from '../services/api'
 
 export default (props) => {
   const { productId } = useParams()
-  const [product, setProduct] = useState([])
-  const [imageURLs, setImageURLs] = useState(Array(5).fill(''))
+  const [product, setProduct] = useState()
+  const [hadError, setHadError] = useState(Array(5).fill(false))
 
   useEffect(() => {
     if (props.user) {
-      getStagingProduct(productId).then(product => {
-        setProduct(product[0])
-        Array(5).fill().forEach((_, i) => {
-          getStagingProductImage(product[0].id, i + 1).then(image => {
-            if (image.size > 0) {
-              setImageURLs(imageURLs => {
-                const newImageURLs = imageURLs.slice()
-                newImageURLs[i] = URL.createObjectURL(image)
-                return newImageURLs
-              })
-            }
-          })
-        })
+      getProduct(productId).then(product => {
+        setProduct(product)
       })
     }
   }, [props.user, productId])
@@ -43,9 +32,9 @@ export default (props) => {
               className='d-flex justify-content-between align-items-center'
               style={{ width: 2550, height: 550 }}
             >
-              {imageURLs.map((imageURL, i) =>
+              {hadError.map((value, i) =>
                 <div key={i} style={{ width: 500, height: 500 }}>
-                  {(imageURL &&
+                  {(!value &&
                     <img
                       className='rounded'
                       style={{
@@ -53,8 +42,15 @@ export default (props) => {
                         height: '100%',
                         objectFit: 'cover'
                       }}
-                      src={imageURL}
+                      src={`/api/products/${product.id}/image/${i + 1}`}
                       alt='imagem de produto'
+                      onError={() => {
+                        setHadError(hadError => {
+                          const newHadError = hadError.slice()
+                          newHadError[i] = true
+                          return newHadError
+                        })
+                      }}
                     />) || <div className='user-image-replacement rounded' />}
                 </div>
               )}
