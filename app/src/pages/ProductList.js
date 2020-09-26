@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import { getProducts } from '../services/api'
 
 export default (props) => {
+  const query = new URLSearchParams(useLocation().search)
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     if (props.user) {
       getProducts().then(products => {
-        setProducts(products)
+        const search = query.get('s')
+        if (search) {
+          setProducts(products.filter(product => {
+            if (product.name) {
+              return product.name.toLowerCase().includes(search.toLowerCase())
+            }
+          }))
+        } else {
+          setProducts(products)
+        }
       })
     }
   }, [props.user])

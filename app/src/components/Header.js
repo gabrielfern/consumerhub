@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button'
 
 export default (props) => {
   const history = useHistory()
+  const [search, setSearch] = useState('')
 
   function logout () {
     props.logout()
@@ -46,9 +47,13 @@ export default (props) => {
         <Form className='flex-fill my-2 my-lg-0 justify-content-center' inline>
           <Form.Control
             className='flex-fill' style={{ maxWidth: '576px' }}
+            value={search} onChange={e => setSearch(e.target.value)}
             type='text' placeholder='Nome do Produto'
           />
-          <Button as={Link} to='/products' className='mx-1 my-2 my-lg-0' variant='outline-info'>
+          <Button
+            as={Link} to={search ? '/products?s=' + search : '/products'}
+            className='mx-1 my-2 my-lg-0' variant='outline-info'
+          >
             Procurar
           </Button>
         </Form>
