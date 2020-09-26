@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button'
 import {
   getStagingProduct, getStagingProductImage, deleteStagingProduct, createProduct
 } from '../services/api'
+import Image from '../components/Image'
 
 export default (props) => {
   const history = useHistory()
@@ -70,19 +71,11 @@ export default (props) => {
               style={{ width: 2550, height: 550 }}
             >
               {imageURLs.map((imageURL, i) =>
-                <div key={i} style={{ width: 500, height: 500 }}>
-                  {(imageURL &&
-                    <img
-                      className='rounded'
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                      src={imageURL}
-                      alt='imagem de produto'
-                    />) || <div className='user-image-replacement rounded' />}
-                </div>
+                <Image
+                  key={i}
+                  width='500px'
+                  src={imageURL}
+                />
               )}
             </div>
           </div>

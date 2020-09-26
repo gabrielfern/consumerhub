@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getProduct } from '../services/api'
+import Image from '../components/Image'
 
 export default (props) => {
   const { productId } = useParams()
   const [product, setProduct] = useState()
-  const [hadError, setHadError] = useState(Array(5).fill(false))
 
   useEffect(() => {
     if (props.user) {
@@ -32,27 +32,12 @@ export default (props) => {
               className='d-flex justify-content-between align-items-center'
               style={{ width: 2550, height: 550 }}
             >
-              {hadError.map((value, i) =>
-                <div key={i} style={{ width: 500, height: 500 }}>
-                  {(!value &&
-                    <img
-                      className='rounded'
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                      src={`/api/products/${product.id}/image/${i + 1}`}
-                      alt='imagem de produto'
-                      onError={() => {
-                        setHadError(hadError => {
-                          const newHadError = hadError.slice()
-                          newHadError[i] = true
-                          return newHadError
-                        })
-                      }}
-                    />) || <div className='user-image-replacement rounded' />}
-                </div>
+              {[...Array(5).keys()].map((i) =>
+                <Image
+                  key={i}
+                  width='500px'
+                  src={`/api/products/${product.id}/image/${i + 1}`}
+                />
               )}
             </div>
           </div>

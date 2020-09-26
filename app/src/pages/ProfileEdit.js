@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 import FileChooser from '../components/FileChooser'
-import UserImage from '../components/UserImage'
+import Image from '../components/Image'
 
 export default (props) => {
   const history = useHistory()
@@ -19,6 +19,7 @@ export default (props) => {
   const [image, setImage] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [imageURL, setImageURL] = useState('')
 
   useEffect(() => {
     if (!props.isLogged) {
@@ -32,6 +33,14 @@ export default (props) => {
       setEmail(props.user.email)
     }
   }, [props])
+
+  useEffect(() => {
+    if (image && image.size > 0 && image.size <= 5e6) {
+      setImageURL(URL.createObjectURL(image))
+    } else {
+      setImageURL('')
+    }
+  }, [image])
 
   async function submit () {
     if (newPassword || email !== props.user.email) {
@@ -69,9 +78,9 @@ export default (props) => {
         <>
           <Row md={2} xs={1}>
             <Col className='d-flex flex-column justify-content-between'>
-              <UserImage
-                className='align-self-center' userId={props.user.id}
-                version={props.userImageVersion}
+              <Image
+                width='128px'
+                src={imageURL || `/api/users/${props.user.id}/image?${props.userImageVersion}`}
               />
               <Form.Group>
                 <Form.Label>Escolha a imagem</Form.Label>

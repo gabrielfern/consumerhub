@@ -16,13 +16,14 @@ export default (props) => {
             if (product.name) {
               return product.name.toLowerCase().includes(search.toLowerCase())
             }
+            return false
           }))
         } else {
           setProducts(products)
         }
       })
     }
-  }, [props.user])
+  }, [props.user, query])
 
   return (
     <>

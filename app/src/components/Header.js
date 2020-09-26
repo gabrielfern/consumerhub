@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Image from '../components/Image'
 
 export default (props) => {
   const history = useHistory()
@@ -22,7 +23,17 @@ export default (props) => {
         <Nav activeKey=''>
           {props.user.type !== 'user' &&
             <Nav.Link as={Link} to='/control-center' eventKey>Painel de Controle</Nav.Link>}
-          <NavDropdown title={props.user.name} alignRight>
+          <NavDropdown
+            title={
+              <div className='d-inline-block align-top'>
+                <Image
+                  width='24px'
+                  src={`/api/users/${props.user.id}/image?${props.userImageVersion}`}
+                />
+              </div>
+            }
+            alignRight
+          >
             <NavDropdown.Item as={Link} to='/profile' eventKey>Perfil</NavDropdown.Item>
             <NavDropdown.Item as={Link} to='/profile/edit' eventKey>Editar</NavDropdown.Item>
             <NavDropdown.Divider />

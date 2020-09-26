@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Media from 'react-bootstrap/Media'
 import Badge from 'react-bootstrap/Badge'
-import UserImage from '../components/UserImage'
+import Image from '../components/Image'
 
 export default (props) => {
   const history = useHistory()
@@ -19,9 +19,9 @@ export default (props) => {
 
       {(props.user &&
         <Media>
-          <UserImage
-            userId={props.user.id}
-            version={props.userImageVersion}
+          <Image
+            width='128px'
+            src={`/api/users/${props.user.id}/image?${props.userImageVersion}`}
           />
           <Media.Body className='m-2'>
             <p>
