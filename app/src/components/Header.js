@@ -6,6 +6,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Image from '../components/Image'
+import { ReactComponent as AdminPanelSVG } from '../assets/admin_panel_settings.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -22,7 +23,22 @@ export default (props) => {
       props.user &&
         <Nav activeKey=''>
           {props.user.type !== 'user' &&
-            <Nav.Link as={Link} to='/control-center' eventKey>Painel de Controle</Nav.Link>}
+            <NavDropdown
+              title={
+                <AdminPanelSVG className='d-inline-block align-top' />
+              }
+              alignRight
+            >
+              <NavDropdown.Item as={Link} to='/control-center' eventKey>
+                Novos Produtos
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/control-center?tab=product-editions' eventKey>
+                Edições de Produtos
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/control-center?tab=reports' eventKey>
+                Reports
+              </NavDropdown.Item>
+            </NavDropdown>}
           <NavDropdown
             title={
               <div className='d-inline-block align-top'>
