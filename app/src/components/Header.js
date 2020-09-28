@@ -17,6 +17,11 @@ export default (props) => {
     history.push('/signin')
   }
 
+  function onSearch (e) {
+    e.preventDefault()
+    history.push(search ? '/products?s=' + search : '/products')
+  }
+
   let nav
   if (props.isLogged) {
     nav = (
@@ -71,15 +76,17 @@ export default (props) => {
       <Navbar.Brand as={Link} to='/'>ConsumerHub</Navbar.Brand>
       <Navbar.Toggle aria-controls='responsive-navbar-nav' />
       <Navbar.Collapse className='justify-content-end' id='responsive-navbar-nav'>
-        <Form className='flex-fill my-2 my-lg-0 justify-content-center' inline>
+        <Form
+          className='flex-fill my-2 my-lg-0 justify-content-center'
+          onSubmit={onSearch} inline
+        >
           <Form.Control
             className='flex-fill' style={{ maxWidth: '576px' }}
             value={search} onChange={e => setSearch(e.target.value)}
             type='text' placeholder='Nome do Produto'
           />
           <Button
-            as={Link} to={search ? '/products?s=' + search : '/products'}
-            className='mx-1 my-2 my-lg-0' variant='outline-info'
+            type='submit' className='mx-1 my-2 my-lg-0' variant='outline-info'
           >
             Procurar
           </Button>

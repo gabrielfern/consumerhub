@@ -17,7 +17,8 @@ export default (props) => {
   const [links, setLinks] = useState([''])
   const [isLoading, setIsLoading] = useState(false)
 
-  async function submit () {
+  async function submit (e) {
+    e.preventDefault()
     setIsLoading(true)
     const resp = await createStagingProduct()
     if (resp) {
@@ -43,11 +44,12 @@ export default (props) => {
     <>
       <h1>Crie um novo produto</h1>
 
-      <Form>
+      <Form onSubmit={submit}>
         <Form.Group>
           <Form.Label>Nome</Form.Label>
           <Form.Control
-            type='text' value={name} onChange={e => setName(e.target.value)}
+            required type='text' minLength='3' maxLength='50'
+            value={name} onChange={e => setName(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
@@ -131,13 +133,12 @@ export default (props) => {
               <Plus className='wh-1-em' />
             </Button>}
         </div>
+        <div className='d-flex justify-content-end'>
+          <Button type='submit' disabled={isLoading} className='my-3'>
+            {isLoading ? <>Enviando...</> : <>Confirmar</>}
+          </Button>
+        </div>
       </Form>
-
-      <div className='d-flex justify-content-end'>
-        <Button disabled={isLoading} className='my-3' onClick={submit}>
-          {isLoading ? <>Enviando...</> : <>Confirmar</>}
-        </Button>
-      </div>
     </>
   )
 }

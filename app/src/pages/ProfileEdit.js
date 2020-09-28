@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 import { editUser, uploadUserImage } from '../services/api'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
@@ -42,7 +41,8 @@ export default (props) => {
     }
   }, [image])
 
-  async function submit () {
+  async function submit (e) {
+    e.preventDefault()
     if (newPassword || email !== props.user.email) {
       setShowModal(true)
     } else {
@@ -75,9 +75,9 @@ export default (props) => {
       <h1>Edite seu perfil</h1>
 
       {(props.user &&
-        <>
-          <Row md={2} xs={1}>
-            <Col className='d-flex flex-column justify-content-between'>
+        <Form onSubmit={submit}>
+          <Form.Row>
+            <Col lg={6} className='d-flex flex-column justify-content-between'>
               <Image
                 width='128px'
                 src={imageURL || `/api/users/${props.user.id}/image?${props.userImageVersion}`}
@@ -87,31 +87,35 @@ export default (props) => {
                 <FileChooser setFile={setImage} />
               </Form.Group>
             </Col>
-            <Col className='d-flex flex-column justify-content-between'>
+            <Col lg={6} className='d-flex flex-column justify-content-between'>
               <Form.Group>
                 <Form.Label>Nome</Form.Label>
                 <Form.Control
-                  type='text' value={name} onChange={e => setName(e.target.value)}
+                  type='text' minLength='3' maxLength='50'
+                  value={name} onChange={e => setName(e.target.value)}
                 />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
-                  type='text' value={email} onChange={e => setEmail(e.target.value)}
+                  type='email' minLength='5' maxLength='50'
+                  value={email} onChange={e => setEmail(e.target.value)}
                 />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Senha</Form.Label>
                 <Form.Control
-                  type='password' value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                  type='password' minLength='3' maxLength='21'
+                  value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                  placeholder='Nova senha' autoComplete='new-password'
                 />
               </Form.Group>
             </Col>
-          </Row>
-          <Button disabled={isLoading} className='mb-4' onClick={submit}>
+          </Form.Row>
+          <Button type='submit' disabled={isLoading} className='mb-4'>
             {isLoading ? <>Enviando...</> : <>Confirmar</>}
           </Button>
-        </>) || <p>Carregando...</p>}
+        </Form>) || <p>Carregando...</p>}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

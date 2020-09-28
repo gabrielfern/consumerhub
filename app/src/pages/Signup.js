@@ -18,7 +18,8 @@ export default (props) => {
     }
   }, [history, props.isLogged])
 
-  async function submit () {
+  async function submit (e) {
+    e.preventDefault()
     await createUser({ name, email, password })
     if (image && image.size > 0) {
       await uploadUserImage(await image.arrayBuffer())
@@ -30,34 +31,36 @@ export default (props) => {
     <>
       <h1>Inscreva-se</h1>
 
-      <Form>
+      <Form onSubmit={submit}>
         <Form.Group>
           <Form.Label>Nome</Form.Label>
           <Form.Control
-            type='text' value={name} onChange={e => setName(e.target.value)}
+            required type='text' minLength='3' maxLength='50'
+            value={name} onChange={e => setName(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>Email</Form.Label>
           <Form.Control
-            type='text' value={email} onChange={e => setEmail(e.target.value)}
+            required type='email' minLength='5' maxLength='50'
+            value={email} onChange={e => setEmail(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>Senha</Form.Label>
           <Form.Control
-            type='password' value={password} onChange={e => setPassword(e.target.value)}
+            required type='password' minLength='3' maxLength='21'
+            value={password} onChange={e => setPassword(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>Escolha a imagem</Form.Label>
           <FileChooser setFile={setImage} />
         </Form.Group>
+        <Button type='submit' className='mb-4'>
+          Confirmar
+        </Button>
       </Form>
-
-      <Button className='mb-4' onClick={submit}>
-        Confirmar
-      </Button>
     </>
   )
 }
