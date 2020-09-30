@@ -26,7 +26,8 @@ router.post('/', wrap(async (req, res) => {
   const user = await User.getByEmail(req.body.email)
   if (!user) {
     res.status(404).end()
-  } else if (await checkPassword(req.body.password, user)) {
+  } else if (!user.isGoogleUser &&
+    await checkPassword(req.body.password, user)) {
     res.send({ token: createUserToken(user) })
   } else {
     res.status(401).end()
@@ -38,11 +39,13 @@ router.post('/google', wrap(async (req, res) => {
     idToken: req.body.idToken, audience: clientId
   })
   const payload = ticket.getPayload()
-  let user = await await User.getByEmail(payload.email)
-  if (user) {
+  let user = await User.getByEmail(payload.email)
+  if (user && user.isGoogleUser) {
     res.send({ token: createUserToken(user) })
+  } else if (user) {
+    res.status(401).end()
   } else {
-    user = await User.createFromObj(payload)
+    user = await User.createFromObj(payload, true)
     res.status(201).send({
       token: createUserToken(user), user
     })

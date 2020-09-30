@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.put('/', wrap(async (req, res) => {
   const { password, values } = req.body
-  if (password !== undefined) {
+  if (!req.user.isGoogleUser && password !== undefined) {
     if (await checkPassword(password, req.user)) {
       await req.user.updateAndInc(values)
       res.send({ token: createUserToken(req.user) })
@@ -29,7 +29,13 @@ router.put('/', wrap(async (req, res) => {
 }))
 
 router.delete('/', wrap(async (req, res) => {
-  await req.user.destroy()
+  if (req.user.isGoogleUser) {
+    await req.user.destroy()
+  } else if (await checkPassword(req.body.password, req.user)) {
+    await req.user.destroy()
+  } else {
+    res.status(401)
+  }
   res.end()
 }))
 

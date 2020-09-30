@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
+    isGoogleUser: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false
@@ -105,11 +110,12 @@ module.exports = (sequelize, DataTypes) => {
     })
   }
 
-  User.createFromObj = async function (obj) {
+  User.createFromObj = async function (obj, isGoogleUser) {
     const user = await User.create({
       name: obj.name,
       email: obj.email,
-      password: obj.password
+      password: obj.password,
+      isGoogleUser
     })
     const json = user.toJSON()
     delete json.password
