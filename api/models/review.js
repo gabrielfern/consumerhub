@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     text: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(500)
     },
     rating: {
       type: DataTypes.ENUM('1', '2', '3', '4', '5'),

@@ -15,15 +15,24 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'user'
     },
     name: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        len: [3, 50]
+      }
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
     },
     password: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        len: [3, 30]
+      }
     },
     image: {
       type: DataTypes.BLOB

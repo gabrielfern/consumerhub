@@ -22,10 +22,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     name: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        len: [3, 100]
+      }
     },
     description: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(1000)
     },
     image1: {
       type: DataTypes.BLOB
@@ -43,13 +46,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BLOB
     },
     link1: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
     },
     link2: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
     },
     link3: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
     },
     createdAt: {
       type: DataTypes.DATE,
