@@ -48,23 +48,20 @@ export default (props) => {
         <Form.Group>
           <Form.Label>Nome</Form.Label>
           <Form.Control
-            required type='text' minLength='3' maxLength='50'
+            required type='text' minLength='3' maxLength='100'
             value={name} onChange={e => setName(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>Descrição</Form.Label>
           <Form.Control
-            as='textarea' rows='3' value={description} onChange={e => setDescription(e.target.value)}
+            as='textarea' rows='3' maxLength='1000'
+            value={description} onChange={e => setDescription(e.target.value)}
           />
         </Form.Group>
 
         <hr />
         <h4>Imagens do produto</h4>
-        <span className='text-muted d-none'>
-          Página do produto no site do fabricante<br />
-          Link para o produto a venda em e-commerce
-        </span>
         {images.map((_, i) => {
           return (
             <Form.Group key={i}>
@@ -97,10 +94,6 @@ export default (props) => {
 
         <hr />
         <h4>Links</h4>
-        <span className='text-muted d-none'>
-          Página do produto no site do fabricante<br />
-          Link para o produto a venda em e-commerce
-        </span>
         {links.map((link, i) => {
           return (
             <Form.Group key={i}>

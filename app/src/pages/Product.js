@@ -93,7 +93,7 @@ export default (props) => {
 
           <Form onSubmit={submitReview}>
             <Form.Row>
-              <Col>
+              <Col xs={12} md={10} lg={11}>
                 <Form.Group>
                   <Form.Control
                     placeholder='Deixe seu comentário aqui'
@@ -101,10 +101,10 @@ export default (props) => {
                   />
                 </Form.Group>
               </Col>
-              <Col xs={1}>
+              <Col xs={3} md={2} lg={1}>
                 <Form.Group>
                   <Form.Control
-                    placeholder='Deixe seu comentário aqui'
+                    placeholder='Deixe seu comentário aqui' maxLength='500'
                     as='select' rows='3' value={reviewRating} onChange={e => setReviewRating(e.target.value)}
                   >
                     <option value='1'>1</option>

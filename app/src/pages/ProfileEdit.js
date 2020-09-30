@@ -61,7 +61,8 @@ export default (props) => {
     }
   }
 
-  async function submitWithPassword () {
+  async function submitWithPassword (e) {
+    e.preventDefault()
     setIsLoading(true)
     if (image && image.size > 0) {
       await uploadUserImage(await image.arrayBuffer())
@@ -115,8 +116,8 @@ export default (props) => {
                 </Form.Label>
                 <Form.Control
                   disabled={props.user.isGoogleUser}
-                  type='email' minLength='5' maxLength='50'
-                  value={email} onChange={e => setEmail(e.target.value)}
+                  type='email' value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </Form.Group>
               <Form.Group>
@@ -136,7 +137,7 @@ export default (props) => {
                 </Form.Label>
                 <Form.Control
                   disabled={props.user.isGoogleUser}
-                  type='password' minLength='3' maxLength='21'
+                  type='password' minLength='3' maxLength='30'
                   value={newPassword} onChange={e => setNewPassword(e.target.value)}
                   autoComplete='new-password'
                 />
@@ -152,25 +153,28 @@ export default (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Confirme sua senha</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Alert variant='warning'>
-            Senha atual necessaria para se alterar email ou senha
-          </Alert>
-          <Form.Group>
-            <Form.Label>Senha</Form.Label>
-            <Form.Control
-              type='password' value={password} onChange={e => setPassword(e.target.value)}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='secondary' onClick={() => setShowModal(false)}>
-            Cancelar
-          </Button>
-          <Button disabled={isLoading} variant='primary' onClick={() => submitWithPassword()}>
-            {isLoading ? <>Enviando...</> : <>Confirmar</>}
-          </Button>
-        </Modal.Footer>
+        <Form onSubmit={submitWithPassword}>
+          <Modal.Body>
+            <Alert variant='warning'>
+              Senha atual necessaria para se alterar email ou senha
+            </Alert>
+            <Form.Group>
+              <Form.Label>Senha</Form.Label>
+              <Form.Control
+                required type='password' minLength='3' maxLength='30'
+                value={password} onChange={e => setPassword(e.target.value)}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={() => setShowModal(false)}>
+              Cancelar
+            </Button>
+            <Button type='submit' disabled={isLoading} variant='primary'>
+              {isLoading ? <>Enviando...</> : <>Confirmar</>}
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
     </>
   )

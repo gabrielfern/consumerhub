@@ -42,14 +42,14 @@ export default (props) => {
         <Form.Group>
           <Form.Label>Email</Form.Label>
           <Form.Control
-            required type='email' minLength='5' maxLength='50'
-            value={email} onChange={e => setEmail(e.target.value)}
+            required type='email' value={email}
+            onChange={e => setEmail(e.target.value)}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>Senha</Form.Label>
           <Form.Control
-            required type='password' minLength='3' maxLength='21'
+            required type='password' minLength='3' maxLength='30'
             value={password} onChange={e => setPassword(e.target.value)}
           />
         </Form.Group>
