@@ -178,3 +178,28 @@ export async function createProduct (productId, userId) {
     }
   })
 }
+
+export async function deleteProduct (productId) {
+  await fetch(`/api/products/${productId}`, {
+    method: 'DELETE',
+    headers: {
+      token: localStorage.token
+    }
+  })
+}
+
+export async function getProductReviews (productId) {
+  const res = await fetch(`/api/products/${productId}/reviews`)
+  return res.json()
+}
+
+export async function createReview (review) {
+  await fetch('/api/reviews', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify(review)
+  })
+}

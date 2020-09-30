@@ -6,8 +6,8 @@ import FileChooser from '../components/FileChooser'
 import {
   createStagingProduct, uploadStagingProductImage, editStagingProduct
 } from '../services/api'
-import { ReactComponent as Plus } from '../assets/plus.svg'
-import { ReactComponent as Minus } from '../assets/minus.svg'
+import { ReactComponent as PlusSVG } from '../assets/plus.svg'
+import { ReactComponent as MinusSVG } from '../assets/minus.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -84,14 +84,14 @@ export default (props) => {
             <Button
               variant='outline-danger' onClick={() => setImages(images => images.slice(0, -1))}
             >
-              <Minus className='wh-1-em' />
+              <MinusSVG className='wh-1-em' />
             </Button>}
           {images.length < 5 &&
             <Button
               variant='outline-primary' className='ml-2'
               onClick={() => setImages(images => [...images, ''])}
             >
-              <Plus className='wh-1-em' />
+              <PlusSVG className='wh-1-em' />
             </Button>}
         </div>
 
@@ -123,14 +123,14 @@ export default (props) => {
             <Button
               variant='outline-danger' onClick={() => setLinks(links => links.slice(0, -1))}
             >
-              <Minus className='wh-1-em' />
+              <MinusSVG className='wh-1-em' />
             </Button>}
           {links.length < 3 &&
             <Button
               variant='outline-primary' className='ml-2'
               onClick={() => setLinks(links => [...links, ''])}
             >
-              <Plus className='wh-1-em' />
+              <PlusSVG className='wh-1-em' />
             </Button>}
         </div>
         <div className='d-flex justify-content-end'>

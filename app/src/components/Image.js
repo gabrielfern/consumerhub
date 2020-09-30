@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 export default (props) => {
   const [hadError, setHadError] = useState(false)
+  const rounded = props.rounded ? 'rounded' : ''
 
   useEffect(() => {
     setHadError(false)
@@ -14,11 +15,11 @@ export default (props) => {
     >
       {(props.src && !hadError &&
         <img
-          className='rounded'
+          className={rounded}
           src={props.src}
           alt={props.alt}
           onError={() => setHadError(true)}
-        />) || <div className='image-replacement rounded' />}
+        />) || <div className={'image-replacement ' + rounded} />}
     </div>
   )
 }
