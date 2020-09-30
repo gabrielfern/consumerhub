@@ -17,18 +17,20 @@ export default (props) => {
   useEffect(() => {
     if (props.user && productId && userId) {
       getStagingProduct(productId, userId).then(product => {
-        setProduct(product[0])
-        Array(5).fill().forEach((_, i) => {
-          getStagingProductImage(product[0].id, userId, i + 1).then(image => {
-            if (image.size > 0) {
-              setImageURLs(imageURLs => {
-                const newImageURLs = imageURLs.slice()
-                newImageURLs[i] = URL.createObjectURL(image)
-                return newImageURLs
-              })
-            }
+        if (product[0]) {
+          setProduct(product[0])
+          Array(5).fill().forEach((_, i) => {
+            getStagingProductImage(product[0].id, userId, i + 1).then(image => {
+              if (image.size > 0) {
+                setImageURLs(imageURLs => {
+                  const newImageURLs = imageURLs.slice()
+                  newImageURLs[i] = URL.createObjectURL(image)
+                  return newImageURLs
+                })
+              }
+            })
           })
-        })
+        }
       })
     }
   }, [props.user, productId, userId])

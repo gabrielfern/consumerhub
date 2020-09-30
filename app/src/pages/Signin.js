@@ -24,13 +24,15 @@ export default (props) => {
 
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
-      const { isNewUser } = await gauthUser(idToken)
-      if (isNewUser) {
+      const resp = await gauthUser(idToken)
+      if (resp && resp.isNewUser) {
         const imageUrl = gUser.getBasicProfile().getImageUrl()
         const resp = await fetch(imageUrl)
         await uploadUserImage(await resp.arrayBuffer())
       }
-      props.loadUser()
+      if (resp) {
+        props.loadUser()
+      }
     }
 
     gapi.load('auth2', () => {

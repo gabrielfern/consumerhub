@@ -6,8 +6,11 @@ import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 import FileChooser from '../components/FileChooser'
 import Image from '../components/Image'
+import { ReactComponent as InfoSVG } from '../assets/info.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -96,18 +99,46 @@ export default (props) => {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Email</Form.Label>
+                <Form.Label>
+                  Email
+                  {props.user.isGoogleUser &&
+                    <OverlayTrigger
+                      placement='top'
+                      overlay={
+                        <Tooltip>
+                          Usuarios google não podem editar este campo
+                        </Tooltip>
+                      }
+                    >
+                      <span>&nbsp;<InfoSVG className='wh-1-em' /></span>
+                    </OverlayTrigger>}
+                </Form.Label>
                 <Form.Control
+                  disabled={props.user.isGoogleUser}
                   type='email' minLength='5' maxLength='50'
                   value={email} onChange={e => setEmail(e.target.value)}
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Senha</Form.Label>
+                <Form.Label>
+                  Nova Senha
+                  {props.user.isGoogleUser &&
+                    <OverlayTrigger
+                      placement='top'
+                      overlay={
+                        <Tooltip>
+                          Usuarios google não podem editar este campo
+                        </Tooltip>
+                      }
+                    >
+                      <span>&nbsp;<InfoSVG className='wh-1-em' /></span>
+                    </OverlayTrigger>}
+                </Form.Label>
                 <Form.Control
+                  disabled={props.user.isGoogleUser}
                   type='password' minLength='3' maxLength='21'
                   value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                  placeholder='Nova senha' autoComplete='new-password'
+                  autoComplete='new-password'
                 />
               </Form.Group>
             </Col>
