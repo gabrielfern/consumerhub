@@ -18,7 +18,7 @@ export default (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const [image, setImage] = useState({})
+  const [image, setImage] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [imageURL, setImageURL] = useState('')
@@ -34,37 +34,29 @@ export default (props) => {
       setName(props.user.name)
       setEmail(props.user.email)
     }
-  }, [props])
+  }, [props.user])
 
   useEffect(() => {
-    if (image && image.size > 0 && image.size <= 5e6) {
+    if (image) {
       setImageURL(URL.createObjectURL(image))
     } else {
       setImageURL('')
     }
   }, [image])
 
-  async function submit (e) {
+  async function submitWithoutPassword (e) {
     e.preventDefault()
     if (newPassword || email !== props.user.email) {
       setShowModal(true)
     } else {
-      setIsLoading(true)
-      if (image && image.size > 0) {
-        await uploadUserImage(await image.arrayBuffer())
-        props.setUserImageVersion(version => version + 1)
-      }
-      await editUser(password, name, email, newPassword)
-      setIsLoading(false)
-      props.loadUser()
-      history.push('/profile')
+      submit()
     }
   }
 
-  async function submitWithPassword (e) {
-    e.preventDefault()
+  async function submit (e) {
+    e && e.preventDefault()
     setIsLoading(true)
-    if (image && image.size > 0) {
+    if (image) {
       await uploadUserImage(await image.arrayBuffer())
       props.setUserImageVersion(version => version + 1)
     }
@@ -79,7 +71,7 @@ export default (props) => {
       <h1>Edite seu perfil</h1>
 
       {(props.user &&
-        <Form onSubmit={submit}>
+        <Form onSubmit={submitWithoutPassword}>
           <Form.Row>
             <Col lg={6} className='d-flex flex-column justify-content-between'>
               <Image
@@ -88,7 +80,7 @@ export default (props) => {
               />
               <Form.Group>
                 <Form.Label>Escolha a imagem</Form.Label>
-                <FileChooser setFile={setImage} />
+                <FileChooser imageOnly setFile={setImage} maxSize={5e6} />
               </Form.Group>
             </Col>
             <Col lg={6} className='d-flex flex-column justify-content-between'>
@@ -153,7 +145,7 @@ export default (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Confirme sua senha</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={submitWithPassword}>
+        <Form onSubmit={submit}>
           <Modal.Body>
             <Alert variant='warning'>
               Senha atual necessaria para se alterar email ou senha
