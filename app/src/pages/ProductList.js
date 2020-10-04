@@ -49,9 +49,10 @@ export default (props) => {
     <>
       <h1>Produtos</h1>
 
-      <Button as={Link} to='/products/new' variant='outline-primary'>
-        Criar produto
-      </Button>
+      {props.user &&
+        <Button as={Link} to='/products/new' variant='outline-primary'>
+          Criar produto
+        </Button>}
       <div className='d-flex flex-wrap justify-content-around align-items-stretch'>
         {products.map((product, i) =>
           <Link className='text-reset text-decoration-none d-flex' key={i} to={`/product/${product.id}`}>

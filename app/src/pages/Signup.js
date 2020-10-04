@@ -68,6 +68,7 @@ export default (props) => {
               <Form.Control
                 required type='password' minLength='3' maxLength='30'
                 value={password} onChange={e => setPassword(e.target.value)}
+                autoComplete='new-password'
               />
             </Form.Group>
           </Col>
@@ -83,7 +84,7 @@ export default (props) => {
           </Col>
         </Form.Row>
         <div className='py-3 text-center'>
-          <Button type='submit' className='mb-4'>
+          <Button type='submit'>
             Confirmar
           </Button>
         </div>

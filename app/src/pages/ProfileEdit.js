@@ -87,7 +87,7 @@ export default (props) => {
               <Form.Group>
                 <Form.Label>Nome</Form.Label>
                 <Form.Control
-                  type='text' minLength='3' maxLength='50'
+                  required type='text' minLength='3' maxLength='50'
                   value={name} onChange={e => setName(e.target.value)}
                 />
               </Form.Group>
@@ -108,7 +108,7 @@ export default (props) => {
                 </Form.Label>
                 <Form.Control
                   disabled={props.user.isGoogleUser}
-                  type='email' value={email}
+                  required type='email' value={email}
                   onChange={e => setEmail(e.target.value)}
                 />
               </Form.Group>
@@ -136,9 +136,11 @@ export default (props) => {
               </Form.Group>
             </Col>
           </Form.Row>
-          <Button type='submit' disabled={isLoading} className='mb-4'>
-            {isLoading ? <>Enviando...</> : <>Confirmar</>}
-          </Button>
+          <div className='py-3 text-center'>
+            <Button type='submit' disabled={isLoading}>
+              {isLoading ? <>Enviando...</> : <>Confirmar</>}
+            </Button>
+          </div>
         </Form>) || <p>Carregando...</p>}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
