@@ -1,20 +1,28 @@
 /* global fetch, gapi */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { authUser, gauthUser, uploadUserImage } from '../services/api'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import gLogo from '../assets/Google__G__Logo.webp'
 
 export default (props) => {
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const gButton = useRef()
 
   async function submit (e) {
     e.preventDefault()
-    await authUser(email, password)
-    props.loadUser()
+    const status = await authUser(email, password)
+    if (status === 200) {
+      props.loadUser()
+    } else {
+      window.alert('Falha ao realizar login')
+    }
   }
 
   useEffect(() => {
@@ -32,18 +40,17 @@ export default (props) => {
       }
       if (resp) {
         props.loadUser()
+      } else {
+        window.alert('Falha ao realizar login')
       }
     }
 
     gapi.load('auth2', () => {
       const auth2 = gapi.auth2.init()
-      gapi.signin2.render('g-signin2', {
-        onsuccess: async () => {
-          const gUser = auth2.currentUser.get()
-          await gSignIn(gUser)
-          auth2.signOut()
-        }
-      })
+      auth2.attachClickHandler(
+        gButton.current, {}, gSignIn,
+        () => window.alert('Falha ao autenticar com o Google')
+      )
     })
   }, [history, props])
 
@@ -51,27 +58,39 @@ export default (props) => {
     <>
       <h1>Logue</h1>
 
-      <Form onSubmit={submit}>
-        <Form.Group>
-          <Form.Label>Email </Form.Label>
-          <Form.Control
-            required type='email' value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Senha </Form.Label>
-          <Form.Control
-            required type='password' minLength='3' maxLength='30'
-            value={password} onChange={e => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Button type='submit' className='mb-4'>
-          Entrar
-        </Button>
-      </Form>
+      <Row>
+        <Col md={6}>
+          <Form onSubmit={submit}>
+            <Form.Group>
+              <Form.Label>Email </Form.Label>
+              <Form.Control
+                required type='email' value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Senha </Form.Label>
+              <Form.Control
+                required type='password' minLength='3' maxLength='30'
+                value={password} onChange={e => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <div className='py-3 text-center'>
+              <Button type='submit'>
+                Entrar
+              </Button>
+            </div>
+          </Form>
+        </Col>
 
-      <div id='g-signin2' />
+        <Col md={6} className='py-3 d-flex flex-column justify-content-center align-items-center'>
+          <p className='text-muted'>Ou use uma conta Google</p>
+          <Button ref={gButton} variant='outline-primary'>
+            <img src={gLogo} style={{ width: '1.2em' }} alt='' />
+            &nbsp;Entre com o Google
+          </Button>
+        </Col>
+      </Row>
     </>
   )
 }

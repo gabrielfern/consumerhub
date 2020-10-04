@@ -20,6 +20,7 @@ export async function createUser (user) {
   if (res.status === 200) {
     localStorage.token = (await res.json()).token
   }
+  return res.status
 }
 
 export async function uploadUserImage (buffer) {
@@ -44,6 +45,7 @@ export async function authUser (email, password) {
   if (res.status === 200) {
     localStorage.token = (await res.json()).token
   }
+  return res.status
 }
 
 export async function gauthUser (idToken) {

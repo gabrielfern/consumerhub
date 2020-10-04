@@ -31,11 +31,15 @@ export default (props) => {
 
   async function submit (e) {
     e.preventDefault()
-    await createUser({ name, email, password })
+    const status = await createUser({ name, email, password })
     if (image) {
       await uploadUserImage(await image.arrayBuffer())
     }
-    props.loadUser()
+    if (status === 200) {
+      props.loadUser()
+    } else {
+      window.alert('Falha ao criar usuário')
+    }
   }
 
   return (
@@ -44,7 +48,7 @@ export default (props) => {
 
       <Form onSubmit={submit}>
         <Form.Row>
-          <Col lg={6}>
+          <Col md={6}>
             <Form.Group>
               <Form.Label>Nome</Form.Label>
               <Form.Control
@@ -67,7 +71,7 @@ export default (props) => {
               />
             </Form.Group>
           </Col>
-          <Col lg={6} className='d-flex flex-column justify-content-between'>
+          <Col md={6} className='d-flex flex-column justify-content-between'>
             <Image
               width='128px'
               src={imageURL}
@@ -78,9 +82,11 @@ export default (props) => {
             </Form.Group>
           </Col>
         </Form.Row>
-        <Button type='submit' className='mb-4'>
-          Confirmar
-        </Button>
+        <div className='py-3 text-center'>
+          <Button type='submit' className='mb-4'>
+            Confirmar
+          </Button>
+        </div>
       </Form>
     </>
   )
