@@ -67,7 +67,10 @@ export default (props) => {
                 src={`/api/products/${product.id}/image/1`}
               />
               <Card.Body className='flex-fill'>
-                {product.description || 'Produto sem descrição'}
+                {product.description.slice(0, 200) ||
+                  <span className='text-muted'>Produto sem descrição</span>}
+                {product.description.length > 200 &&
+                  <span>...</span>}
               </Card.Body>
               <Card.Footer className='d-flex'>
                 <Stars

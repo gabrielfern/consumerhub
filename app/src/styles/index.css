@@ -6,6 +6,11 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
+hr {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 .image-container img {
   object-fit: cover;
   width: 100%;
@@ -21,4 +26,9 @@ h1 {
 .wh-1-em {
   width: 1em;
   height: 1em;
+}
+
+.space-break {
+  white-space: pre-line;
+  word-break: break-word;
 }
