@@ -205,3 +205,8 @@ export async function createReview (review) {
     body: JSON.stringify(review)
   })
 }
+
+export async function getUserReviews (userId) {
+  const res = await fetch(`/api/reviews?userId=${userId}`)
+  return res.json()
+}

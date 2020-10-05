@@ -17,7 +17,13 @@ router.get('/', wrap(async (req, res) => {
   if (req.query.userId) {
     where.userId = req.query.userId
   }
-  res.send(await Review.findAll({ where }))
+  res.send(await Review.findAll({
+    where,
+    include: [{
+      association: 'Product',
+      attributes: ['name']
+    }]
+  }))
 }))
 
 router.post('/', wrap(async (req, res) => {
