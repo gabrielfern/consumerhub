@@ -31,19 +31,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(1000)
     },
     image1: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     image2: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     image3: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     image4: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     image5: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     link1: {
       type: DataTypes.STRING,
@@ -70,12 +70,6 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false
-    }
-  }, {
-    defaultScope: {
-      attributes: {
-        exclude: ['image1', 'image2', 'image3', 'image4', 'image5']
-      }
     }
   })
 

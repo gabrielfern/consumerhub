@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Product, StagingProduct } = require('../models')
+const { Product, StagingProduct, Image } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
@@ -16,11 +16,12 @@ router.get('/', wrap(async (req, res) => {
 }))
 
 router.post('/', wrap(async (req, res) => {
-  const stagingProduct = await StagingProduct.unscoped().findOne({
+  const stagingProduct = await StagingProduct.findOne({
     where: { id: req.query.id, userId: req.query.userId }
   })
   if (stagingProduct) {
     const product = await Product.create(stagingProduct.dataValues)
+    await Image.clearUsers(req.query.userId, req.params.id)
     await stagingProduct.destroy()
     res.send({ id: product.id })
   } else {
@@ -38,7 +39,7 @@ router.get('/:id', wrap(async (req, res) => {
 }))
 
 router.put('/:id', wrap(async (req, res) => {
-  const stagingProduct = await StagingProduct.unscoped().findOne({
+  const stagingProduct = await StagingProduct.findOne({
     where: { id: req.params.id, userId: req.query.userId }
   })
   const product = await Product.findByPk(req.params.id)
@@ -50,6 +51,7 @@ router.put('/:id', wrap(async (req, res) => {
       }
     }
     await product.update(values)
+    await Image.clearUsers(req.query.userId, req.params.id)
     await stagingProduct.destroy()
     res.end()
   } else {
@@ -61,25 +63,12 @@ router.delete('/:id', wrap(async (req, res) => {
   const result = await Product.destroy({
     where: { id: req.params.id }
   })
+  await Image.delete({ productId: req.params.id })
   await StagingProduct.destroy({
     where: { id: req.params.id }
   })
   if (result) {
     res.end()
-  } else {
-    res.status(404).end()
-  }
-}))
-
-router.get('/:id/image/:imageNumber', wrap(async (req, res) => {
-  const imageNumber = `image${req.params.imageNumber}`
-  const product = await Product.findByPk(req.params.id, {
-    attributes: [imageNumber]
-  })
-  if (product && product[imageNumber] &&
-    product[imageNumber].length) {
-    res.set('Content-Type', 'image')
-    res.send(product[imageNumber])
   } else {
     res.status(404).end()
   }

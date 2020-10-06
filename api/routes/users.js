@@ -70,16 +70,4 @@ router.delete('/:id', wrap(async (req, res) => {
   }
 }))
 
-router.get('/:id/image', wrap(async (req, res) => {
-  const user = await User.findByPk(req.params.id, {
-    attributes: ['image']
-  })
-  if (user && user.image && user.image.length) {
-    res.set('Content-Type', 'image')
-    res.send(user.image)
-  } else {
-    res.status(404).end()
-  }
-}))
-
 module.exports = router

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Sequelize, Friendship } = require('../models')
+const { Sequelize, Friendship, Image } = require('../models')
 const { auth, createUserToken, checkPassword } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
@@ -30,8 +30,10 @@ router.put('/', wrap(async (req, res) => {
 
 router.delete('/', wrap(async (req, res) => {
   if (req.user.isGoogleUser) {
+    await Image.delete({ userId: req.user.id })
     await req.user.destroy()
   } else if (await checkPassword(req.body.password, req.user)) {
+    await Image.delete({ userId: req.user.id })
     await req.user.destroy()
   } else {
     res.status(401)
@@ -39,20 +41,16 @@ router.delete('/', wrap(async (req, res) => {
   res.end()
 }))
 
-router.get('/image', wrap(async (req, res) => {
-  await req.user.reload({ attributes: ['image'] })
-  if (req.user.image && req.user.image.length) {
-    res.set('Content-Type', 'image')
-    res.send(req.user.image)
-  } else {
-    res.status(404).end()
-  }
-}))
-
 router.post('/image', wrap(async (req, res) => {
-  await req.user.update({
-    image: req.body
-  })
+  await Image.delete({ id: req.user.image })
+  if (req.body.length) {
+    const image = await Image.create({
+      userId: req.user.id, data: req.body
+    })
+    req.user.update({ image: image.id })
+  } else {
+    req.user.update({ image: null })
+  }
   res.end()
 }))
 

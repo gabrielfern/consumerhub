@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     image: {
-      type: DataTypes.BLOB
+      type: DataTypes.STRING
     },
     tokenVersion: {
       type: DataTypes.INTEGER,
@@ -107,14 +107,11 @@ module.exports = (sequelize, DataTypes) => {
   User.admin = 2
 
   User.getById = function (id) {
-    return User.findByPk(id, {
-      attributes: { exclude: ['image'] }
-    })
+    return User.findByPk(id)
   }
 
   User.getByEmail = function (email) {
     return User.findOne({
-      attributes: { exclude: ['image'] },
       where: { email }
     })
   }

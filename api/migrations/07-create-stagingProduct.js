@@ -26,19 +26,19 @@ module.exports = {
         type: Sequelize.STRING(1000)
       },
       image1: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       image2: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       image3: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       image4: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       image5: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       link1: {
         type: Sequelize.STRING
