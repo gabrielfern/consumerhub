@@ -7,6 +7,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Image from '../components/Image'
 import { ReactComponent as AdminPanelSVG } from '../assets/admin_panel_settings.svg'
+import { ReactComponent as NotificationsSVG } from '../assets/notifications.svg'
+// import { ReactComponent as NotificationsActiveSVG } from '../assets/notifications_active.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -27,6 +29,11 @@ export default (props) => {
     nav = (
       props.user &&
         <Nav activeKey=''>
+          <Nav.Item>
+            <Nav.Link as={Link} to='/notifications' eventKey>
+              <NotificationsSVG className='d-inline-block align-top' />
+            </Nav.Link>
+          </Nav.Item>
           {props.user.type !== 'user' &&
             <NavDropdown
               title={
