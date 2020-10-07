@@ -3,6 +3,7 @@ const router = express.Router()
 const { Product, StagingProduct, Image } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
+const { notifyProductAccepted } = require('../services/notifications')
 
 router.post('/', auth('mod'))
 router.put('/:id', auth('mod'))
@@ -22,6 +23,11 @@ router.post('/', wrap(async (req, res) => {
   if (stagingProduct) {
     const product = await Product.create(stagingProduct.dataValues)
     await Image.clearUsers(req.query.userId, req.query.id)
+    if (req.user.id !== req.query.userId) {
+      notifyProductAccepted(
+        stagingProduct.userId, stagingProduct.id, stagingProduct.name
+      )
+    }
     await stagingProduct.destroy()
     res.send({ id: product.id })
   } else {
@@ -52,6 +58,11 @@ router.put('/:id', wrap(async (req, res) => {
     }
     await product.update(values)
     await Image.clearUsers(req.query.userId, req.params.id)
+    if (req.user.id !== req.query.userId) {
+      notifyProductAccepted(
+        stagingProduct.userId, product.id, product.name
+      )
+    }
     await stagingProduct.destroy()
     res.end()
   } else {

@@ -12,7 +12,7 @@ router.delete('/:id', auth('mod'))
 
 router.get('/', wrap(async (req, res) => {
   const users = await User.findAll({
-    attributes: { exclude: ['password', 'image'] }
+    attributes: { exclude: ['password'] }
   })
   res.send(users)
 }))
@@ -23,7 +23,7 @@ router.post('/', wrap(async (req, res) => {
 }))
 
 router.get('/:id', wrap(async (req, res) => {
-  const attributes = ['id', 'name']
+  const attributes = ['id', 'name', 'image']
   if (req.user && (req.user.type !== 'user' ||
     req.user.id === req.params.id)) {
     attributes.push('type', 'email')

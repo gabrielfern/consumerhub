@@ -3,6 +3,7 @@ const router = express.Router()
 const { StagingProduct, Product, Image } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
+const { notifyProductRejected } = require('../services/notifications')
 
 router.all('/', auth('user'))
 router.post('/image/:imageNumber', auth('user'))
@@ -64,11 +65,15 @@ router.delete('/', wrap(async (req, res) => {
   if (req.user.type !== 'user' && req.query.userId) {
     where.userId = req.query.userId
   }
-  await Image.delete({
-    userId: where.userId, productId: where.id
-  })
-  const result = await StagingProduct.destroy({ where })
-  if (result) {
+  const stagingProduct = await StagingProduct.findOne({ where })
+  if (stagingProduct) {
+    await Image.delete({
+      userId: where.userId, productId: where.id
+    })
+    if (req.user.id !== where.userId) {
+      notifyProductRejected(where.userId, stagingProduct.name)
+    }
+    await stagingProduct.destroy()
     res.end()
   } else {
     res.status(404).end()
