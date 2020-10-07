@@ -76,7 +76,7 @@ export default (props) => {
             <Col lg={6} className='d-flex flex-column justify-content-between'>
               <Image
                 width='128px'
-                src={imageURL || `/api/users/${props.user.id}/image?${props.userImageVersion}`}
+                src={imageURL || `/api/images/${props.user.image}`}
               />
               <Form.Group>
                 <Form.Label>Escolha a imagem</Form.Label>

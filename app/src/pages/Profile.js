@@ -26,7 +26,7 @@ export default (props) => {
             <div>
               <Image
                 width='200px'
-                src={`/api/users/${props.user.id}/image?${props.userImageVersion}`}
+                src={`/api/images/${props.user.image}`}
               />
               <p className='mt-3'>
                 <span className='text-muted'>#{props.user.id + ' '}</span>

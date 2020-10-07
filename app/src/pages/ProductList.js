@@ -64,7 +64,7 @@ export default (props) => {
               </Card.Header>
               <Image
                 width='320px'
-                src={`/api/products/${product.id}/image/1`}
+                src={`/api/images/${product.image1}`}
               />
               <Card.Body className='flex-fill'>
                 {product.description.slice(0, 200) ||

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import {
-  getStagingProduct, getStagingProductImage, deleteStagingProduct, createProduct
+  getStagingProduct, deleteStagingProduct, createProduct
 } from '../services/api'
 import Image from '../components/Image'
 
@@ -12,24 +12,12 @@ export default (props) => {
   const productId = query.get('id')
   const userId = query.get('userId')
   const [product, setProduct] = useState()
-  const [imageURLs, setImageURLs] = useState(Array(5).fill(''))
 
   useEffect(() => {
     if (props.user && productId && userId) {
       getStagingProduct(productId, userId).then(product => {
         if (product[0]) {
           setProduct(product[0])
-          Array(5).fill().forEach((_, i) => {
-            getStagingProductImage(product[0].id, userId, i + 1).then(image => {
-              if (image.size > 0) {
-                setImageURLs(imageURLs => {
-                  const newImageURLs = imageURLs.slice()
-                  newImageURLs[i] = URL.createObjectURL(image)
-                  return newImageURLs
-                })
-              }
-            })
-          })
         }
       })
     }
@@ -72,11 +60,11 @@ export default (props) => {
               className='d-flex justify-content-between align-items-center'
               style={{ width: 2550, height: 550 }}
             >
-              {imageURLs.map((imageURL, i) =>
+              {[1, 2, 3, 4, 5].map((i) =>
                 <Image
                   key={i}
                   width='500px'
-                  src={imageURL}
+                  src={`/api/images/${product['image' + i]}`}
                 />
               )}
             </div>

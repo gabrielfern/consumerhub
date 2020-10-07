@@ -49,7 +49,7 @@ export default (props) => {
               <div className='d-inline-block align-top'>
                 <Image
                   width='24px'
-                  src={`/api/users/${props.user.id}/image?${props.userImageVersion}`}
+                  src={`/api/images/${props.user.image}`}
                 />
               </div>
             }

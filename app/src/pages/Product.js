@@ -72,11 +72,11 @@ export default (props) => {
               className='d-flex justify-content-between align-items-center'
               style={{ width: 2550, height: 550 }}
             >
-              {[...Array(5).keys()].map((i) =>
+              {[1, 2, 3, 4, 5].map((i) =>
                 <Image
                   key={i}
                   width='500px'
-                  src={`/api/products/${product.id}/image/${i + 1}`}
+                  src={`/api/images/${product['image' + i]}`}
                 />
               )}
             </div>
@@ -132,7 +132,7 @@ export default (props) => {
               <div>
                 <Image
                   width='128px'
-                  src={`/api/users/${review.userId}/image`}
+                  src={`/api/images/${review.User.image}`}
                 />
               </div>
               <div className='ml-3'>

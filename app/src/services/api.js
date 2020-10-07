@@ -140,16 +140,6 @@ export async function deleteStagingProduct (productId, userId) {
   })
 }
 
-export async function getStagingProductImage (productId, userId, imageNumber) {
-  const query = `?id=${productId}&userId=${userId}`
-  const res = await fetch(`/api/staging/image/${imageNumber}${query}`, {
-    headers: {
-      token: localStorage.token
-    }
-  })
-  return res.blob()
-}
-
 export async function uploadStagingProductImage (productId, imageNumber, buffer) {
   await fetch(`/api/staging/image/${imageNumber}?id=${productId}`, {
     method: 'POST',
