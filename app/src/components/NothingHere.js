@@ -1,5 +1,5 @@
 import React from 'react'
-import { ReactComponent as ErrorSVG } from '../../assets/error_outline.svg'
+import { ReactComponent as ErrorSVG } from '../assets/error_outline.svg'
 
 export default () => {
   return (

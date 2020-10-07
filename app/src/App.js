@@ -9,7 +9,6 @@ import Footer from './components/Footer'
 
 export default () => {
   const [user, setUser] = useState()
-  const [userImageVersion, setUserImageVersion] = useState(0)
   const [isLogged, setIsLogged] = useState(!!localStorage.token)
 
   const loadUser = useCallback(async () => {
@@ -37,7 +36,7 @@ export default () => {
   }, [loadUser])
 
   const childProps = {
-    user, isLogged, userImageVersion, setUserImageVersion, loadUser, logout
+    user, isLogged, loadUser, logout
   }
 
   return (

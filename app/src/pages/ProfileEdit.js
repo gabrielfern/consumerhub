@@ -136,7 +136,7 @@ export default (props) => {
               </Form.Group>
             </Col>
           </Form.Row>
-          <div className='py-3 text-center'>
+          <div className='py-3 text-right'>
             <Button type='submit' disabled={isLoading}>
               {isLoading ? <>Enviando...</> : <>Confirmar</>}
             </Button>

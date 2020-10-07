@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { getUserReviews } from '../../services/api'
-import NothingHere from './NothingHere'
+import NothingHere from '../NothingHere'
 import Stars from '../Stars'
 
 export default (props) => {

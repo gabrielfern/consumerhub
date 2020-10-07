@@ -48,6 +48,16 @@ export default (props) => {
 
       <Form onSubmit={submit}>
         <Form.Row>
+          <Col md={6} className='d-flex flex-column justify-content-between'>
+            <Image
+              width='128px'
+              src={imageURL}
+            />
+            <Form.Group>
+              <Form.Label>Escolha a imagem</Form.Label>
+              <FileChooser imageOnly setFile={setImage} maxSize={5e6} />
+            </Form.Group>
+          </Col>
           <Col md={6}>
             <Form.Group>
               <Form.Label>Nome</Form.Label>
@@ -72,18 +82,8 @@ export default (props) => {
               />
             </Form.Group>
           </Col>
-          <Col md={6} className='d-flex flex-column justify-content-between'>
-            <Image
-              width='128px'
-              src={imageURL}
-            />
-            <Form.Group>
-              <Form.Label>Escolha a imagem</Form.Label>
-              <FileChooser imageOnly setFile={setImage} maxSize={5e6} />
-            </Form.Group>
-          </Col>
         </Form.Row>
-        <div className='py-3 text-center'>
+        <div className='py-3 text-right'>
           <Button type='submit'>
             Confirmar
           </Button>
