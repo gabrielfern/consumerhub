@@ -21,7 +21,7 @@ router.post('/', wrap(async (req, res) => {
   })
   if (stagingProduct) {
     const product = await Product.create(stagingProduct.dataValues)
-    await Image.clearUsers(req.query.userId, req.params.id)
+    await Image.clearUsers(req.query.userId, req.query.id)
     await stagingProduct.destroy()
     res.send({ id: product.id })
   } else {

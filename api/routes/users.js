@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { User } = require('../models')
+const { User, Image } = require('../models')
 const { auth, createUserToken } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 
@@ -60,6 +60,7 @@ router.delete('/:id', wrap(async (req, res) => {
   if (user) {
     if (req.user.type === 'admin' ||
     User[req.user.type] > User[user.type]) {
+      await Image.delete({ userId: user.id })
       await user.destroy()
       res.send()
     } else {
