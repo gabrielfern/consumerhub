@@ -39,8 +39,13 @@ export default (props) => {
           <tbody>
             {props.notifications.map((notif, i) =>
               <tr key={i}>
-                <td className={notif.isRead ? 'strike-through' : ''}>
-                  {notif.message}
+                <td>
+                  <div className='small text-muted'>
+                    {new Date(notif.createdAt).toLocaleString()}
+                  </div>
+                  <div className={notif.isRead ? 'text-muted' : ''}>
+                    {notif.message}
+                  </div>
                   {notif.url &&
                     <div>
                       <Link to={notif.url}>Visitar</Link>

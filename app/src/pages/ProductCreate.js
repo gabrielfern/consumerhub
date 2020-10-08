@@ -65,13 +65,15 @@ export default (props) => {
         {images.map((_, i) => {
           return (
             <Form.Group key={i}>
-              <FileChooser setFile={file => {
-                setImages(images => {
-                  const newImages = images.slice()
-                  newImages[i] = file
-                  return newImages
-                })
-              }}
+              <FileChooser
+                imageOnly maxSize={5e6}
+                setFile={file => {
+                  setImages(images => {
+                    const newImages = images.slice()
+                    newImages[i] = file
+                    return newImages
+                  })
+                }}
               />
             </Form.Group>
           )
