@@ -58,7 +58,6 @@ export default (props) => {
     setIsLoading(true)
     if (image) {
       await uploadUserImage(await image.arrayBuffer())
-      props.setUserImageVersion(version => version + 1)
     }
     await editUser(password, name, email, newPassword)
     setIsLoading(false)

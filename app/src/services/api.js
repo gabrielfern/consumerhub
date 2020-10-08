@@ -200,3 +200,32 @@ export async function getUserReviews (userId) {
   const res = await fetch(`/api/reviews?userId=${userId}`)
   return res.json()
 }
+
+export async function getNotifications () {
+  const res = await fetch('/api/notifications', {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
+export async function editNotification (notificationId, isRead) {
+  await fetch(`/api/notifications/${notificationId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ isRead })
+  })
+}
+
+export async function deleteNotification (notificationId) {
+  await fetch(`/api/notifications/${notificationId}`, {
+    method: 'DELETE',
+    headers: {
+      token: localStorage.token
+    }
+  })
+}
