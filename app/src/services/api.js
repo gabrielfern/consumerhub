@@ -246,6 +246,17 @@ export async function createCategory (name) {
   })
 }
 
+export async function editCategory (name, newName) {
+  await fetch(`/api/categories?name=${encodeURIComponent(name)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ name: newName })
+  })
+}
+
 export async function deleteCategory (name) {
   await fetch(`/api/categories?name=${encodeURIComponent(name)}`, {
     method: 'DELETE',

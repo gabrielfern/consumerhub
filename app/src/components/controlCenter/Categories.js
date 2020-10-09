@@ -2,13 +2,17 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { getCategories, createCategory, deleteCategory } from '../../services/api'
+import { getCategories, createCategory, editCategory, deleteCategory } from '../../services/api'
 import { ReactComponent as DeleteSVG } from '../../assets/delete.svg'
 import { ReactComponent as PlusSVG } from '../../assets/plus.svg'
+import { ReactComponent as EditSVG } from '../../assets/edit.svg'
+import { ReactComponent as CheckSVG } from '../../assets/check.svg'
 
 export default (props) => {
   const [name, setName] = useState('')
   const [categories, setCategories] = useState([])
+  const [editingName, setEditingName] = useState('')
+  const [editingIndex, setEditingIndex] = useState()
 
   const loadCategories = useCallback(() => {
     if (props.user && props.user.type !== 'user') {
@@ -27,6 +31,14 @@ export default (props) => {
     await createCategory(name)
     setName('')
     loadCategories()
+  }
+
+  async function edit (name) {
+    if (name !== editingName) {
+      await editCategory(name, editingName)
+      loadCategories()
+    }
+    setEditingIndex()
   }
 
   async function remove (name) {
@@ -59,9 +71,30 @@ export default (props) => {
           {categories.map((categ, i) =>
             <tr key={i}>
               <td>
-                {categ.name}
+                {(editingIndex === i &&
+                  <Form.Control
+                    className='m-2' autoFocus
+                    value={editingName} placeholder='Crie novas categorias'
+                    onChange={e => setEditingName(e.target.value)}
+                  />) ||
+                    <div className='m-2'>{categ.name}</div>}
               </td>
               <td>
+                <Button
+                  className='d-inline-block p-2 m-1 border-0'
+                  variant='outline-dark'
+                  onClick={() => {
+                    if (editingIndex === i) {
+                      edit(categ.name)
+                    } else {
+                      setEditingName(categ.name)
+                      setEditingIndex(i)
+                    }
+                  }}
+                >
+                  {(editingIndex === i && <CheckSVG />) ||
+                    <EditSVG />}
+                </Button>
                 <Button
                   className='d-inline-block p-2 m-1 border-0'
                   variant='outline-danger'
