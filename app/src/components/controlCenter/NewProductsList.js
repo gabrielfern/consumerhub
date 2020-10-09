@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
-import { getStagingProducts } from '../services/api'
+import { getStagingProducts } from '../../services/api'
 
 export default (props) => {
   const [products, setProducts] = useState([])

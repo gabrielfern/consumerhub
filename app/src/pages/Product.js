@@ -3,10 +3,18 @@ import { useParams, useHistory } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
-import { getProduct, deleteProduct, getProductReviews, createReview } from '../services/api'
+import Alert from 'react-bootstrap/Alert'
+import Badge from 'react-bootstrap/Badge'
+import {
+  getProduct, deleteProduct, getProductReviews,
+  createReview, getProductCategories, getCategories,
+  setProductCategory, removeProductCategory
+} from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
+import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
+import { ReactComponent as PlusSVG } from '../assets/plus.svg'
 
 export default (props) => {
   const { productId } = useParams()
@@ -15,6 +23,9 @@ export default (props) => {
   const [reviewText, setReviewText] = useState('')
   const [reviewRating, setReviewRating] = useState('5')
   const [reviews, setReviews] = useState([])
+  const [categories, setCategories] = useState([])
+  const [productCategories, setProductCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
 
   let hasNoLinks = true
 
@@ -24,12 +35,39 @@ export default (props) => {
     })
   }, [productId])
 
+  const loadProductCategories = useCallback(() => {
+    getProductCategories(productId).then(categories => {
+      setProductCategories(categories)
+    })
+  }, [productId])
+
   useEffect(() => {
     getProduct(productId).then(product => {
       setProduct(product)
     })
     loadReviews()
   }, [props.user, productId, loadReviews])
+
+  useEffect(() => {
+    loadProductCategories()
+  }, [loadProductCategories])
+
+  useEffect(() => {
+    if (props.user && props.user.type !== 'user') {
+      getCategories().then(categories => {
+        const productCategoryNames = productCategories.map(
+          categ => categ.name
+        )
+        const newCategories = categories.filter(categ =>
+          !productCategoryNames.includes(categ.name)
+        )
+        if (newCategories.length) {
+          setSelectedCategory(newCategories[0].name)
+        }
+        setCategories(newCategories)
+      })
+    }
+  }, [props.user, productCategories])
 
   async function remove () {
     await deleteProduct(product.id)
@@ -47,6 +85,17 @@ export default (props) => {
     loadReviews()
   }
 
+  async function addProductCategory (e) {
+    e.preventDefault()
+    await setProductCategory(productId, selectedCategory)
+    loadProductCategories()
+  }
+
+  async function remProductCategory (name) {
+    await removeProductCategory(productId, name)
+    loadProductCategories()
+  }
+
   return (
     <>
       <h1>Produto</h1>
@@ -54,13 +103,63 @@ export default (props) => {
       {product &&
         <>
           {props.user && props.user.type !== 'user' &&
-            <div className='d-flex justify-content-end my-2'>
-              <Button variant='outline-danger' onClick={remove}>
-                  Deletar
-              </Button>
-            </div>}
+            <Alert className='border' variant='warning'>
+              <h4>Zona de moderadores</h4>
+
+              <Form onSubmit={addProductCategory}>
+                <Form.Label>Adicione categorias a esse produto</Form.Label>
+                <div className='d-flex'>
+                  <Form.Control
+                    as='select' value={selectedCategory} custom
+                    onChange={e => setSelectedCategory(e.target.value)}
+                  >
+                    {categories.map(category =>
+                      <option key={category.name} value={category.name}>
+                        {category.name}
+                      </option>
+                    )}
+                  </Form.Control>
+                  <Button type='submit' className='ml-2'>
+                    <PlusSVG className='wh-1-em' />
+                  </Button>
+                </div>
+              </Form>
+
+              <div className='my-2'>
+                {productCategories.map(category =>
+                  <Button
+                    key={category.name}
+                    variant='dark' className='m-1 rounded-pill'
+                    onClick={() => remProductCategory(category.name)}
+                  >
+                    {category.name} <CancelSVG />
+                  </Button>
+                )}
+              </div>
+
+              <div className='text-right my-2'>
+                <Button variant='outline-danger' onClick={remove}>
+                    Deletar produto
+                </Button>
+              </div>
+            </Alert>}
 
           <h3>{product.name}</h3>
+
+          <div className='mb-4'>
+            {(props.user && props.user.type !== 'user') || productCategories.map(category =>
+              <span key={category.name}>
+                <Badge
+                  key={category.name}
+                  pill variant='dark'
+                >
+                  {category.name}
+                </Badge>
+                &nbsp;
+              </span>
+            )}
+          </div>
+
           {product.description.trim()
             ? <div className='space-break'>{product.description}</div>
             : <p className='text-muted'>Sem descrição</p>}

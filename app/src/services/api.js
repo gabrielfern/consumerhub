@@ -229,3 +229,55 @@ export async function deleteNotification (notificationId) {
     }
   })
 }
+
+export async function getCategories () {
+  const res = await fetch('/api/categories')
+  return res.json()
+}
+
+export async function createCategory (name) {
+  await fetch('/api/categories', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ name })
+  })
+}
+
+export async function deleteCategory (name) {
+  await fetch(`/api/categories?name=${encodeURIComponent(name)}`, {
+    method: 'DELETE',
+    headers: {
+      token: localStorage.token
+    }
+  })
+}
+
+export async function getProductCategories (productId) {
+  const res = await fetch(`/api/products/${productId}/categories`)
+  return res.json()
+}
+
+export async function setProductCategory (productId, name) {
+  await fetch(`/api/products/${productId}/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ name })
+  })
+}
+
+export async function removeProductCategory (productId, name) {
+  await fetch(`/api/products/${productId}/categories`, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ name })
+  })
+}
