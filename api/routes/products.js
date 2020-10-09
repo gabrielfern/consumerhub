@@ -97,7 +97,9 @@ router.get('/:id/reviews', wrap(async (req, res) => {
 
 router.get('/:id/categories', wrap(async (req, res) => {
   const product = await Product.findByPk(req.params.id)
-  res.send(await product.getCategories())
+  res.send(await product.getCategories({
+    order: ['name']
+  }))
 }))
 
 router.post('/:id/categories', wrap(async (req, res) => {

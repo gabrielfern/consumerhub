@@ -9,7 +9,9 @@ router.put('/', auth('mod'))
 router.delete('/', auth('mod'))
 
 router.get('/', wrap(async (req, res) => {
-  res.send(await Category.findAll())
+  res.send(await Category.findAll({
+    order: ['name']
+  }))
 }))
 
 router.post('/', wrap(async (req, res) => {
