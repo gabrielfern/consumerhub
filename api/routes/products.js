@@ -13,7 +13,11 @@ router.post('/:id/categories', auth('mod'))
 router.delete('/:id/categories', auth('mod'))
 
 router.get('/', wrap(async (req, res) => {
-  res.send(await Product.findAll())
+  res.send(await Product.findAll({
+    include: {
+      association: 'Categories'
+    }
+  }))
 }))
 
 router.post('/', wrap(async (req, res) => {
