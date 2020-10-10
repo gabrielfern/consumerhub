@@ -12,6 +12,7 @@ import {
 } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
+import { strSort } from '../utils/functions'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
@@ -37,7 +38,7 @@ export default (props) => {
 
   const loadProductCategories = useCallback(() => {
     getProductCategories(productId).then(categories => {
-      setProductCategories(categories)
+      setProductCategories(strSort(categories, 'name'))
     })
   }, [productId])
 
@@ -64,7 +65,7 @@ export default (props) => {
         if (newCategories.length) {
           setSelectedCategory(newCategories[0].name)
         }
-        setCategories(newCategories)
+        setCategories(strSort(newCategories, 'name'))
       })
     }
   }, [props.user, productCategories])

@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { getCategories, createCategory, editCategory, deleteCategory } from '../../services/api'
+import { strSort } from '../../utils/functions'
 import { ReactComponent as DeleteSVG } from '../../assets/delete.svg'
 import { ReactComponent as PlusSVG } from '../../assets/plus.svg'
 import { ReactComponent as EditSVG } from '../../assets/edit.svg'
@@ -17,7 +18,7 @@ export default (props) => {
   const loadCategories = useCallback(() => {
     if (props.user && props.user.type !== 'user') {
       getCategories().then(categories => {
-        setCategories(categories)
+        setCategories(strSort(categories, 'name'))
       })
     }
   }, [props.user])

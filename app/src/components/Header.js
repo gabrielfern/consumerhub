@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
@@ -12,7 +12,8 @@ import { ReactComponent as NotificationsActiveSVG } from '../assets/notification
 
 export default (props) => {
   const history = useHistory()
-  const [search, setSearch] = useState('')
+  const query = useLocation().search
+  const [search, setSearch] = useState(new URLSearchParams(query).get('s') || '')
 
   function logout () {
     props.logout()
@@ -21,7 +22,19 @@ export default (props) => {
 
   function onSearch (e) {
     e.preventDefault()
-    history.push(search ? '/products?s=' + search : '/products')
+    const newQuery = new URLSearchParams(query)
+    for (const key of newQuery.keys()) {
+      if (!['sort', 'categs'].includes(key)) {
+        newQuery.delete(key)
+      }
+    }
+    if (search) {
+      newQuery.append('s', search)
+    }
+    history.push({
+      pathname: '/products',
+      search: newQuery.toString()
+    })
   }
 
   let nav
@@ -95,7 +108,7 @@ export default (props) => {
           <Form.Control
             className='flex-fill' style={{ maxWidth: '576px' }}
             value={search} onChange={e => setSearch(e.target.value)}
-            type='text' placeholder='Nome do Produto'
+            type='text' placeholder='Pesquise por Produtos'
           />
           <Button
             type='submit' className='mx-1 my-2 my-lg-0' variant='outline-info'

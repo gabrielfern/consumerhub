@@ -3,7 +3,7 @@ import { ReactComponent as ErrorSVG } from '../assets/error_outline.svg'
 
 export default (props) => {
   return (
-    <div className='flex-fill d-flex flex-column justify-content-center'>
+    <div className='flex-fill d-flex flex-column justify-content-center py-5'>
       <p className='text-center text-muted'>
         <ErrorSVG width='96px' height='96px' />
       </p>
