@@ -28,13 +28,16 @@ export default (props) => {
 
   async function add (e) {
     e.preventDefault()
-    await createCategory(name)
-    setName('')
-    loadCategories()
+    if (name) {
+      await createCategory(name)
+      loadCategories()
+      setName('')
+    }
+    setEditingIndex()
   }
 
   async function edit (name) {
-    if (name !== editingName) {
+    if (name !== editingName && editingName) {
       await editCategory(name, editingName)
       loadCategories()
     }
@@ -44,6 +47,7 @@ export default (props) => {
   async function remove (name) {
     await deleteCategory(name)
     loadCategories()
+    setEditingIndex()
   }
 
   return (
@@ -51,7 +55,7 @@ export default (props) => {
       <Form onSubmit={add} className='my-3'>
         <div className='d-flex'>
           <Form.Control
-            value={name} placeholder='Crie novas categorias'
+            value={name} placeholder='Nome de nova categoria'
             onChange={e => setName(e.target.value)}
           />
           <Button type='submit' className='ml-2'>
@@ -74,7 +78,7 @@ export default (props) => {
                 {(editingIndex === i &&
                   <Form.Control
                     className='m-2' autoFocus
-                    value={editingName} placeholder='Crie novas categorias'
+                    value={editingName} placeholder='Novo nome para essa categoria'
                     onChange={e => setEditingName(e.target.value)}
                   />) ||
                     <div className='m-2'>{categ.name}</div>}
