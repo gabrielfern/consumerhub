@@ -21,11 +21,11 @@ export default (props) => {
     (reviews.length &&
       <Row xs={1} md={1} lg={2} xl={3} noGutters>
         {reviews.map((review, i) =>
-          <Col key={i} className='p-1 d-flex flex-column space-break'>
+          <Col key={i} className='p-1 d-flex flex-column word-break'>
             <div className='flex-fill d-flex flex-column border rounded p-3'>
               <Link to={`/product/${review.productId}`}>{review.Product.name}</Link>
-              {(review.text && review.text.trim().slice(0, 200) &&
-                <p className='flex-fill space-break'>
+              {(review.text && review.text.trim() &&
+                <p className='flex-fill'>
                   {review.text.trim().slice(0, 200)}
                   {review.text.trim().length > 200 &&
                     <span>...</span>}

@@ -70,9 +70,9 @@ export default (props) => {
                   src={`/api/images/${product.image1}`}
                 />
                 <Card.Body className='flex-fill'>
-                  {product.description.slice(0, 200) ||
+                  {product.description.trim().slice(0, 200) ||
                     <span className='text-muted'>Produto sem descrição</span>}
-                  {product.description.length > 200 &&
+                  {product.description.trim().length > 200 &&
                     <span>...</span>}
                 </Card.Body>
                 <Card.Footer className='d-flex'>
@@ -88,7 +88,7 @@ export default (props) => {
               </Card>
             </Link>
           )}
-        </div>) || <NothingHere />}
+        </div>) || <NothingHere text='Nenhum produto encontrado' />}
     </>
   )
 }

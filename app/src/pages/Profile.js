@@ -22,8 +22,8 @@ export default (props) => {
 
       {(props.user &&
         <div className='d-md-flex justify-content-center'>
-          <div className='d-flex flex-column align-items-center'>
-            <div>
+          <div className='d-flex flex-column align-items-center word-break'>
+            <div style={{ width: '200px' }}>
               <Image
                 width='200px'
                 src={`/api/images/${props.user.image}`}

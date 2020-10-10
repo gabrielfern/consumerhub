@@ -144,7 +144,7 @@ export default (props) => {
               </div>
             </Alert>}
 
-          <h3>{product.name}</h3>
+          <h3 className='word-break'>{product.name}</h3>
 
           <div className='mb-4'>
             {(props.user && props.user.type !== 'user') || productCategories.map(category =>
@@ -161,7 +161,7 @@ export default (props) => {
           </div>
 
           {product.description.trim()
-            ? <div className='space-break'>{product.description}</div>
+            ? <div className='space-break'>{product.description.trim()}</div>
             : <p className='text-muted'>Sem descrição</p>}
 
           <hr />
