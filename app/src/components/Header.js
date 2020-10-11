@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
@@ -13,7 +13,13 @@ import { ReactComponent as NotificationsActiveSVG } from '../assets/notification
 export default (props) => {
   const history = useHistory()
   const query = useLocation().search
-  const [search, setSearch] = useState(new URLSearchParams(query).get('s') || '')
+  const path = useLocation().pathname
+  const [search, setSearch] = useState('')
+  const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    setSearch(new URLSearchParams(query).get('s') || '')
+  }, [query, path])
 
   function logout () {
     props.logout()
@@ -22,6 +28,7 @@ export default (props) => {
 
   function onSearch (e) {
     e.preventDefault()
+    setExpanded(false)
     const newQuery = new URLSearchParams(query)
     for (const key of newQuery.keys()) {
       if (!['sort', 'categs'].includes(key)) {
@@ -97,8 +104,13 @@ export default (props) => {
   }
 
   return (
-    <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
-      <Navbar.Brand as={Link} to='/'>ConsumerHub</Navbar.Brand>
+    <Navbar
+      bg='dark' variant='dark' expand='lg' onSelect={() => setExpanded(false)}
+      expanded={expanded} onToggle={(val) => setExpanded(val)}
+    >
+      <Navbar.Brand as={Link} to='/' onClick={() => setExpanded(false)}>
+        ConsumerHub
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls='responsive-navbar-nav' />
       <Navbar.Collapse className='justify-content-end' id='responsive-navbar-nav'>
         <Form
