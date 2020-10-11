@@ -9,11 +9,13 @@ import { getProducts, getProductReviews, getCategories } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
 import NothingHere from '../components/NothingHere'
+import ShowMore from '../components/ShowMore'
 import { strNorm, strSort } from '../utils/functions'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 
 export default (props) => {
+  const defaultSlice = 9
   const history = useHistory()
   const query = useLocation().search
   const search = new URLSearchParams(query).get('s')
@@ -29,6 +31,7 @@ export default (props) => {
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedCategories, setSelectedCategories] = useState([])
+  const [slice, setSlice] = useState(defaultSlice)
 
   const searchFilter = useCallback((products) => {
     if (search) {
@@ -218,40 +221,46 @@ export default (props) => {
           (products.length === 1 ? '' : 's')}
       </p>
       {(products.length &&
-        <div className='d-flex flex-wrap justify-content-around align-items-stretch'>
-          {products.map((product, i) =>
-            <Link className='text-reset text-decoration-none d-flex' key={i} to={`/product/${product.id}`}>
-              <Card className='my-3 flex-fill' style={{ width: '320px' }}>
-                <Card.Header>
-                  <h4>
-                    {product.name || 'Produto sem nome'}
-                  </h4>
-                </Card.Header>
-                <Image
-                  width='320px'
-                  src={`/api/images/${product.image1}`}
-                />
-                <Card.Body className='flex-fill'>
-                  {product.description.trim().slice(0, 200) ||
-                    <span className='text-muted'>Produto sem descrição</span>}
-                  {product.description.trim().length > 200 &&
-                    <span>...</span>}
-                </Card.Body>
-                <Card.Footer className='d-flex'>
-                  <Stars
-                    value={
-                      productStars(reviews[product.id])
-                    }
+        <>
+          <div className='d-flex flex-wrap justify-content-around align-items-stretch'>
+            {products.slice(0, slice).map((product, i) =>
+              <Link className='text-reset text-decoration-none d-flex' key={i} to={`/product/${product.id}`}>
+                <Card className='my-3 flex-fill' style={{ width: '320px' }}>
+                  <Card.Header>
+                    <h4>
+                      {product.name || 'Produto sem nome'}
+                    </h4>
+                  </Card.Header>
+                  <Image
+                    width='320px'
+                    src={`/api/images/${product.image1}`}
                   />
-                  <span className='flex-fill text-right'>
-                    {reviews[product.id] && reviews[product.id].length +
-                      (reviews[product.id].length === 1 ? ' avaliação' : ' avaliações')}
-                  </span>
-                </Card.Footer>
-              </Card>
-            </Link>
-          )}
-        </div>) || <NothingHere text='Nenhum produto encontrado' />}
+                  <Card.Body className='flex-fill'>
+                    {product.description.trim().slice(0, 200) ||
+                      <span className='text-muted'>Produto sem descrição</span>}
+                    {product.description.trim().length > 200 &&
+                      <span>...</span>}
+                  </Card.Body>
+                  <Card.Footer className='d-flex'>
+                    <Stars
+                      value={
+                        productStars(reviews[product.id])
+                      }
+                    />
+                    <span className='flex-fill text-right'>
+                      {reviews[product.id] && reviews[product.id].length +
+                        (reviews[product.id].length === 1 ? ' avaliação' : ' avaliações')}
+                    </span>
+                  </Card.Footer>
+                </Card>
+              </Link>
+            )}
+          </div>
+          <ShowMore
+            slice={slice} defaultSlice={defaultSlice}
+            setSlice={setSlice} length={products.length}
+          />
+        </>) || <NothingHere text='Nenhum produto encontrado' />}
     </>
   )
 }

@@ -12,12 +12,14 @@ import {
 } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
+import ShowMore from '../components/ShowMore'
 import { strSort } from '../utils/functions'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
 
 export default (props) => {
+  const defaultSlice = 9
   const { productId } = useParams()
   const history = useHistory()
   const [product, setProduct] = useState()
@@ -27,6 +29,7 @@ export default (props) => {
   const [categories, setCategories] = useState([])
   const [productCategories, setProductCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [slice, setSlice] = useState(defaultSlice)
 
   let hasNoLinks = true
 
@@ -227,7 +230,7 @@ export default (props) => {
             </Form.Row>
           </Form>
 
-          {reviews.map((review, i) =>
+          {reviews.slice(0, slice).map((review, i) =>
             <div key={i} className='py-3 d-flex'>
               <div>
                 <Image
@@ -244,6 +247,10 @@ export default (props) => {
               </div>
             </div>
           )}
+          <ShowMore
+            slice={slice} defaultSlice={defaultSlice}
+            setSlice={setSlice} length={reviews.length}
+          />
         </>}
     </>
   )
