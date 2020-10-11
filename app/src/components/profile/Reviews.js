@@ -27,7 +27,9 @@ export default (props) => {
           {reviews.slice(0, slice).map((review, i) =>
             <Col key={i} className='p-1 d-flex flex-column word-break'>
               <div className='flex-fill d-flex flex-column border rounded p-3'>
-                <Link to={`/product/${review.productId}`}>{review.Product.name}</Link>
+                <Link to={`/product/${review.productId}#${review.id}`}>
+                  {review.Product.name}
+                </Link>
                 {(review.text && review.text.trim() &&
                   <p className='flex-fill'>
                     {review.text.trim().slice(0, 200)}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, useLocation } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
@@ -22,6 +22,7 @@ export default (props) => {
   const defaultSlice = 9
   const { productId } = useParams()
   const history = useHistory()
+  const hash = useLocation().hash
   const [product, setProduct] = useState()
   const [reviewText, setReviewText] = useState('')
   const [reviewRating, setReviewRating] = useState('5')
@@ -44,6 +45,13 @@ export default (props) => {
       setProductCategories(strSort(categories, 'name'))
     })
   }, [productId])
+
+  useEffect(() => {
+    if (reviews.length && hash) {
+      const elem = window.document.querySelector(hash)
+      elem && elem.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [hash, reviews.length])
 
   useEffect(() => {
     getProduct(productId).then(product => {
@@ -231,7 +239,11 @@ export default (props) => {
           </Form>
 
           {reviews.slice(0, slice).map((review, i) =>
-            <div key={i} className='py-3 d-flex'>
+            <div
+              key={i} id={review.id}
+              className={'py-3 d-flex ' +
+                (hash.slice(1) === review.id ? 'bg-light' : '')}
+            >
               <div>
                 <Image
                   width='128px'
