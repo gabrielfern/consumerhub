@@ -8,7 +8,8 @@ import Badge from 'react-bootstrap/Badge'
 import {
   getProduct, deleteProduct, getProductReviews,
   createReview, getProductCategories, getCategories,
-  setProductCategory, removeProductCategory
+  setProductCategory, removeProductCategory,
+  editReview, deleteReview
 } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
@@ -17,6 +18,9 @@ import { strSort } from '../utils/functions'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
+import { ReactComponent as EditSVG } from '../assets/edit.svg'
+import { ReactComponent as CheckSVG } from '../assets/check.svg'
+import { ReactComponent as DeleteSVG } from '../assets/delete.svg'
 
 export default (props) => {
   const defaultSlice = 9
@@ -26,17 +30,21 @@ export default (props) => {
   const [product, setProduct] = useState()
   const [reviewText, setReviewText] = useState('')
   const [reviewRating, setReviewRating] = useState('5')
+  const [cachedReviews, setCachedReviews] = useState([])
   const [reviews, setReviews] = useState([])
   const [categories, setCategories] = useState([])
   const [productCategories, setProductCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [slice, setSlice] = useState(defaultSlice)
+  const [hasScrolled, setHasScrolled] = useState(false)
+  const [userReview, setUserReview] = useState()
+  const [showForm, setShowForm] = useState(false)
 
   let hasNoLinks = true
 
   const loadReviews = useCallback(() => {
     getProductReviews(productId).then(reviews => {
-      setReviews(reviews)
+      setCachedReviews(reviews)
     })
   }, [productId])
 
@@ -47,11 +55,20 @@ export default (props) => {
   }, [productId])
 
   useEffect(() => {
-    if (reviews.length && hash) {
-      const elem = window.document.querySelector(hash)
-      elem && elem.scrollIntoView({ behavior: 'smooth' })
+    if (props.isLogged && props.user) {
+      const review = cachedReviews.find(
+        review => review.userId === props.user.id
+      )
+      if (review) {
+        setUserReview(review)
+        setReviewText(review.text)
+        setReviewRating(review.rating)
+      }
+      setReviews(cachedReviews.filter(e => e !== review))
+    } else if (!props.isLogged) {
+      setReviews(cachedReviews)
     }
-  }, [hash, reviews.length])
+  }, [cachedReviews, props.isLogged, props.user])
 
   useEffect(() => {
     getProduct(productId).then(product => {
@@ -63,6 +80,14 @@ export default (props) => {
   useEffect(() => {
     loadProductCategories()
   }, [loadProductCategories])
+
+  useEffect(() => {
+    !hasScrolled && reviews.forEach((review, i) => {
+      if (hash.slice(1) === review.id && i >= slice) {
+        setSlice(i + 1)
+      }
+    })
+  }, [reviews, hash, slice, hasScrolled])
 
   useEffect(() => {
     if (props.user && props.user.type !== 'user') {
@@ -94,6 +119,29 @@ export default (props) => {
       productId: product.id
     }
     await createReview(review)
+    loadReviews()
+  }
+
+  async function updateReview (e) {
+    e.preventDefault()
+    if (userReview.text !== reviewText ||
+      userReview.rating !== reviewRating) {
+      const review = {
+        id: userReview.id,
+        text: reviewText,
+        rating: reviewRating
+      }
+      await editReview(review)
+      loadReviews()
+    }
+    setShowForm(false)
+  }
+
+  async function remReview () {
+    await deleteReview(userReview.id)
+    setUserReview()
+    setReviewText('')
+    setReviewRating('5')
     loadReviews()
   }
 
@@ -210,37 +258,115 @@ export default (props) => {
           <hr />
           <h4>Avaliações</h4>
 
-          <Form onSubmit={submitReview}>
-            <Form.Row>
-              <Col xs={12} md={10} lg={11}>
-                <Form.Group>
-                  <Form.Control
-                    placeholder='Deixe seu comentário aqui'
-                    as='textarea' rows='3' value={reviewText} onChange={e => setReviewText(e.target.value)}
-                  />
-                </Form.Group>
-              </Col>
-              <Col xs={3} md={2} lg={1}>
-                <Form.Group>
-                  <Form.Control
-                    placeholder='Deixe seu comentário aqui' maxLength='500'
-                    as='select' rows='3' value={reviewRating} onChange={e => setReviewRating(e.target.value)}
-                  >
-                    <option value='1'>1</option>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                  </Form.Control>
-                </Form.Group>
-                <Button type='submit'><ReviewSVG className='wh-1-em' /></Button>
-              </Col>
-            </Form.Row>
-          </Form>
+          {((props.user && !userReview) || showForm) &&
+            <Form
+              className='py-3'
+              onSubmit={(userReview && updateReview) || submitReview}
+            >
+              <Form.Row>
+                <Col xs={12} md={10} lg={11}>
+                  <Form.Group>
+                    <Form.Control
+                      placeholder='Deixe seu comentário aqui'
+                      as='textarea' rows='3' value={reviewText}
+                      onChange={e => setReviewText(e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col xs={3} md={2} lg={1}>
+                  <Form.Group>
+                    <Form.Control
+                      placeholder='Deixe seu comentário aqui' maxLength='500'
+                      as='select' rows='3' value={reviewRating}
+                      onChange={e => setReviewRating(e.target.value)}
+                    >
+                      <option value='1'>1</option>
+                      <option value='2'>2</option>
+                      <option value='3'>3</option>
+                      <option value='4'>4</option>
+                      <option value='5'>5</option>
+                    </Form.Control>
+                  </Form.Group>
+
+                  {(userReview &&
+                    <Button
+                      type='submit'
+                      variant='outline-primary'
+                    >
+                      <CheckSVG />
+                    </Button>) ||
+                      <Button type='submit'>
+                        <ReviewSVG className='wh-1-em' />
+                      </Button>}
+
+                </Col>
+              </Form.Row>
+            </Form>}
+
+          {(userReview && !showForm) &&
+            <div
+              id={userReview.id}
+              ref={ref => {
+                if (ref && !hasScrolled &&
+                  hash.slice(1) === userReview.id) {
+                  ref.scrollIntoView()
+                  setHasScrolled(true)
+                }
+              }}
+              className={'py-3 mb-3 d-flex ' +
+                (hash.slice(1) === userReview.id ? 'bg-light' : '')}
+            >
+              <div>
+                <Image
+                  width='128px'
+                  src={`/api/images/${userReview.User.image}`}
+                />
+              </div>
+              <div className='ml-3 flex-fill space-break'>
+                <div className='d-flex align-items-stretch mb-2'>
+                  <h5 className='d-flex align-items-center m-0'>
+                    <b>Minha Avaliação</b>
+                  </h5>
+                  <div className='flex-fill text-right'>
+                    <Button
+                      className='border-0'
+                      variant='outline-dark'
+                      onClick={() => setShowForm(true)}
+                    >
+                      <EditSVG />
+                    </Button>
+                    <Button
+                      className='border-0'
+                      variant='outline-danger'
+                      onClick={remReview}
+                    >
+                      <DeleteSVG />
+                    </Button>
+                  </div>
+                </div>
+                {userReview.text.trim()
+                  ? <p>{userReview.text.trim()}</p>
+                  : <p className='text-muted'>Sem comentário</p>}
+                <div
+                  className='small text-muted'
+                  title={'Atualizado em: ' + new Date(userReview.updatedAt).toLocaleString()}
+                >
+                  Criado em: {new Date(userReview.createdAt).toLocaleString()}
+                </div>
+                <Stars value={Number(userReview.rating)} />
+              </div>
+            </div>}
 
           {reviews.slice(0, slice).map((review, i) =>
             <div
               key={i} id={review.id}
+              ref={ref => {
+                if (ref && !hasScrolled &&
+                  hash.slice(1) === review.id) {
+                  ref.scrollIntoView()
+                  setHasScrolled(true)
+                }
+              }}
               className={'py-3 d-flex ' +
                 (hash.slice(1) === review.id ? 'bg-light' : '')}
             >
@@ -250,11 +376,17 @@ export default (props) => {
                   src={`/api/images/${review.User.image}`}
                 />
               </div>
-              <div className='ml-3'>
+              <div className='ml-3 space-break'>
                 <p><b>{review.User.name}</b></p>
                 {review.text.trim()
-                  ? <p className='space-break'>{review.text.trim()}</p>
+                  ? <p>{review.text.trim()}</p>
                   : <p className='text-muted'>Sem comentário</p>}
+                <div
+                  className='small text-muted'
+                  title={'Atualizado em: ' + new Date(review.updatedAt).toLocaleString()}
+                >
+                  Criado em: {new Date(review.createdAt).toLocaleString()}
+                </div>
                 <Stars value={Number(review.rating)} />
               </div>
             </div>

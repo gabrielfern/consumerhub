@@ -196,6 +196,27 @@ export async function createReview (review) {
   })
 }
 
+export async function editReview (review) {
+  await fetch(`/api/reviews/${review.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify(review)
+  })
+}
+
+export async function deleteReview (reviewId) {
+  await fetch(`/api/reviews/${reviewId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    }
+  })
+}
+
 export async function getUserReviews (userId) {
   const res = await fetch(`/api/reviews?userId=${userId}`)
   return res.json()
