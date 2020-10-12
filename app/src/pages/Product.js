@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useHistory, useLocation } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Alert from 'react-bootstrap/Alert'
 import Badge from 'react-bootstrap/Badge'
@@ -15,7 +16,7 @@ import {
 import Image from '../components/Image'
 import Stars from '../components/Stars'
 import ShowMore from '../components/ShowMore'
-import { strSort } from '../utils/functions'
+import { strSort, productStars } from '../utils/functions'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
@@ -44,6 +45,8 @@ export default (props) => {
   const [hasScrolled, setHasScrolled] = useState(false)
   const [userReview, setUserReview] = useState()
   const [showForm, setShowForm] = useState(false)
+  const [showWithoutComment, setShowWithoutComment] = useState(true)
+  const [selectedSorting, setSelectedSorting] = useState('createdAt')
 
   let hasNoLinks = true
 
@@ -59,6 +62,58 @@ export default (props) => {
     })
   }, [productId])
 
+  const filterComments = useCallback((reviews) => {
+    return reviews.filter(review => {
+      if (!showWithoutComment && !review.text.trim()) {
+        return false
+      }
+      return true
+    })
+  }, [showWithoutComment])
+
+  const sortReviews = useCallback((reviews) => {
+    reviews = reviews.slice()
+    switch (selectedSorting) {
+      case 'votesCount':
+        return reviews.sort((a, b) =>
+          (a.votes.upvotes + a.votes.downvotes) >
+          (b.votes.upvotes + b.votes.downvotes) ? -1 : 1
+        )
+      case 'votesBalance':
+        return reviews.sort((a, b) =>
+          (a.votes.upvotes - a.votes.downvotes) >
+          (b.votes.upvotes - b.votes.downvotes) ? -1 : 1
+        )
+      case 'biggestRating':
+        return reviews.sort((a, b) =>
+          a.rating > b.rating ? -1 : 1
+        )
+      case 'smallestRating':
+        return reviews.sort((a, b) =>
+          a.rating < b.rating ? -1 : 1
+        )
+      case 'updatedAt':
+        return reviews.sort((a, b) =>
+          new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1
+        )
+      default:
+        return reviews.sort((a, b) =>
+          new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1
+        )
+    }
+  }, [selectedSorting])
+
+  useEffect(() => {
+    getProduct(productId).then(product => {
+      setProduct(product)
+    })
+    loadReviews()
+  }, [productId, loadReviews])
+
+  useEffect(() => {
+    loadProductCategories()
+  }, [loadProductCategories])
+
   useEffect(() => {
     if (props.isLogged && props.user) {
       const review = cachedReviews.find(
@@ -66,25 +121,22 @@ export default (props) => {
       )
       if (review) {
         setUserReview(review)
-        setReviewText(review.text)
-        setReviewRating(review.rating)
+        if (!showForm) {
+          setReviewText(review.text)
+          setReviewRating(review.rating)
+        }
       }
-      setReviews(cachedReviews.filter(e => e !== review))
+      let newReviews = cachedReviews.filter(e => e !== review)
+      newReviews = sortReviews(filterComments(newReviews))
+      setReviews(newReviews)
     } else if (!props.isLogged) {
-      setReviews(cachedReviews)
+      const newReviews = sortReviews(filterComments(cachedReviews))
+      setReviews(newReviews)
     }
-  }, [cachedReviews, props.isLogged, props.user])
-
-  useEffect(() => {
-    getProduct(productId).then(product => {
-      setProduct(product)
-    })
-    loadReviews()
-  }, [props.user, productId, loadReviews])
-
-  useEffect(() => {
-    loadProductCategories()
-  }, [loadProductCategories])
+  }, [
+    cachedReviews, props.isLogged, props.user,
+    filterComments, sortReviews, showForm
+  ])
 
   useEffect(() => {
     !hasScrolled && reviews.forEach((review, i) => {
@@ -314,11 +366,8 @@ export default (props) => {
                   </Form.Group>
 
                   {(userReview &&
-                    <Button
-                      type='submit'
-                      variant='outline-primary'
-                    >
-                      <CheckSVG />
+                    <Button type='submit'>
+                      <CheckSVG className='wh-1-em' />
                     </Button>) ||
                       <Button type='submit'>
                         <ReviewSVG className='wh-1-em' />
@@ -338,7 +387,7 @@ export default (props) => {
                   setHasScrolled(true)
                 }
               }}
-              className={'py-3 mb-3 d-flex ' +
+              className={'py-3 d-flex ' +
                 (hash.slice(1) === userReview.id ? 'bg-light' : '')}
             >
               <div>
@@ -383,28 +432,69 @@ export default (props) => {
                     <Stars value={Number(userReview.rating)} />
                   </div>
                   <div className='flex-fill text-right'>
-                    <Button
-                      className='border-0 p-2 m-1'
-                      variant='outline-secondary'
-                      onClick={() => upVote(userReview)}
-                    >
-                      {userReview.votes.voted === 'upvote'
-                        ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
-                    </Button>
-                    {userReview.votes.upvotes}
-                    <Button
-                      className='border-0 p-2 m-1'
-                      variant='outline-secondary'
-                      onClick={() => downVote(userReview)}
-                    >
-                      {userReview.votes.voted === 'downvote'
-                        ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
-                    </Button>
-                    {userReview.votes.downvotes}
+                    <div className='d-inline-block'>
+                      <Button
+                        className='border-0 p-2 m-1'
+                        variant='outline-secondary'
+                        onClick={() => upVote(userReview)}
+                      >
+                        {userReview.votes.voted === 'upvote'
+                          ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
+                      </Button>
+                      {userReview.votes.upvotes}
+                    </div>
+                    <div className='d-inline-block'>
+                      <Button
+                        className='border-0 p-2 m-1'
+                        variant='outline-secondary'
+                        onClick={() => downVote(userReview)}
+                      >
+                        {userReview.votes.voted === 'downvote'
+                          ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
+                      </Button>
+                      {userReview.votes.downvotes}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>}
+
+          <Row className='py-3 mb-3'>
+            <Col xs={12} md={6} className='d-flex flex-column align-items-stretch'>
+              <div className='d-flex mb-3'>
+                <Stars
+                  value={
+                    productStars(cachedReviews)
+                  }
+                />
+                <span className='flex-fill text-right'>
+                  {cachedReviews && cachedReviews.length +
+                    (cachedReviews.length === 1 ? ' avaliação' : ' avaliações')}
+                </span>
+              </div>
+              <div key='checkbox' className='flex-fill d-flex align-items-end mb-3'>
+                <Form.Check
+                  type='checkbox' checked={showWithoutComment} custom
+                  onChange={e => setShowWithoutComment(e.target.checked)}
+                  id='checkbox' label='Mostrar avaliações sem comentários'
+                />
+              </div>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Label>Ordenar avaliações por</Form.Label>
+              <Form.Control
+                as='select' custom value={selectedSorting}
+                onChange={e => setSelectedSorting(e.target.value)}
+              >
+                <option value='createdAt'>Data de criação</option>
+                <option value='updatedAt'>Recém editados</option>
+                <option value='votesCount'>Mais votos</option>
+                <option value='votesBalance'>Mais bem votados</option>
+                <option value='biggestRating'>Melhor nota</option>
+                <option value='smallestRating'>Pior nota</option>
+              </Form.Control>
+            </Col>
+          </Row>
 
           {reviews.slice(0, slice).map((review, i) =>
             <div
@@ -464,26 +554,30 @@ export default (props) => {
                     <Stars value={Number(review.rating)} />
                   </div>
                   <div className='flex-fill text-right'>
-                    <Button
-                      className='border-0 p-2 m-1'
-                      disabled={!props.user}
-                      variant='outline-secondary'
-                      onClick={() => upVote(review)}
-                    >
-                      {review.votes.voted === 'upvote'
-                        ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
-                    </Button>
-                    {review.votes.upvotes}
-                    <Button
-                      className='border-0 p-2 m-1'
-                      disabled={!props.user}
-                      variant='outline-secondary'
-                      onClick={() => downVote(review)}
-                    >
-                      {review.votes.voted === 'downvote'
-                        ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
-                    </Button>
-                    {review.votes.downvotes}
+                    <div className='d-inline-block'>
+                      <Button
+                        className='border-0 p-2 m-1'
+                        disabled={!props.user}
+                        variant='outline-secondary'
+                        onClick={() => upVote(review)}
+                      >
+                        {review.votes.voted === 'upvote'
+                          ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
+                      </Button>
+                      {review.votes.upvotes}
+                    </div>
+                    <div className='d-inline-block'>
+                      <Button
+                        className='border-0 p-2 m-1'
+                        disabled={!props.user}
+                        variant='outline-secondary'
+                        onClick={() => downVote(review)}
+                      >
+                        {review.votes.voted === 'downvote'
+                          ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
+                      </Button>
+                      {review.votes.downvotes}
+                    </div>
                   </div>
                 </div>
               </div>

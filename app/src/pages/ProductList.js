@@ -10,7 +10,7 @@ import Image from '../components/Image'
 import Stars from '../components/Stars'
 import NothingHere from '../components/NothingHere'
 import ShowMore from '../components/ShowMore'
-import { strNorm, strSort } from '../utils/functions'
+import { strNorm, strSort, productStars } from '../utils/functions'
 import { ReactComponent as PlusSVG } from '../assets/plus.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
 
@@ -64,20 +64,20 @@ export default (props) => {
     products = strSort(products, 'name')
     switch (querySorting) {
       case 'createdAt':
-        return products.slice().sort((a, b) =>
+        return products.sort((a, b) =>
           new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1
         )
       case 'updatedAt':
-        return products.slice().sort((a, b) =>
+        return products.sort((a, b) =>
           new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1
         )
       case 'reviewCount':
-        return products.slice().sort((a, b) =>
+        return products.sort((a, b) =>
           (reviews[a.id] && reviews[a.id].length) >
           (reviews[b.id] && reviews[b.id].length) ? -1 : 1
         )
       case 'rating':
-        return products.slice().sort((a, b) =>
+        return products.sort((a, b) =>
           productStars(reviews[a.id]) > productStars(reviews[b.id]) ? -1 : 1
         )
       default:
@@ -119,14 +119,6 @@ export default (props) => {
       setSelectedCategory('')
     }
   }, [categories])
-
-  function productStars (reviews) {
-    if (reviews && reviews.length) {
-      return reviews.reduce((acc, cur) => acc + Number(cur.rating), 0) / reviews.length
-    } else {
-      return 0
-    }
-  }
 
   function addCategory () {
     if (selectedCategory) {

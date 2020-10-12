@@ -13,3 +13,11 @@ export function strSort (arr, attr) {
   }
   return newArr
 }
+
+export function productStars (reviews) {
+  if (reviews && reviews.length) {
+    return reviews.reduce((acc, cur) => acc + Number(cur.rating), 0) / reviews.length
+  } else {
+    return 0
+  }
+}
