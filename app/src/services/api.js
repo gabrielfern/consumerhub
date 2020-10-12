@@ -181,7 +181,13 @@ export async function deleteProduct (productId) {
 }
 
 export async function getProductReviews (productId) {
-  const res = await fetch(`/api/products/${productId}/reviews`)
+  const headers = {}
+  if (localStorage.token) {
+    headers.token = localStorage.token
+  }
+  const res = await fetch(`/api/products/${productId}/reviews`, {
+    headers
+  })
   return res.json()
 }
 
@@ -220,6 +226,26 @@ export async function deleteReview (reviewId) {
 export async function getUserReviews (userId) {
   const res = await fetch(`/api/reviews?userId=${userId}`)
   return res.json()
+}
+
+export async function voteReview (reviewId, type) {
+  await fetch(`/api/reviews/${reviewId}/votes`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ type })
+  })
+}
+
+export async function deleteReviewVote (reviewId) {
+  await fetch(`/api/reviews/${reviewId}/votes`, {
+    method: 'DELETE',
+    headers: {
+      token: localStorage.token
+    }
+  })
 }
 
 export async function getNotifications () {

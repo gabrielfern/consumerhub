@@ -5,11 +5,12 @@ import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
 import Alert from 'react-bootstrap/Alert'
 import Badge from 'react-bootstrap/Badge'
+import Dropdown from 'react-bootstrap/Dropdown'
 import {
   getProduct, deleteProduct, getProductReviews,
   createReview, getProductCategories, getCategories,
   setProductCategory, removeProductCategory,
-  editReview, deleteReview
+  editReview, deleteReview, voteReview, deleteReviewVote
 } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
@@ -21,6 +22,10 @@ import { ReactComponent as PlusSVG } from '../assets/plus.svg'
 import { ReactComponent as EditSVG } from '../assets/edit.svg'
 import { ReactComponent as CheckSVG } from '../assets/check.svg'
 import { ReactComponent as DeleteSVG } from '../assets/delete.svg'
+import { ReactComponent as ThumbUpSVG } from '../assets/thumb_up.svg'
+import { ReactComponent as ThumbDownSVG } from '../assets/thumb_down.svg'
+import { ReactComponent as ThumbUpFilledSVG } from '../assets/thumb_up_filled.svg'
+import { ReactComponent as ThumbDownFilledSVG } from '../assets/thumb_down_filled.svg'
 
 export default (props) => {
   const defaultSlice = 9
@@ -137,12 +142,14 @@ export default (props) => {
     setShowForm(false)
   }
 
-  async function remReview () {
-    await deleteReview(userReview.id)
-    setUserReview()
-    setReviewText('')
-    setReviewRating('5')
-    loadReviews()
+  async function remReview (reviewId) {
+    if (window.confirm('Realmente excluir avaliação?')) {
+      await deleteReview(reviewId)
+      setUserReview()
+      setReviewText('')
+      setReviewRating('5')
+      loadReviews()
+    }
   }
 
   async function addProductCategory (e) {
@@ -154,6 +161,24 @@ export default (props) => {
   async function remProductCategory (name) {
     await removeProductCategory(productId, name)
     loadProductCategories()
+  }
+
+  async function upVote (review) {
+    if (review.votes.voted === 'upvote') {
+      await deleteReviewVote(review.id)
+    } else {
+      await voteReview(review.id, 'upvote')
+    }
+    loadReviews()
+  }
+
+  async function downVote (review) {
+    if (review.votes.voted === 'downvote') {
+      await deleteReviewVote(review.id)
+    } else {
+      await voteReview(review.id, 'downvote')
+    }
+    loadReviews()
   }
 
   return (
@@ -323,22 +348,22 @@ export default (props) => {
                 />
               </div>
               <div className='ml-3 flex-fill space-break'>
-                <div className='d-flex align-items-stretch mb-2'>
+                <div className='d-flex align-items-stretch mb-2 mt-n3'>
                   <h5 className='d-flex align-items-center m-0'>
                     <b>Minha Avaliação</b>
                   </h5>
                   <div className='flex-fill text-right'>
                     <Button
-                      className='border-0'
+                      className='border-0 p-2 m-1'
                       variant='outline-dark'
                       onClick={() => setShowForm(true)}
                     >
                       <EditSVG />
                     </Button>
                     <Button
-                      className='border-0'
+                      className='border-0 p-2 m-1'
                       variant='outline-danger'
-                      onClick={remReview}
+                      onClick={() => remReview(userReview.id)}
                     >
                       <DeleteSVG />
                     </Button>
@@ -353,7 +378,31 @@ export default (props) => {
                 >
                   Criado em: {new Date(userReview.createdAt).toLocaleString()}
                 </div>
-                <Stars value={Number(userReview.rating)} />
+                <div className='d-flex'>
+                  <div className='d-flex align-items-center'>
+                    <Stars value={Number(userReview.rating)} />
+                  </div>
+                  <div className='flex-fill text-right'>
+                    <Button
+                      className='border-0 p-2 m-1'
+                      variant='outline-secondary'
+                      onClick={() => upVote(userReview)}
+                    >
+                      {userReview.votes.voted === 'upvote'
+                        ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
+                    </Button>
+                    {userReview.votes.upvotes}
+                    <Button
+                      className='border-0 p-2 m-1'
+                      variant='outline-secondary'
+                      onClick={() => downVote(userReview)}
+                    >
+                      {userReview.votes.voted === 'downvote'
+                        ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
+                    </Button>
+                    {userReview.votes.downvotes}
+                  </div>
+                </div>
               </div>
             </div>}
 
@@ -376,8 +425,31 @@ export default (props) => {
                   src={`/api/images/${review.User.image}`}
                 />
               </div>
-              <div className='ml-3 space-break'>
-                <p><b>{review.User.name}</b></p>
+              <div className='ml-3 flex-fill space-break'>
+                <div className={'d-flex align-items-stretch mb-2 ' + (props.user ? 'mt-n3' : '')}>
+                  <p className='d-flex align-items-center m-0'>
+                    <b>{review.User.name}</b>
+                  </p>
+                  <div className='flex-fill text-right'>
+                    {props.user &&
+                      <Dropdown alignRight>
+                        <Dropdown.Toggle
+                          className='border-0 p-2 m-1'
+                          variant='outline-dark'
+                        />
+                        <Dropdown.Menu>
+                          <Dropdown.Item>Reportar</Dropdown.Item>
+                          {props.user.type !== 'user' &&
+                            <Dropdown.Item
+                              className='text-danger'
+                              onClick={() => remReview(review.id)}
+                            >
+                              Excluir
+                            </Dropdown.Item>}
+                        </Dropdown.Menu>
+                      </Dropdown>}
+                  </div>
+                </div>
                 {review.text.trim()
                   ? <p>{review.text.trim()}</p>
                   : <p className='text-muted'>Sem comentário</p>}
@@ -387,7 +459,33 @@ export default (props) => {
                 >
                   Criado em: {new Date(review.createdAt).toLocaleString()}
                 </div>
-                <Stars value={Number(review.rating)} />
+                <div className='d-flex'>
+                  <div className='d-flex align-items-center'>
+                    <Stars value={Number(review.rating)} />
+                  </div>
+                  <div className='flex-fill text-right'>
+                    <Button
+                      className='border-0 p-2 m-1'
+                      disabled={!props.user}
+                      variant='outline-secondary'
+                      onClick={() => upVote(review)}
+                    >
+                      {review.votes.voted === 'upvote'
+                        ? <ThumbUpFilledSVG /> : <ThumbUpSVG />}
+                    </Button>
+                    {review.votes.upvotes}
+                    <Button
+                      className='border-0 p-2 m-1'
+                      disabled={!props.user}
+                      variant='outline-secondary'
+                      onClick={() => downVote(review)}
+                    >
+                      {review.votes.voted === 'downvote'
+                        ? <ThumbDownFilledSVG /> : <ThumbDownSVG />}
+                    </Button>
+                    {review.votes.downvotes}
+                  </div>
+                </div>
               </div>
             </div>
           )}
