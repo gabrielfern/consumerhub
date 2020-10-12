@@ -5,6 +5,7 @@ import Badge from 'react-bootstrap/Badge'
 import Image from '../components/Image'
 import Reviews from '../components/profile/Reviews'
 import NewProducts from '../components/profile/NewProducts'
+import { ReactComponent as EmailSVG } from '../assets/email.svg'
 
 export default (props) => {
   const history = useHistory()
@@ -23,9 +24,9 @@ export default (props) => {
       {(props.user &&
         <div className='d-md-flex justify-content-center'>
           <div className='d-flex flex-column align-items-center word-break'>
-            <div style={{ width: '200px' }}>
+            <div style={{ width: '250px' }}>
               <Image
-                width='200px'
+                width='250px'
                 src={`/api/images/${props.user.image}`}
               />
               <p className='mt-3'>
@@ -33,8 +34,10 @@ export default (props) => {
                 {props.user.type !== 'user' &&
                   <Badge variant='secondary'>{props.user.type}</Badge>}
               </p>
-              <p className='mt-3'>{props.user.name}</p>
-              <p className='mt-3'>{props.user.email}</p>
+              <p className='mt-3'><b>{props.user.name}</b></p>
+              <p className='mt-3'>
+                <EmailSVG /> {props.user.email}
+              </p>
             </div>
           </div>
 

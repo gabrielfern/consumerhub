@@ -1,11 +1,15 @@
 /* global fetch, localStorage */
 
-export async function getUser () {
-  const res = await fetch('/api/user', {
-    headers: {
-      token: localStorage.token
-    }
-  })
+export async function getUser (userId) {
+  let path = '/api/user'
+  if (userId) {
+    path = `/api/users/${userId}`
+  }
+  const headers = {}
+  if (localStorage.token) {
+    headers.token = localStorage.token
+  }
+  const res = await fetch(path, { headers })
   return res.json()
 }
 

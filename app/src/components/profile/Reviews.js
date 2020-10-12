@@ -15,7 +15,9 @@ export default (props) => {
   useEffect(() => {
     if (props.user) {
       getUserReviews(props.user.id).then(reviews => {
-        setReviews(reviews)
+        setReviews(reviews.sort((a, b) =>
+          new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1
+        ))
       })
     }
   }, [props.user])

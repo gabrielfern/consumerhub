@@ -50,15 +50,15 @@ export default (props) => {
         <Form.Row>
           <Col md={6} className='d-flex flex-column justify-content-between'>
             <Image
-              width='128px'
+              width='250px'
               src={imageURL}
             />
-            <Form.Group>
+            <Form.Group className='mt-3'>
               <Form.Label>Escolha a imagem</Form.Label>
               <FileChooser imageOnly setFile={setImage} maxSize={5e6} />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={6} className='d-flex flex-column justify-content-between'>
             <Form.Group>
               <Form.Label>Nome</Form.Label>
               <Form.Control

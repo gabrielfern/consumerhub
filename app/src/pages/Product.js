@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, useHistory, useLocation } from 'react-router-dom'
+import { useParams, useHistory, useLocation, Link } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
@@ -518,7 +518,9 @@ export default (props) => {
               <div className='ml-3 flex-fill space-break'>
                 <div className={'d-flex align-items-stretch mb-2 ' + (props.user ? 'mt-n3' : '')}>
                   <p className='d-flex align-items-center m-0'>
-                    <b>{review.User.name}</b>
+                    <Link to={`/user/${review.userId}`}>
+                      <b>{review.User.name}</b>
+                    </Link>
                   </p>
                   <div className='flex-fill text-right'>
                     {props.user &&

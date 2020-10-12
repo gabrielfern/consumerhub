@@ -12,6 +12,7 @@ import Product from '../pages/Product'
 import ControlCenter from '../pages/ControlCenter'
 import Staging from '../pages/Staging'
 import Notifications from '../pages/Notifications'
+import UserProfile from '../pages/UserProfile'
 
 export default (props) => {
   return (
@@ -49,6 +50,9 @@ export default (props) => {
         </Route>
         <Route exact path='/notifications'>
           <Notifications {...props} />
+        </Route>
+        <Route exact path='/user/:userId'>
+          <UserProfile {...props} />
         </Route>
       </Switch>
     </Container>

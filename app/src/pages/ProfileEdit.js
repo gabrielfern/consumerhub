@@ -74,10 +74,10 @@ export default (props) => {
           <Form.Row>
             <Col lg={6} className='d-flex flex-column justify-content-between'>
               <Image
-                width='128px'
+                width='250px'
                 src={imageURL || `/api/images/${props.user.image}`}
               />
-              <Form.Group>
+              <Form.Group className='mt-3'>
                 <Form.Label>Escolha a imagem</Form.Label>
                 <FileChooser imageOnly setFile={setImage} maxSize={5e6} />
               </Form.Group>
