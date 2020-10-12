@@ -27,9 +27,11 @@ router.get('/:id', wrap(async (req, res) => {
   if (req.user && (req.user.type !== 'user' ||
     req.user.id === req.params.id)) {
     attributes.push('type', 'email')
-  } else if (req.user &&
-    (await req.user.getFriendshipWith(req.params.id)).accepted) {
-    attributes.push('email')
+  } else if (req.user) {
+    const friendship = await req.user.getFriendshipWith(req.params.id)
+    if (friendship && friendship.accepted) {
+      attributes.push('email')
+    }
   }
   const user = await User.findByPk(req.params.id, {
     attributes
