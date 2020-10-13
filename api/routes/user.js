@@ -3,6 +3,9 @@ const router = express.Router()
 const { Sequelize, Friendship, Image } = require('../models')
 const { auth, createUserToken, checkPassword } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
+const {
+  notifyFriendRequest, notifyFriendAccepted, notifyFriendRejected
+} = require('../services/notifications')
 
 router.use(auth('user'))
 router.post('/image', express.raw({ limit: 5e6, type: '*/*' }))
@@ -66,6 +69,7 @@ router.post('/friends', wrap(async (req, res) => {
       userId1: req.user.id,
       userId2: req.body.user
     })
+    notifyFriendRequest(req.user.id, req.body.user)
     res.send(friendship)
   } else {
     res.status(400).end()
@@ -82,6 +86,7 @@ router.put('/friends', wrap(async (req, res) => {
     }
   })
   if (result[0]) {
+    notifyFriendAccepted(req.user.id, req.body.user)
     res.end()
   } else {
     res.status(404).end()
@@ -101,15 +106,24 @@ router.delete('/friends', wrap(async (req, res) => {
     }
   })
   if (result) {
+    notifyFriendRejected(req.user.id, req.body.user)
     res.end()
   } else {
     res.status(404).end()
   }
 }))
 
-router.get('/friends/invitations', wrap(async (req, res) => {
-  const friendships = await req.user.getFriendships()
-  res.send(friendships.filter(friendship => !friendship.accepted))
+router.get('/friendships', wrap(async (req, res) => {
+  res.send(await req.user.getFriendships())
+}))
+
+router.get('/friendships/:userId', wrap(async (req, res) => {
+  const friendship = await req.user.getFriendshipWith(req.params.userId)
+  if (friendship) {
+    res.send(friendship)
+  } else {
+    res.status(404).end()
+  }
 }))
 
 module.exports = router

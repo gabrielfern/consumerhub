@@ -343,3 +343,65 @@ export async function removeProductCategory (productId, name) {
     body: JSON.stringify({ name })
   })
 }
+
+export async function getFriends () {
+  const res = await fetch('/api/user/friends', {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
+export async function getFriendships () {
+  const res = await fetch('/api/user/friendships', {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
+export async function getFriendshipWith (userId) {
+  const res = await fetch(`/api/user/friendships/${userId}`, {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  if (res.status === 200) {
+    return res.json()
+  }
+}
+
+export async function addFriend (userId) {
+  await fetch('/api/user/friends', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ user: userId })
+  })
+}
+
+export async function acceptFriend (userId) {
+  await fetch('/api/user/friends', {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ user: userId })
+  })
+}
+
+export async function deleteFriend (userId) {
+  await fetch('/api/user/friends', {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ user: userId })
+  })
+}

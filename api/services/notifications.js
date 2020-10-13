@@ -1,4 +1,11 @@
-const { Notification } = require('../models')
+const { Notification, User } = require('../models')
+
+function welcome (userId) {
+  Notification.create({
+    userId,
+    message: 'Bem vindo a plataforma ConsumerHub'
+  })
+}
 
 function notifyProductAccepted (userId, productId, productName) {
   Notification.create({
@@ -15,4 +22,44 @@ function notifyProductRejected (userId, productName) {
   })
 }
 
-module.exports = { notifyProductAccepted, notifyProductRejected }
+async function notifyFriendRequest (userId1, userId2) {
+  const user = await User.findByPk(userId1)
+  if (user) {
+    Notification.create({
+      userId: userId2,
+      message: `O usuário "${user.name}" quer ser seu amigo`,
+      url: `/user/${user.id}`
+    })
+  }
+}
+
+async function notifyFriendAccepted (userId1, userId2) {
+  const user = await User.findByPk(userId1)
+  if (user) {
+    Notification.create({
+      userId: userId2,
+      message: `O usuário "${user.name}" aceitou ser seu amigo`,
+      url: `/user/${user.id}`
+    })
+  }
+}
+
+async function notifyFriendRejected (userId1, userId2) {
+  const user = await User.findByPk(userId1)
+  if (user) {
+    Notification.create({
+      userId: userId2,
+      message: `O usuário "${user.name}" não quer ser seu amigo`,
+      url: `/user/${user.id}`
+    })
+  }
+}
+
+module.exports = {
+  welcome,
+  notifyProductAccepted,
+  notifyProductRejected,
+  notifyFriendRequest,
+  notifyFriendAccepted,
+  notifyFriendRejected
+}

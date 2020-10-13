@@ -3,6 +3,7 @@ const router = express.Router()
 const { User, Image } = require('../models')
 const { auth, createUserToken } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
+const { welcome } = require('../services/notifications')
 
 router.get('/', auth('admin'))
 router.get('/:id', auth())
@@ -19,6 +20,7 @@ router.get('/', wrap(async (req, res) => {
 
 router.post('/', wrap(async (req, res) => {
   const user = await User.createFromObj(req.body)
+  welcome(user.id)
   res.send({ token: createUserToken(user), user })
 }))
 

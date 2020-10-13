@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Badge from 'react-bootstrap/Badge'
 import { getStagingProducts } from '../../services/api'
 import NothingHere from '../NothingHere'
 import ShowMore from '../ShowMore'
@@ -35,6 +36,9 @@ export default (props) => {
                     {product.description.trim().length > 200 &&
                       <span>...</span>}
                   </p>) || <p className='text-muted'>Sem descrição</p>}
+                <span>
+                  {product.isNewProduct && <Badge variant='secondary'>Novo</Badge>}
+                </span>
               </div>
             </Col>
           )}

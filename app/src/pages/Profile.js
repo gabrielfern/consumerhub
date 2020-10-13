@@ -5,6 +5,7 @@ import Badge from 'react-bootstrap/Badge'
 import Image from '../components/Image'
 import Reviews from '../components/profile/Reviews'
 import NewProducts from '../components/profile/NewProducts'
+import Friends from '../components/profile/Friends'
 import { ReactComponent as EmailSVG } from '../assets/email.svg'
 
 export default (props) => {
@@ -23,7 +24,7 @@ export default (props) => {
 
       {(props.user &&
         <div className='d-md-flex justify-content-center'>
-          <div className='d-flex flex-column align-items-center word-break'>
+          <div className='d-flex flex-column align-items-center word-break mb-3'>
             <div style={{ width: '250px' }}>
               <Image
                 width='250px'
@@ -50,7 +51,12 @@ export default (props) => {
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to='/profile?tab=new-products' eventKey='new-products'>
-                  Produtos sugeridos
+                  Produtos em análise
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} to='/profile?tab=friends' eventKey='friends'>
+                  Amigos
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -60,6 +66,9 @@ export default (props) => {
               </Route>
               <Route exact path='new-products'>
                 <NewProducts {...props} />
+              </Route>
+              <Route exact path='friends'>
+                <Friends {...props} />
               </Route>
             </Switch>
           </div>

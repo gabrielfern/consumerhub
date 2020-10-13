@@ -510,10 +510,12 @@ export default (props) => {
                 (hash.slice(1) === review.id ? 'bg-light' : '')}
             >
               <div>
-                <Image
-                  width='128px'
-                  src={`/api/images/${review.User.image}`}
-                />
+                <Link to={`/user/${review.userId}`}>
+                  <Image
+                    width='128px'
+                    src={`/api/images/${review.User.image}`}
+                  />
+                </Link>
               </div>
               <div className='ml-3 flex-fill space-break'>
                 <div className={'d-flex align-items-stretch mb-2 ' + (props.user ? 'mt-n3' : '')}>

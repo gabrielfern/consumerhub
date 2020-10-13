@@ -4,6 +4,7 @@ const { OAuth2Client } = require('google-auth-library')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { wrap } = require('../utils/errorHandlers')
+const { welcome } = require('../services/notifications')
 const client = new OAuth2Client()
 const clientId = process.env.GOOGLE_CLIENT_ID ||
   require('../env.json').googleClientId
@@ -46,6 +47,7 @@ router.post('/google', wrap(async (req, res) => {
     res.status(401).end()
   } else {
     user = await User.createFromObj(payload, true)
+    welcome(user.id)
     res.status(201).send({
       token: createUserToken(user), user
     })

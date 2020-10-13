@@ -154,12 +154,12 @@ module.exports = (sequelize, DataTypes) => {
     for (const friendship of friendships) {
       if (this.id !== friendship.userId1 && friendship.accepted) {
         friends.push(await friendship.getUser1({
-          attributes: ['id', 'name', 'email'],
+          attributes: ['id', 'name', 'email', 'image'],
           raw: true
         }))
       } else if (friendship.accepted) {
         friends.push(await friendship.getUser2({
-          attributes: ['id', 'name', 'email'],
+          attributes: ['id', 'name', 'email', 'image'],
           raw: true
         }))
       }
