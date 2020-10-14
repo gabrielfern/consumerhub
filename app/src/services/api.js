@@ -425,3 +425,37 @@ export async function deleteFriend (userId) {
     body: JSON.stringify({ user: userId })
   })
 }
+
+export async function getReport (type, idName, idValue) {
+  const query = `?type=${type}&${idName}=${idValue}`
+  const res = await fetch(`/api/reports${query}`, {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  if (res.status === 200) {
+    return res.json()
+  }
+}
+
+export async function createReport (type, idName, idValue, text) {
+  const query = `?type=${type}&${idName}=${idValue}`
+  await fetch(`/api/reports${query}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ text })
+  })
+}
+
+export async function deleteReport (type, idName, idValue) {
+  const query = `?type=${type}&${idName}=${idValue}`
+  await fetch(`/api/reports${query}`, {
+    method: 'DELETE',
+    headers: {
+      token: localStorage.token
+    }
+  })
+}

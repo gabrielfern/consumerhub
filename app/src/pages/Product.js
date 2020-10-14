@@ -16,6 +16,7 @@ import {
 import Image from '../components/Image'
 import Stars from '../components/Stars'
 import ShowMore from '../components/ShowMore'
+import Report from '../components/Report'
 import { strSort, productStars } from '../utils/functions'
 import { ReactComponent as ReviewSVG } from '../assets/review.svg'
 import { ReactComponent as CancelSVG } from '../assets/cancel.svg'
@@ -47,6 +48,8 @@ export default (props) => {
   const [showForm, setShowForm] = useState(false)
   const [showWithoutComment, setShowWithoutComment] = useState(true)
   const [selectedSorting, setSelectedSorting] = useState('createdAt')
+  const [showReportModal, setShowReportModal] = useState(false)
+  const [reportReviewId, setReportReviewId] = useState('')
 
   let hasNoLinks = true
 
@@ -231,6 +234,11 @@ export default (props) => {
       await voteReview(review.id, 'downvote')
     }
     loadReviews()
+  }
+
+  function showReport (reviewId) {
+    setReportReviewId(reviewId)
+    setShowReportModal(true)
   }
 
   return (
@@ -518,7 +526,7 @@ export default (props) => {
                 </Link>
               </div>
               <div className='ml-3 flex-fill space-break'>
-                <div className={'d-flex align-items-stretch mb-2 ' + (props.user ? 'mt-n3' : '')}>
+                <div className={'d-flex align-items-stretch mb-2 ' + (props.user ? 'mt-n2' : '')}>
                   <p className='d-flex align-items-center m-0'>
                     <Link to={`/user/${review.userId}`}>
                       <b>{review.User.name}</b>
@@ -528,11 +536,13 @@ export default (props) => {
                     {props.user &&
                       <Dropdown alignRight>
                         <Dropdown.Toggle
-                          className='border-0 p-2 m-1'
+                          className='border-0'
                           variant='outline-dark'
                         />
                         <Dropdown.Menu>
-                          <Dropdown.Item>Reportar</Dropdown.Item>
+                          <Dropdown.Item onClick={() => showReport(review.id)}>
+                            Reportar
+                          </Dropdown.Item>
                           {props.user.type !== 'user' &&
                             <Dropdown.Item
                               className='text-danger'
@@ -592,6 +602,12 @@ export default (props) => {
             setSlice={setSlice} length={reviews.length}
           />
         </>}
+
+      {props.user &&
+        <Report
+          showModal={showReportModal} setShowModal={setShowReportModal}
+          type='reviews' idName='reviewId' idValue={reportReviewId}
+        />}
     </>
   )
 }

@@ -31,7 +31,7 @@ export default (props) => {
                 src={`/api/images/${props.user.image}`}
               />
               <p className='mt-3'>
-                <span className='text-muted'>#{props.user.id + ' '}</span>
+                <span className='text-muted'>#{props.user.id}&nbsp;</span>
                 {props.user.type !== 'user' &&
                   <Badge variant='secondary'>{props.user.type}</Badge>}
               </p>

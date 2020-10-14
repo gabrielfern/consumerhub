@@ -1,22 +1,27 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import Badge from 'react-bootstrap/Badge'
 import Button from 'react-bootstrap/Button'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import Dropdown from 'react-bootstrap/Dropdown'
 import Image from '../components/Image'
 import Reviews from '../components/profile/Reviews'
+import Report from '../components/Report'
 import {
   getUser, getFriendshipWith, addFriend as addFriendAPI,
-  deleteFriend, acceptFriend as acceptFriendAPI
+  deleteFriend, acceptFriend as acceptFriendAPI,
+  deleteUser as deleteUserAPI
 } from '../services/api'
 import { ReactComponent as EmailSVG } from '../assets/email.svg'
 import { ReactComponent as InfoSVG } from '../assets/info.svg'
 
 export default (props) => {
   const { userId } = useParams()
+  const history = useHistory()
   const [user, setUser] = useState()
   const [friendship, setFriendship] = useState()
+  const [showReportModal, setShowReportModal] = useState(false)
 
   const loadUser = useCallback(() => {
     getUser(userId).then(user => {
@@ -58,6 +63,17 @@ export default (props) => {
     loadUser()
   }
 
+  async function deleteUser () {
+    if (window.confirm('Realmente excluir esse usuário?')) {
+      const status = await deleteUserAPI(user.id)
+      if (status === 200) {
+        history.goBack()
+      } else {
+        window.alert('Falha ao excluir usuário')
+      }
+    }
+  }
+
   return (
     <>
       <h1>Perfil de usuário</h1>
@@ -70,11 +86,32 @@ export default (props) => {
                 width='250px'
                 src={`/api/images/${user.image}`}
               />
-              <p className='mt-3'>
-                <span className='text-muted'>#{user.id + ' '}</span>
+              <div className='mt-3 d-flex align-items-center'>
+                <span className='text-muted'>#{user.id}&nbsp;</span>
                 {user.type !== 'user' &&
                   <Badge variant='secondary'>{user.type}</Badge>}
-              </p>
+                <div className='flex-fill text-right'>
+                  {props.user && props.user.id !== user.id &&
+                    <Dropdown alignRight>
+                      <Dropdown.Toggle
+                        className='border-0'
+                        variant='outline-dark'
+                      />
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => setShowReportModal(true)}>
+                          Reportar
+                        </Dropdown.Item>
+                        {props.user.type !== 'user' &&
+                          <Dropdown.Item
+                            className='text-danger'
+                            onClick={deleteUser}
+                          >
+                            Excluir Usuário
+                          </Dropdown.Item>}
+                      </Dropdown.Menu>
+                    </Dropdown>}
+                </div>
+              </div>
               <p className='mt-3'><b>{user.name}</b></p>
               {user.email &&
                 <p className='mt-3'>
@@ -150,6 +187,10 @@ export default (props) => {
             <h4>Avaliações</h4>
             <Reviews user={user} />
           </div>
+          <Report
+            showModal={showReportModal} setShowModal={setShowReportModal}
+            type='users' idName='reportedId' idValue={user.id}
+          />
         </div>}
     </>
   )
