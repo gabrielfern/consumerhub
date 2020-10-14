@@ -72,6 +72,10 @@ export default (props) => {
               <NavDropdown.Item as={Link} to='/control-center?tab=reports' eventKey>
                 Reports
               </NavDropdown.Item>
+              {props.user.type === 'admin' &&
+                <NavDropdown.Item as={Link} to='/control-center?tab=users' eventKey>
+                  Usuários
+                </NavDropdown.Item>}
             </NavDropdown>}
           <NavDropdown
             title={

@@ -8,12 +8,12 @@ const { welcome } = require('../services/notifications')
 router.get('/', auth('admin'))
 router.get('/:id', auth())
 router.put('/:id', auth('admin'))
-router.put('/:id', auth('admin'))
 router.delete('/:id', auth('mod'))
 
 router.get('/', wrap(async (req, res) => {
   const users = await User.findAll({
-    attributes: { exclude: ['password'] }
+    attributes: { exclude: ['password'] },
+    order: [['createdAt', 'DESC']]
   })
   res.send(users)
 }))

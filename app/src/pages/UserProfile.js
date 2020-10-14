@@ -5,13 +5,14 @@ import Button from 'react-bootstrap/Button'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Dropdown from 'react-bootstrap/Dropdown'
+import Form from 'react-bootstrap/Form'
 import Image from '../components/Image'
 import Reviews from '../components/profile/Reviews'
 import Report from '../components/Report'
 import {
   getUser, getFriendshipWith, addFriend as addFriendAPI,
   deleteFriend, acceptFriend as acceptFriendAPI,
-  deleteUser as deleteUserAPI
+  deleteUser as deleteUserAPI, changeUserType as changeUserTypeAPI
 } from '../services/api'
 import { ReactComponent as EmailSVG } from '../assets/email.svg'
 import { ReactComponent as InfoSVG } from '../assets/info.svg'
@@ -72,6 +73,11 @@ export default (props) => {
         window.alert('Falha ao excluir usuário')
       }
     }
+  }
+
+  async function changeUserType (type) {
+    await changeUserTypeAPI(user.id, type)
+    loadUser()
   }
 
   return (
@@ -179,6 +185,16 @@ export default (props) => {
                           Desfazer amizade
                       </Button>
                     </>}
+                  {props.user.type === 'admin' &&
+                    <Form.Control
+                      className='my-3'
+                      as='select' custom defaultValue={user.type}
+                      onChange={e => changeUserType(e.target.value)}
+                    >
+                      <option value='user'>Usuário</option>
+                      <option value='mod'>Moderador</option>
+                      <option value='admin'>Administrador</option>
+                    </Form.Control>}
                 </div>}
             </div>
           </div>

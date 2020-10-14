@@ -5,6 +5,7 @@ import NewProductsList from '../components/controlCenter/NewProductsList'
 import ProductEditionsList from '../components/controlCenter/ProductEditionsList'
 import ReportsList from '../components/controlCenter/ReportsList'
 import Categories from '../components/controlCenter/Categories'
+import Users from '../components/controlCenter/Users'
 
 export default (props) => {
   const query = new URLSearchParams(useLocation().search)
@@ -29,6 +30,12 @@ export default (props) => {
             Reports
           </Nav.Link>
         </Nav.Item>
+        {props.user && props.user.type === 'admin' &&
+          <Nav.Item>
+            <Nav.Link as={Link} to='/control-center?tab=users' eventKey='users'>
+              Usuários
+            </Nav.Link>
+          </Nav.Item>}
       </Nav>
 
       <Switch location={{ pathname: query.get('tab') || 'new-products' }}>
@@ -43,6 +50,9 @@ export default (props) => {
         </Route>
         <Route exact path='reports'>
           <ReportsList {...props} />
+        </Route>
+        <Route exact path='users'>
+          <Users {...props} />
         </Route>
       </Switch>
     </>

@@ -13,6 +13,15 @@ export async function getUser (userId) {
   return res.json()
 }
 
+export async function getAll () {
+  const res = await fetch('/api/users', {
+    headers: {
+      token: localStorage.token
+    }
+  })
+  return res.json()
+}
+
 export async function createUser (user) {
   const res = await fetch('/api/users', {
     method: 'POST',
@@ -90,6 +99,17 @@ export async function editUser (password, name, email, newPassword) {
     localStorage.token = (await res.json()).token
   }
   return res.status
+}
+
+export async function changeUserType (userId, type) {
+  await fetch(`/api/users/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ type })
+  })
 }
 
 export async function deleteUser (userId, password) {
