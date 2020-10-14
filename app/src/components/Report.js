@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
-  getReport, createReport as createReportAPI,
+  getReports, createReport as createReportAPI,
   deleteReport as deleteReportAPI
 } from '../services/api'
 import Button from 'react-bootstrap/Button'
@@ -14,10 +14,10 @@ export default (props) => {
 
   useEffect(() => {
     if (props.showModal) {
-      getReport(props.type, props.idName, props.idValue).then(report => {
-        if (report[0]) {
+      getReports(props.type, props.idName, props.idValue).then(reports => {
+        if (reports[0]) {
           setShowDelete(true)
-          setText(report[0].text)
+          setText(reports[0].text)
         }
       })
     }

@@ -69,9 +69,6 @@ export default (props) => {
               <NavDropdown.Item as={Link} to='/control-center?tab=categories' eventKey>
                 Categorias
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/control-center?tab=product-editions' eventKey>
-                Edições de Produtos
-              </NavDropdown.Item>
               <NavDropdown.Item as={Link} to='/control-center?tab=reports' eventKey>
                 Reports
               </NavDropdown.Item>

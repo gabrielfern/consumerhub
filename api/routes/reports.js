@@ -23,7 +23,10 @@ router.get('/', wrap(async (req, res) => {
   if (req.query[id[req.query.type]]) {
     where[id[req.query.type]] = req.query[id[req.query.type]]
   }
-  res.send(await model[req.query.type].findAll({ where }))
+  res.send(await model[req.query.type].findAll({
+    where,
+    order: ['createdAt']
+  }))
 }))
 
 router.post('/', wrap(async (req, res) => {

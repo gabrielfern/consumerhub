@@ -31,6 +31,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DATE
     }
+  }, {
+    defaultScope: {
+      include: [{
+        association: 'Review',
+        attributes: ['productId']
+      }]
+    }
   })
 
   ReviewReport.associate = function (models) {

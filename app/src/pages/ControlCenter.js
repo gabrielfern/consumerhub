@@ -25,11 +25,6 @@ export default (props) => {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to='/control-center?tab=product-editions' eventKey='product-editions'>
-            Edições de Produtos
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
           <Nav.Link as={Link} to='/control-center?tab=reports' eventKey='reports'>
             Reports
           </Nav.Link>

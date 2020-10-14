@@ -426,7 +426,7 @@ export async function deleteFriend (userId) {
   })
 }
 
-export async function getReport (type, idName, idValue) {
+export async function getReports (type, idName, idValue) {
   const query = `?type=${type}&${idName}=${idValue}`
   const res = await fetch(`/api/reports${query}`, {
     headers: {
@@ -450,8 +450,11 @@ export async function createReport (type, idName, idValue, text) {
   })
 }
 
-export async function deleteReport (type, idName, idValue) {
-  const query = `?type=${type}&${idName}=${idValue}`
+export async function deleteReport (type, idName, idValue, userId) {
+  let query = `?type=${type}&${idName}=${idValue}`
+  if (userId) {
+    query += '&userId=' + userId
+  }
   await fetch(`/api/reports${query}`, {
     method: 'DELETE',
     headers: {
