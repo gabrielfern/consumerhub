@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { editUser, uploadUserImage } from '../services/api'
+import { editUser, uploadUserImage, deleteUser } from '../services/api'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
@@ -21,6 +21,7 @@ export default (props) => {
   const [image, setImage] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [deleteMode, setDeleteMode] = useState(false)
   const [imageURL, setImageURL] = useState('')
 
   useEffect(() => {
@@ -59,10 +60,50 @@ export default (props) => {
     if (image) {
       await uploadUserImage(await image.arrayBuffer())
     }
-    await editUser(password, name, email, newPassword)
-    setIsLoading(false)
-    props.loadUser()
-    history.push('/profile')
+    const status = await editUser(password, name, email, newPassword)
+    if (status === 200) {
+      await props.loadUser()
+      history.push('/profile')
+    } else {
+      window.alert(status === 401 ? 'Senha errada' : 'Ocorreu um erro')
+      setIsLoading(false)
+    }
+  }
+
+  async function deleteAccount (e) {
+    if (password && !props.user.isGoogleUser) {
+      e.preventDefault()
+      setIsLoading(true)
+      const status = await deleteUser(null, password)
+      if (status === 200) {
+        props.logout()
+      } else {
+        window.alert(status === 401 ? 'Senha errada' : 'Ocorreu um erro')
+        setIsLoading(false)
+      }
+    } else if (props.user.isGoogleUser) {
+      if (window.confirm('Realmente excluir conta?')) {
+        setIsLoading(true)
+        setDeleteMode(true)
+        const status = await deleteUser(null, password)
+        if (status === 200) {
+          props.logout()
+        } else {
+          window.alert('Ocorreu um erro')
+          setIsLoading(false)
+          setDeleteMode(false)
+        }
+      }
+    } else {
+      setShowModal(true)
+      setDeleteMode(true)
+    }
+  }
+
+  function hideModal () {
+    setShowModal(false)
+    setDeleteMode(false)
+    setPassword('')
   }
 
   return (
@@ -98,7 +139,7 @@ export default (props) => {
                       placement='top'
                       overlay={
                         <Tooltip>
-                          Usuarios google não podem editar este campo
+                          Usuários Google não podem editar este campo
                         </Tooltip>
                       }
                     >
@@ -119,7 +160,7 @@ export default (props) => {
                       placement='top'
                       overlay={
                         <Tooltip>
-                          Usuarios google não podem editar este campo
+                          Usuários Google não podem editar este campo
                         </Tooltip>
                       }
                     >
@@ -135,21 +176,30 @@ export default (props) => {
               </Form.Group>
             </Col>
           </Form.Row>
-          <div className='py-3 text-right'>
-            <Button type='submit' disabled={isLoading}>
-              {isLoading ? <>Enviando...</> : <>Confirmar</>}
+          <div className='py-3 d-flex'>
+            <Button
+              variant='outline-danger' disabled={!showModal && isLoading}
+              onClick={deleteAccount}
+            >
+              Excluir Conta
             </Button>
+            <div className='text-right flex-fill'>
+              <Button type='submit' disabled={!showModal && isLoading}>
+                {!showModal && !deleteMode && isLoading ? 'Enviando...' : 'Confirmar'}
+              </Button>
+            </div>
           </div>
         </Form>) || <p>Carregando...</p>}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={hideModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirme sua senha</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={submit}>
+        <Form onSubmit={deleteMode ? deleteAccount : submit}>
           <Modal.Body>
-            <Alert variant='warning'>
-              Senha atual necessaria para se alterar email ou senha
+            <Alert variant={deleteMode ? 'danger' : 'warning'}>
+              {!deleteMode && 'Senha atual necessaria para se alterar email ou senha'}
+              {deleteMode && 'Senha necessaria para excluir a conta'}
             </Alert>
             <Form.Group>
               <Form.Label>Senha</Form.Label>
@@ -160,11 +210,14 @@ export default (props) => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='secondary' onClick={() => setShowModal(false)}>
+            <Button variant='secondary' onClick={hideModal}>
               Cancelar
             </Button>
-            <Button type='submit' disabled={isLoading} variant='primary'>
-              {isLoading ? <>Enviando...</> : <>Confirmar</>}
+            <Button
+              type='submit' disabled={isLoading}
+              variant={deleteMode ? 'danger' : 'primary'}
+            >
+              {isLoading && !deleteMode ? 'Enviando...' : 'Confirmar'}
             </Button>
           </Modal.Footer>
         </Form>

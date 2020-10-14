@@ -89,6 +89,26 @@ export async function editUser (password, name, email, newPassword) {
   if (password && res.status === 200) {
     localStorage.token = (await res.json()).token
   }
+  return res.status
+}
+
+export async function deleteUser (userId, password) {
+  let path = '/api/user'
+  const body = {}
+  if (userId) {
+    path = `/api/users/${userId}`
+  } else {
+    body.password = password
+  }
+  const res = await fetch(path, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify(body)
+  })
+  return res.status
 }
 
 export async function getStagingProducts (userId) {
