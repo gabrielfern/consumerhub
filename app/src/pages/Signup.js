@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react'
+import { useHistory, Link } from 'react-router-dom'
 import { createUser, uploadUserImage } from '../services/api'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -14,6 +14,7 @@ export default (props) => {
   const [password, setPassword] = useState('')
   const [image, setImage] = useState()
   const [imageURL, setImageURL] = useState('')
+  const secPasswordRef = useRef()
 
   useEffect(() => {
     if (props.isLogged) {
@@ -28,6 +29,14 @@ export default (props) => {
       setImageURL('')
     }
   }, [image])
+
+  useEffect(() => {
+    if (password !== secPasswordRef.current.value) {
+      secPasswordRef.current.setCustomValidity('Senhas precisam ser iguais')
+    } else {
+      secPasswordRef.current.setCustomValidity('')
+    }
+  }, [password])
 
   async function submit (e) {
     e.preventDefault()
@@ -81,6 +90,13 @@ export default (props) => {
                 autoComplete='new-password'
               />
             </Form.Group>
+            <Form.Group>
+              <Form.Label>Confirme a Senha</Form.Label>
+              <Form.Control
+                required type='password' minLength='3' maxLength='30'
+                ref={secPasswordRef} autoComplete='new-password'
+              />
+            </Form.Group>
           </Col>
         </Form.Row>
         <div className='py-3 text-right'>
@@ -89,6 +105,10 @@ export default (props) => {
           </Button>
         </div>
       </Form>
+
+      <h5 className='my-3 text-muted text-center'>
+        Ou se preferir entre com uma conta <Link to='signin'>Google</Link>
+      </h5>
     </>
   )
 }

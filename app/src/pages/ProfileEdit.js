@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { editUser, uploadUserImage, deleteUser } from '../services/api'
 import Button from 'react-bootstrap/Button'
@@ -23,6 +23,8 @@ export default (props) => {
   const [showModal, setShowModal] = useState(false)
   const [deleteMode, setDeleteMode] = useState(false)
   const [imageURL, setImageURL] = useState('')
+  const [secPassword, setSecPassword] = useState('')
+  const secPasswordRef = useRef()
 
   useEffect(() => {
     if (!props.isLogged) {
@@ -44,6 +46,16 @@ export default (props) => {
       setImageURL('')
     }
   }, [image])
+
+  useEffect(() => {
+    if (props.user) {
+      if (newPassword !== secPassword) {
+        secPasswordRef.current.setCustomValidity('Senhas precisam ser iguais')
+      } else {
+        secPasswordRef.current.setCustomValidity('')
+      }
+    }
+  }, [newPassword, secPassword, props.user])
 
   async function submitWithoutPassword (e) {
     e.preventDefault()
@@ -168,10 +180,19 @@ export default (props) => {
                     </OverlayTrigger>}
                 </Form.Label>
                 <Form.Control
-                  disabled={props.user.isGoogleUser}
+                  required={secPassword} disabled={props.user.isGoogleUser}
                   type='password' minLength='3' maxLength='30'
                   value={newPassword} onChange={e => setNewPassword(e.target.value)}
                   autoComplete='new-password'
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Confirme a Nova Senha</Form.Label>
+                <Form.Control
+                  disabled={props.user.isGoogleUser}
+                  type='password' minLength='3' maxLength='30'
+                  value={secPassword} onChange={e => setSecPassword(e.target.value)}
+                  ref={secPasswordRef} autoComplete='new-password'
                 />
               </Form.Group>
             </Col>
