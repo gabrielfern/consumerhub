@@ -54,13 +54,7 @@ router.put('/:id', wrap(async (req, res) => {
   })
   const product = await Product.findByPk(req.params.id)
   if (stagingProduct && product) {
-    const values = {}
-    for (const attr in product.rawAttributes) {
-      if (stagingProduct[attr] !== null) {
-        values[attr] = stagingProduct[attr]
-      }
-    }
-    await product.update(values)
+    await product.update(stagingProduct.dataValues)
     await Image.clearUsers(req.query.userId, req.params.id)
     if (req.user.id !== req.query.userId) {
       notifyProductAccepted(

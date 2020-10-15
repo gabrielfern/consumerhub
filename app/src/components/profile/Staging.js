@@ -25,13 +25,13 @@ export default (props) => {
       <>
         <Row xs={1} md={1} lg={2} xl={3} noGutters>
           {products.slice(0, slice).map((product, i) =>
-            <Col key={i} className='p-1 d-flex flex-column space-break'>
+            <Col key={i} className='p-1 d-flex flex-column word-break'>
               <div className='flex-fill d-flex flex-column border rounded p-3'>
                 <Link to={`/staging?id=${product.id}&userId=${product.userId}`}>
                   {product.name}
                 </Link>
                 {(product.description && product.description.trim().slice(0, 200) &&
-                  <p className='flex-fill space-break'>
+                  <p className='flex-fill'>
                     {product.description.trim().slice(0, 200)}
                     {product.description.trim().length > 200 &&
                       <span>...</span>}

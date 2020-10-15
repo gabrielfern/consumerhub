@@ -64,7 +64,7 @@ export default (props) => {
               alignRight
             >
               <NavDropdown.Item as={Link} to='/control-center' eventKey>
-                Novos Produtos
+                Produtos em análise
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to='/control-center?tab=categories' eventKey>
                 Categorias

@@ -151,8 +151,9 @@ export async function getStagingProduct (productId, userId) {
   return res.json()
 }
 
-export async function createStagingProduct () {
-  const res = await fetch('/api/staging', {
+export async function createStagingProduct (productId) {
+  const query = productId ? `?id=${productId}` : ''
+  const res = await fetch('/api/staging' + query, {
     method: 'POST',
     headers: {
       token: localStorage.token
@@ -209,6 +210,15 @@ export async function createProduct (productId, userId) {
   const query = `?id=${productId}&userId=${userId}`
   await fetch(`/api/products${query}`, {
     method: 'POST',
+    headers: {
+      token: localStorage.token
+    }
+  })
+}
+
+export async function editProduct (productId, userId) {
+  await fetch(`/api/products/${productId}?userId=${userId}`, {
+    method: 'PUT',
     headers: {
       token: localStorage.token
     }

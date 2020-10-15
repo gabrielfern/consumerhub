@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav'
 import Badge from 'react-bootstrap/Badge'
 import Image from '../components/Image'
 import Reviews from '../components/profile/Reviews'
-import NewProducts from '../components/profile/NewProducts'
+import Staging from '../components/profile/Staging'
 import Friends from '../components/profile/Friends'
 import { ReactComponent as EmailSVG } from '../assets/email.svg'
 
@@ -50,7 +50,7 @@ export default (props) => {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link as={Link} to='/profile?tab=new-products' eventKey='new-products'>
+                <Nav.Link as={Link} to='/profile?tab=staging' eventKey='staging'>
                   Produtos em análise
                 </Nav.Link>
               </Nav.Item>
@@ -64,8 +64,8 @@ export default (props) => {
               <Route exact path='reviews'>
                 <Reviews {...props} />
               </Route>
-              <Route exact path='new-products'>
-                <NewProducts {...props} />
+              <Route exact path='staging'>
+                <Staging {...props} />
               </Route>
               <Route exact path='friends'>
                 <Friends {...props} />

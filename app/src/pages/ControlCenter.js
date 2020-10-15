@@ -14,10 +14,10 @@ export default (props) => {
     <>
       <h1>Painel de Controle</h1>
 
-      <Nav variant='tabs' className='mb-3' activeKey={query.get('tab') || 'new-products'}>
+      <Nav variant='tabs' className='mb-3' activeKey={query.get('tab') || 'staging'}>
         <Nav.Item>
-          <Nav.Link as={Link} to='/control-center' eventKey='new-products'>
-            Novos Produtos
+          <Nav.Link as={Link} to='/control-center' eventKey='staging'>
+            Produtos em análise
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -38,8 +38,8 @@ export default (props) => {
           </Nav.Item>}
       </Nav>
 
-      <Switch location={{ pathname: query.get('tab') || 'new-products' }}>
-        <Route exact path='new-products'>
+      <Switch location={{ pathname: query.get('tab') || 'staging' }}>
+        <Route exact path='staging'>
           <NewProductsList {...props} />
         </Route>
         <Route exact path='categories'>

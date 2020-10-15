@@ -11,7 +11,8 @@ import {
   getProduct, deleteProduct, getProductReviews,
   createReview, getProductCategories, getCategories,
   setProductCategory, removeProductCategory,
-  editReview, deleteReview, voteReview, deleteReviewVote
+  editReview, deleteReview, voteReview, deleteReviewVote,
+  createStagingProduct as createStagingProductAPI
 } from '../services/api'
 import Image from '../components/Image'
 import Stars from '../components/Stars'
@@ -48,7 +49,8 @@ export default (props) => {
   const [showForm, setShowForm] = useState(false)
   const [showWithoutComment, setShowWithoutComment] = useState(true)
   const [selectedSorting, setSelectedSorting] = useState('createdAt')
-  const [showReportModal, setShowReportModal] = useState(false)
+  const [showProductReportModal, setShowProductReportModal] = useState(false)
+  const [showReviewReportModal, setShowReviewReportModal] = useState(false)
   const [reportReviewId, setReportReviewId] = useState('')
 
   let hasNoLinks = true
@@ -167,8 +169,10 @@ export default (props) => {
   }, [props.user, productCategories])
 
   async function remove () {
-    await deleteProduct(product.id)
-    history.push('/products')
+    if (window.confirm('Realmente excluir este produto?')) {
+      await deleteProduct(product.id)
+      history.push('/products')
+    }
   }
 
   async function submitReview (e) {
@@ -237,8 +241,21 @@ export default (props) => {
   }
 
   function showReport (reviewId) {
-    setReportReviewId(reviewId)
-    setShowReportModal(true)
+    if (reviewId) {
+      setReportReviewId(reviewId)
+      setShowReviewReportModal(true)
+    } else {
+      setShowProductReportModal(true)
+    }
+  }
+
+  async function createStagingProduct () {
+    const resp = await createStagingProductAPI(product.id)
+    if (resp) {
+      history.push(`/staging?id=${resp.id}&userId=${props.user.id}`)
+    } else {
+      window.alert('Um erro ocorreu')
+    }
   }
 
   return (
@@ -248,7 +265,7 @@ export default (props) => {
       {product &&
         <>
           {props.user && props.user.type !== 'user' &&
-            <Alert className='border' variant='warning'>
+            <Alert variant='warning'>
               <h4>Zona de moderadores</h4>
 
               <Form onSubmit={addProductCategory}>
@@ -282,14 +299,36 @@ export default (props) => {
                 )}
               </div>
 
-              <div className='text-right my-2'>
+              <div className='text-right mt-3'>
                 <Button variant='outline-danger' onClick={remove}>
-                    Deletar produto
+                    Excluir Produto
                 </Button>
               </div>
             </Alert>}
 
-          <h3 className='word-break'>{product.name}</h3>
+          <div className='word-break d-flex'>
+            <h3>{product.name}</h3>
+            <div className='flex-fill text-right'>
+              {props.user &&
+                <Dropdown alignRight>
+                  <Dropdown.Toggle
+                    className='border-0'
+                    variant='outline-dark'
+                  />
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      className='text-primary'
+                      onClick={createStagingProduct}
+                    >
+                      Editar
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => showReport()}>
+                      Reportar
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>}
+            </div>
+          </div>
 
           <div className='mb-4'>
             {(props.user && props.user.type !== 'user') || productCategories.map(category =>
@@ -602,11 +641,17 @@ export default (props) => {
           />
         </>}
 
-      {props.user &&
-        <Report
-          showModal={showReportModal} setShowModal={setShowReportModal}
-          type='reviews' idName='reviewId' idValue={reportReviewId}
-        />}
+      {props.user && product &&
+        <>
+          <Report
+            showModal={showProductReportModal} setShowModal={setShowProductReportModal}
+            type='products' idName='productId' idValue={product.id}
+          />
+          <Report
+            showModal={showReviewReportModal} setShowModal={setShowReviewReportModal}
+            type='reviews' idName='reviewId' idValue={reportReviewId}
+          />
+        </>}
     </>
   )
 }

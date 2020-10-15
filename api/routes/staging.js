@@ -21,17 +21,18 @@ router.get('/', wrap(async (req, res) => {
   } else if (req.query.userId) {
     where.userId = req.query.userId
   }
-  res.send(await StagingProduct.findAll({ where }))
+  res.send(await StagingProduct.findAll({
+    where,
+    order: ['createdAt']
+  }))
 }))
 
 router.post('/', wrap(async (req, res) => {
   if (req.query.id) {
-    const product = await Product.findByPk(req.query.id, {
-      attributes: []
-    })
+    const product = await Product.findByPk(req.query.id)
     if (product) {
       const stagingProduct = await StagingProduct.create({
-        id: req.query.id,
+        ...product.dataValues,
         userId: req.user.id,
         isNewProduct: false
       })

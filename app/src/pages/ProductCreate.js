@@ -22,13 +22,14 @@ export default (props) => {
     setIsLoading(true)
     const resp = await createStagingProduct()
     if (resp) {
-      const product = { id: resp.id, name, description }
-      links.forEach((link, i) => {
+      await editStagingProduct({ id: resp.id, name, description })
+      await Promise.all(links.map(async (link, i) => {
         if (link) {
-          product[`link${i + 1}`] = link
+          return editStagingProduct({
+            id: resp.id, [`link${i + 1}`]: link
+          })
         }
-      })
-      await editStagingProduct(product)
+      }))
       await Promise.all(images.map(async (image, i) => {
         if (image && image.size > 0) {
           return uploadStagingProductImage(resp.id, i + 1, await image.arrayBuffer())
@@ -36,6 +37,7 @@ export default (props) => {
       }))
       history.push(`/staging?id=${resp.id}&userId=${props.user.id}`)
     } else {
+      window.alert('Ocorreu um erro ao criar o produto')
       setIsLoading(false)
     }
   }
@@ -49,6 +51,7 @@ export default (props) => {
           <Form.Label>Nome</Form.Label>
           <Form.Control
             required type='text' minLength='3' maxLength='100'
+            placeholder='Nome do produto'
             value={name} onChange={e => setName(e.target.value)}
           />
         </Form.Group>
@@ -56,6 +59,7 @@ export default (props) => {
           <Form.Label>Descrição</Form.Label>
           <Form.Control
             as='textarea' rows='3' maxLength='1000'
+            placeholder='Descreva o produto em até 1000 caracteres'
             value={description} onChange={e => setDescription(e.target.value)}
           />
         </Form.Group>

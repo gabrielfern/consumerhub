@@ -25,7 +25,7 @@ export default (props) => {
       <>
         <Row xs={1} xl={2} noGutters>
           {friends.slice(0, slice).map((friend, i) =>
-            <Col key={i} className='p-1 d-flex flex-column space-break'>
+            <Col key={i} className='p-1 d-flex flex-column word-break'>
               <div className='flex-fill d-flex flex-column border rounded p-3'>
                 <Link to={`/user/${friend.id}`}>
                   {friend.name}
