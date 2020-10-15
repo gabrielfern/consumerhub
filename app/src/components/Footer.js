@@ -11,9 +11,13 @@ export default () => {
           © 2020 ConsumerHub
         </span>
         <Nav>
-          <Nav.Link href='https://github.com/gabrielfern/consumerhub#readme'>Sobre</Nav.Link>
           <Nav.Link>Termos de Uso</Nav.Link>
-          <Nav.Link href='https://github.com/gabrielfern/consumerhub'>Código Fonte</Nav.Link>
+          <Nav.Link
+            href='https://github.com/gabrielfern/consumerhub'
+            target='_blank' rel='noopener noreferrer'
+          >
+            Código Fonte
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

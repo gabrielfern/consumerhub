@@ -57,7 +57,9 @@ export default (props) => {
 
   const loadReviews = useCallback(() => {
     getProductReviews(productId).then(reviews => {
-      setCachedReviews(reviews)
+      if (reviews) {
+        setCachedReviews(reviews)
+      }
     })
   }, [productId])
 

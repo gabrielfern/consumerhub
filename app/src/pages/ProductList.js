@@ -87,13 +87,15 @@ export default (props) => {
 
   useEffect(() => {
     getProducts().then(products => {
-      setCachedProducts(products)
-      products.map(async product => {
-        const productReviews = await getProductReviews(product.id)
-        setReviews(reviews => ({
-          ...reviews, [product.id]: productReviews
-        }))
-      })
+      if (products) {
+        setCachedProducts(products)
+        products.map(async product => {
+          const productReviews = await getProductReviews(product.id)
+          setReviews(reviews => ({
+            ...reviews, [product.id]: productReviews
+          }))
+        })
+      }
     })
 
     getCategories().then(categs => {

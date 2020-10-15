@@ -200,7 +200,9 @@ export async function uploadStagingProductImage (productId, imageNumber, buffer)
 
 export async function getProducts () {
   const res = await fetch('/api/products')
-  return res.json()
+  if (res.status === 200) {
+    return res.json()
+  }
 }
 
 export async function getProduct (productId) {
@@ -250,7 +252,16 @@ export async function getProductReviews (productId) {
   const res = await fetch(`/api/products/${productId}/reviews`, {
     headers
   })
-  return res.json()
+  if (res.status === 200) {
+    return res.json()
+  }
+}
+
+export async function getReviews () {
+  const res = await fetch('/api/reviews')
+  if (res.status === 200) {
+    return res.json()
+  }
 }
 
 export async function createReview (review) {
