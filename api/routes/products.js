@@ -29,7 +29,8 @@ router.post('/', wrap(async (req, res) => {
     await Image.clearUsers(req.query.userId, req.query.id)
     if (req.user.id !== req.query.userId) {
       notifyProductAccepted(
-        stagingProduct.userId, stagingProduct.id, stagingProduct.name
+        stagingProduct.userId, stagingProduct.id, stagingProduct.name,
+        req.body.msg
       )
     }
     await stagingProduct.destroy()
@@ -58,7 +59,7 @@ router.put('/:id', wrap(async (req, res) => {
     await Image.clearUsers(req.query.userId, req.params.id)
     if (req.user.id !== req.query.userId) {
       notifyProductAccepted(
-        stagingProduct.userId, product.id, product.name
+        stagingProduct.userId, product.id, product.name, req.body.msg
       )
     }
     await stagingProduct.destroy()

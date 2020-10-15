@@ -175,13 +175,15 @@ export async function editStagingProduct (product) {
   })
 }
 
-export async function deleteStagingProduct (productId, userId) {
+export async function deleteStagingProduct (productId, userId, msg) {
   const query = `?id=${productId}&userId=${userId}`
   await fetch(`/api/staging${query}`, {
     method: 'DELETE',
     headers: {
+      'Content-type': 'application/json',
       token: localStorage.token
-    }
+    },
+    body: JSON.stringify({ msg })
   })
 }
 
@@ -203,25 +205,31 @@ export async function getProducts () {
 
 export async function getProduct (productId) {
   const res = await fetch(`/api/products/${productId}`)
-  return res.json()
+  if (res.status === 200) {
+    return res.json()
+  }
 }
 
-export async function createProduct (productId, userId) {
+export async function createProduct (productId, userId, msg) {
   const query = `?id=${productId}&userId=${userId}`
   await fetch(`/api/products${query}`, {
     method: 'POST',
     headers: {
+      'Content-type': 'application/json',
       token: localStorage.token
-    }
+    },
+    body: JSON.stringify({ msg })
   })
 }
 
-export async function editProduct (productId, userId) {
+export async function editProduct (productId, userId, msg) {
   await fetch(`/api/products/${productId}?userId=${userId}`, {
     method: 'PUT',
     headers: {
+      'Content-type': 'application/json',
       token: localStorage.token
-    }
+    },
+    body: JSON.stringify({ msg })
   })
 }
 

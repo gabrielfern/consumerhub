@@ -78,11 +78,11 @@ export default (props) => {
               <td>
                 {(editingIndex === i &&
                   <Form.Control
-                    className='m-2' autoFocus
+                    className='my-2' autoFocus
                     value={editingName} placeholder='Novo nome para essa categoria'
                     onChange={e => setEditingName(e.target.value)}
                   />) ||
-                    <div className='m-2'>{categ.name}</div>}
+                    <div className='my-3'>{categ.name}</div>}
               </td>
               <td>
                 <Button

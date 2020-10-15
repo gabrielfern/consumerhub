@@ -7,18 +7,24 @@ function welcome (userId) {
   })
 }
 
-function notifyProductAccepted (userId, productId, productName) {
+function notifyProductAccepted (userId, productId, productName, msg) {
+  if (msg) {
+    msg = '\nMensagem do moderador:\n' + msg
+  }
   Notification.create({
     userId,
-    message: `O produto "${productName}" que você submeteu foi aceito`,
+    message: `O produto "${productName}" que você submeteu foi aceito.` + msg,
     url: `/product/${productId}`
   })
 }
 
-function notifyProductRejected (userId, productName) {
+function notifyProductRejected (userId, productName, msg) {
+  if (msg) {
+    msg = '\nMensagem do moderador:\n' + msg
+  }
   Notification.create({
     userId,
-    message: `O produto "${productName}" que você submeteu não foi aceito`
+    message: `O produto "${productName}" que você submeteu não foi aceito.` + msg
   })
 }
 

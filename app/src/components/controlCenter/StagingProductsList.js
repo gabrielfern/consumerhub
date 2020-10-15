@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
+import Badge from 'react-bootstrap/Badge'
 import { getStagingProducts } from '../../services/api'
 
 export default (props) => {
@@ -16,7 +17,7 @@ export default (props) => {
 
   return (
     <>
-      <Table striped bordered hover>
+      <Table hover>
         <thead>
           <tr>
             <th>#</th>
@@ -30,9 +31,12 @@ export default (props) => {
             return (
               <tr key={i}>
                 <td><Link to={`/staging?id=${product.id}&userId=${product.userId}`}>{i + 1}</Link></td>
-                <td>{product.userId}</td>
-                <td>{product.id}</td>
-                <td>{product.name}</td>
+                <td><Link to={`/user/${product.userId}`}>{product.userId}</Link></td>
+                <td>
+                  {product.isNewProduct ? <Badge variant='secondary'>Novo</Badge>
+                    : <Link to={`/product/${product.id}`}>{product.id}</Link>}
+                </td>
+                <td className='word-break'>{product.name}</td>
               </tr>
             )
           })}

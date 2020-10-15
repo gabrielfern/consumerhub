@@ -78,16 +78,18 @@ export default (props) => {
             <tr key={i}>
               <td>
                 <Link to={'/user/' + report.userId}>
-                  {report.userId}
+                  <div className='my-3'>{report.userId}</div>
                 </Link>
               </td>
               <td>
                 <Link to={getReportLink(report)}>
-                  {report.reportedId || report.reviewId || report.productId}
+                  <div className='my-3'>
+                    {report.reportedId || report.reviewId || report.productId}
+                  </div>
                 </Link>
               </td>
               <td className='space-break'>
-                {report.text}
+                <div className='my-3'>{report.text}</div>
               </td>
               <td>
                 <Button

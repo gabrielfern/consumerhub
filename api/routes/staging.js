@@ -29,7 +29,9 @@ router.get('/', wrap(async (req, res) => {
 
 router.post('/', wrap(async (req, res) => {
   if (req.query.id) {
-    const product = await Product.findByPk(req.query.id)
+    const product = await Product.findByPk(req.query.id, {
+      attributes: { exclude: ['createdAt'] }
+    })
     if (product) {
       const stagingProduct = await StagingProduct.create({
         ...product.dataValues,
@@ -72,7 +74,7 @@ router.delete('/', wrap(async (req, res) => {
       userId: where.userId, productId: where.id
     })
     if (req.user.id !== where.userId) {
-      notifyProductRejected(where.userId, stagingProduct.name)
+      notifyProductRejected(where.userId, stagingProduct.name, req.body.msg)
     }
     await stagingProduct.destroy()
     res.end()

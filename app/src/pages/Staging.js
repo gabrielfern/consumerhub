@@ -9,6 +9,7 @@ import {
 } from '../services/api'
 import Image from '../components/Image'
 import FileChooser from '../components/FileChooser'
+import MessageModal from '../components/MessageModal'
 import { ReactComponent as EditSVG } from '../assets/edit.svg'
 import { ReactComponent as CheckSVG } from '../assets/check.svg'
 import { ReactComponent as CloseSVG } from '../assets/close.svg'
@@ -27,6 +28,8 @@ export default (props) => {
   const [description, setDescription] = useState('')
   const [images, setImages] = useState(Array(5).fill({}))
   const [links, setLinks] = useState(Array(3).fill(''))
+  const [showMessageModal, setShowMessageModal] = useState(false)
+  const [messageModalAcceptMode, setMessageModalAcceptMode] = useState(false)
 
   let hasNoLinks = true
 
@@ -98,6 +101,11 @@ export default (props) => {
     }
   }
 
+  async function triggerMessageModal (acceptMode) {
+    setShowMessageModal(true)
+    setMessageModalAcceptMode(acceptMode === true)
+  }
+
   function cancelHeaderEditing () {
     setHeaderEditMode(false)
     fillHeader(product)
@@ -159,9 +167,14 @@ export default (props) => {
           {props.user && props.user.type !== 'user' &&
             <Alert variant='warning'>
               <h4>Zona de moderadores</h4>
-              {product.isNewProduct && <h6>Este é um produto novo</h6>}
+              {product.isNewProduct &&
+                <h6>
+                  Submetido por <Link to={`/user/${product.userId}`}>Usuário</Link><br />
+                  Este é um produto novo
+                </h6>}
               {!product.isNewProduct &&
                 <h6>
+                  Submetido por <Link to={`/user/${product.userId}`}>Usuário</Link><br />
                   Esta é uma edição a um produto existente, aceitá-lo <b>substituirá</b> o&nbsp;
                   <Link to={`/product/${product.id}`}>Produto Atual</Link>
                   <ul className='mb-0'>
@@ -171,13 +184,25 @@ export default (props) => {
                   Serão mantidas
                 </h6>}
               <div className='d-flex justify-content-end'>
-                <Button className='mr-1' variant='outline-danger' onClick={remove}>
+                <Button
+                  className='mr-1' variant='outline-danger'
+                  onClick={props.user.id !== product.userId ? triggerMessageModal : remove}
+                >
                     Recusar
                 </Button>
-                <Button variant='outline-primary' onClick={accept}>
+                <Button
+                  variant='outline-primary'
+                  onClick={props.user.id !== product.userId ? () => triggerMessageModal(true) : accept}
+                >
                     Aceitar
                 </Button>
               </div>
+              {props.user.id !== product.userId &&
+                <MessageModal
+                  product={product} showModal={showMessageModal}
+                  setShowModal={setShowMessageModal}
+                  acceptMode={messageModalAcceptMode}
+                />}
             </Alert>}
 
           {props.user && props.user.type === 'user' &&

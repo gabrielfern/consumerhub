@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch, Route, Link, useLocation } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
-import NewProductsList from '../components/controlCenter/NewProductsList'
+import StagingProductsList from '../components/controlCenter/StagingProductsList'
 import ProductEditionsList from '../components/controlCenter/ProductEditionsList'
 import ReportsList from '../components/controlCenter/ReportsList'
 import Categories from '../components/controlCenter/Categories'
@@ -40,7 +40,7 @@ export default (props) => {
 
       <Switch location={{ pathname: query.get('tab') || 'staging' }}>
         <Route exact path='staging'>
-          <NewProductsList {...props} />
+          <StagingProductsList {...props} />
         </Route>
         <Route exact path='categories'>
           <Categories {...props} />
