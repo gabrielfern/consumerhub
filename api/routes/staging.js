@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { StagingProduct, Product, Image } = require('../models')
+const { StagingProduct, Product, Image, sequelize } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 const { notifyProductRejected } = require('../services/notifications')
@@ -33,12 +33,26 @@ router.post('/', wrap(async (req, res) => {
       attributes: { exclude: ['createdAt'] }
     })
     if (product) {
-      const stagingProduct = await StagingProduct.create({
-        ...product.dataValues,
-        userId: req.user.id,
-        isNewProduct: false
-      })
-      res.send({ id: stagingProduct.id })
+      let transaction
+      try {
+        transaction = await sequelize.transaction()
+        const images = await Image.cloneImages(product, req.user.id, transaction)
+        const stagingProduct = await StagingProduct.create({
+          ...product.dataValues,
+          ...images,
+          userId: req.user.id,
+          isNewProduct: false
+        }, { transaction })
+        await transaction.commit()
+        res.send({ id: stagingProduct.id })
+      } catch (err) {
+        if (transaction) await transaction.rollback()
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          res.status(409).end()
+        } else {
+          throw err
+        }
+      }
     } else {
       res.status(404).end()
     }

@@ -34,5 +34,32 @@ module.exports = (sequelize, DataTypes) => {
     })
   }
 
+  Image.cloneImages = async (product, userId, transaction) => {
+    const images = {}
+    const promises = []
+
+    for (let i = 1; i <= 5; i++) {
+      promises.push((async () => {
+        const image = await Image.findByPk(product['image' + i])
+        if (image) {
+          images['image' + i] = (await Image.create({
+            userId, productId: product.id, data: image.data
+          }, { transaction })).id
+        }
+      })())
+    }
+
+    await Promise.all(promises)
+    return images
+  }
+
+  Image.deleteImages = (product) => {
+    for (let i = 1; i <= 5; i++) {
+      if (product['image' + i]) {
+        Image.destroy({ where: { id: product['image' + i] } })
+      }
+    }
+  }
+
   return Image
 }

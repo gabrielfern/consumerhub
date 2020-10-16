@@ -55,6 +55,7 @@ router.put('/:id', wrap(async (req, res) => {
   })
   const product = await Product.findByPk(req.params.id)
   if (stagingProduct && product) {
+    Image.deleteImages(product)
     await product.update(stagingProduct.dataValues)
     await Image.clearUsers(req.query.userId, req.params.id)
     if (req.user.id !== req.query.userId) {
