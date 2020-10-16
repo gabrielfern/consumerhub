@@ -162,6 +162,7 @@ export async function createStagingProduct (productId) {
   if (res.status === 200) {
     return res.json()
   }
+  return { status: res.status }
 }
 
 export async function editStagingProduct (product) {

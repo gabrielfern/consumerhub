@@ -253,8 +253,8 @@ export default (props) => {
 
   async function createStagingProduct () {
     const resp = await createStagingProductAPI(product.id)
-    if (resp) {
-      history.push(`/staging?id=${resp.id}&userId=${props.user.id}`)
+    if (resp.id || resp.status === 409) {
+      history.push(`/staging?id=${product.id}&userId=${props.user.id}`)
     } else {
       window.alert('Um erro ocorreu')
     }

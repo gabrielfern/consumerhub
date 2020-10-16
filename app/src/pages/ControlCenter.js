@@ -2,7 +2,6 @@ import React from 'react'
 import { Switch, Route, Link, useLocation } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import StagingProductsList from '../components/controlCenter/StagingProductsList'
-import ProductEditionsList from '../components/controlCenter/ProductEditionsList'
 import ReportsList from '../components/controlCenter/ReportsList'
 import Categories from '../components/controlCenter/Categories'
 import Users from '../components/controlCenter/Users'
@@ -51,9 +50,6 @@ export default (props) => {
         </Route>
         <Route exact path='categories'>
           <Categories {...props} />
-        </Route>
-        <Route exact path='product-editions'>
-          <ProductEditionsList {...props} />
         </Route>
         <Route exact path='reports'>
           <ReportsList {...props} />

@@ -21,7 +21,7 @@ export default (props) => {
     e.preventDefault()
     setIsLoading(true)
     const resp = await createStagingProduct()
-    if (resp) {
+    if (resp.id) {
       await editStagingProduct({ id: resp.id, name, description })
       await Promise.all(links.map(async (link, i) => {
         if (link) {
