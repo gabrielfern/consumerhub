@@ -13,6 +13,7 @@ import ControlCenter from '../pages/ControlCenter'
 import Staging from '../pages/Staging'
 import Notifications from '../pages/Notifications'
 import UserProfile from '../pages/UserProfile'
+import NothingHere from './NothingHere'
 
 export default (props) => {
   return (
@@ -53,6 +54,9 @@ export default (props) => {
         </Route>
         <Route exact path='/user/:userId'>
           <UserProfile {...props} />
+        </Route>
+        <Route path='*'>
+          <NothingHere text='Página não encontrada' />
         </Route>
       </Switch>
     </Container>
