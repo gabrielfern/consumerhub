@@ -393,8 +393,8 @@ export default (props) => {
                 <Col xs={12} md={10} lg={11}>
                   <Form.Group>
                     <Form.Control
-                      placeholder='Deixe seu comentário aqui'
-                      as='textarea' rows='3' value={reviewText}
+                      placeholder='Deixe seu comentário aqui' as='textarea'
+                      rows='3' maxLength='500' value={reviewText}
                       onChange={e => setReviewText(e.target.value)}
                     />
                   </Form.Group>
