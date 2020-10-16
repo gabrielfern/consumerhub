@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const nodemailer = require('nodemailer')
+const { User } = require('../models')
 const { auth } = require('./auth')
 const { wrap } = require('../utils/errorHandlers')
 const email = process.env.GMAIL_EMAIL ||
@@ -14,15 +15,35 @@ const transporter = nodemailer.createTransport({
   }
 })
 
+function sendEmail (to, subject, html) {
+  transporter.sendMail({
+    from: `"Consumerhub" <${email}>`, to, subject, html
+  })
+}
+
 router.post('/', auth('admin'))
 
 router.post('/', wrap(async (req, res) => {
-  await transporter.sendMail({
-    from: `"Consumerhub" <${email}>`,
-    to: req.body.to,
-    subject: req.body.subject,
-    text: req.body.text
-  })
+  if (!req.body.to) {
+    const users = await User.findAll({
+      attributes: ['email'],
+      raw: true
+    })
+
+    // eslint-disable-next-line
+    function sendToAll () {
+      const user = users.pop()
+      if (user) {
+        sendEmail(user.email, req.body.subject, req.body.html)
+        setTimeout(sendToAll, 5000)
+      }
+    }
+
+    sendToAll()
+  } else {
+    sendEmail(req.body.to, req.body.subject, req.body.html)
+  }
+
   res.end()
 }))
 

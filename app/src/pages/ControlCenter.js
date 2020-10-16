@@ -6,6 +6,7 @@ import ProductEditionsList from '../components/controlCenter/ProductEditionsList
 import ReportsList from '../components/controlCenter/ReportsList'
 import Categories from '../components/controlCenter/Categories'
 import Users from '../components/controlCenter/Users'
+import Email from '../components/controlCenter/Email'
 
 export default (props) => {
   const query = new URLSearchParams(useLocation().search)
@@ -36,6 +37,12 @@ export default (props) => {
               Usuários
             </Nav.Link>
           </Nav.Item>}
+        {props.user && props.user.type === 'admin' &&
+          <Nav.Item>
+            <Nav.Link as={Link} to='/control-center?tab=email' eventKey='email'>
+              Email
+            </Nav.Link>
+          </Nav.Item>}
       </Nav>
 
       <Switch location={{ pathname: query.get('tab') || 'staging' }}>
@@ -53,6 +60,9 @@ export default (props) => {
         </Route>
         <Route exact path='users'>
           <Users {...props} />
+        </Route>
+        <Route exact path='email'>
+          <Email {...props} />
         </Route>
       </Switch>
     </>

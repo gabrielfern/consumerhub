@@ -511,3 +511,14 @@ export async function deleteReport (type, idName, idValue, userId) {
     }
   })
 }
+
+export async function sendEmail (to, subject, html) {
+  await fetch('/api/email', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      token: localStorage.token
+    },
+    body: JSON.stringify({ to, subject, html })
+  })
+}
