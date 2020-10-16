@@ -11,7 +11,7 @@ export default () => {
         <span className='text-muted'>
           © 2020 ConsumerHub
         </span>
-        <Nav>
+        <Nav activeKey=''>
           <Nav.Link as={Link} to='/terms-of-service'>Termos de Uso</Nav.Link>
           <Nav.Link
             href='https://github.com/gabrielfern/consumerhub'

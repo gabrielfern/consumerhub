@@ -14,6 +14,7 @@ export default (props) => {
   const [password, setPassword] = useState('')
   const [image, setImage] = useState()
   const [imageURL, setImageURL] = useState('')
+  const [secPassword, setSecPassword] = useState('')
   const secPasswordRef = useRef()
 
   useEffect(() => {
@@ -31,12 +32,12 @@ export default (props) => {
   }, [image])
 
   useEffect(() => {
-    if (password !== secPasswordRef.current.value) {
+    if (password !== secPassword) {
       secPasswordRef.current.setCustomValidity('Senhas precisam ser iguais')
     } else {
       secPasswordRef.current.setCustomValidity('')
     }
-  }, [password])
+  }, [password, secPassword])
 
   async function submit (e) {
     e.preventDefault()
@@ -94,6 +95,7 @@ export default (props) => {
               <Form.Label>Confirme a Senha</Form.Label>
               <Form.Control
                 required type='password' minLength='3' maxLength='30'
+                value={secPassword} onChange={e => setSecPassword(e.target.value)}
                 ref={secPasswordRef} autoComplete='new-password'
               />
             </Form.Group>
