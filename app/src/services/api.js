@@ -74,6 +74,7 @@ export async function gauthUser (idToken) {
     const isNewUser = res.status === 201
     return { isNewUser }
   }
+  return { status: res.status }
 }
 
 export async function editUser (password, name, email, newPassword) {

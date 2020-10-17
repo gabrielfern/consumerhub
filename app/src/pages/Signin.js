@@ -20,6 +20,8 @@ export default (props) => {
     const status = await authUser(email, password)
     if (status === 200) {
       props.loadUser()
+    } else if (status === 401) {
+      window.alert('Senha errada')
     } else {
       window.alert('Falha ao realizar login')
     }
@@ -33,13 +35,15 @@ export default (props) => {
     async function gSignIn (gUser) {
       const idToken = gUser.getAuthResponse().id_token
       const resp = await gauthUser(idToken)
-      if (resp && resp.isNewUser) {
+      if (resp.isNewUser) {
         const imageUrl = gUser.getBasicProfile().getImageUrl()
         const resp = await fetch(imageUrl)
         await uploadUserImage(await resp.arrayBuffer())
       }
-      if (resp) {
+      if (resp.isNewUser !== undefined) {
         props.loadUser()
+      } else if (resp.status === 401) {
+        window.alert('Usuário não Google, precisa logar com email e senha')
       } else {
         window.alert('Falha ao realizar login')
       }

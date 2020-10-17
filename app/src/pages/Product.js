@@ -372,7 +372,7 @@ export default (props) => {
           {[1, 2, 3].map(i => {
             if (product[`link${i}`]) hasNoLinks = false
             return (
-              <p key={i}>
+              <p key={i} className='word-break'>
                 <a href={product[`link${i}`]} target='_blank' rel='noopener noreferrer'>
                   {product[`link${i}`]}
                 </a>
