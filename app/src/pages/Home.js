@@ -89,7 +89,7 @@ export default (props) => {
         <div className='d-flex flex-wrap justify-content-around align-items-stretch'>
           {products.slice(0, 3).map((product, i) =>
             <Link className='text-reset text-decoration-none d-flex' key={i} to={`/product/${product.id}`}>
-              <Card className='my-3 flex-fill' style={{ width: '320px' }}>
+              <Card className='my-3 flex-fill' style={{ width: '322px' }}>
                 <Card.Header>
                   <h4>
                     {product.name || 'Produto sem nome'}
