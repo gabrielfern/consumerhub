@@ -1,4 +1,4 @@
-# Consumerhub
+# ConsumerHub
 
 Web application of a community-driven platform for reviews of products
 
@@ -15,3 +15,5 @@ Prepares the application to be started
 Starts the application
 
 These commands on the root folder automatically installs and starts both backend and frontend
+
+Some additional configuration is necessary inside both api and app
